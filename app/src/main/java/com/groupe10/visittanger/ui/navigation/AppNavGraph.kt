@@ -2,9 +2,11 @@ package com.groupe10.visittanger.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.groupe10.visittanger.ui.auth.AuthViewModel
 import com.groupe10.visittanger.ui.auth.LoginScreen
 import com.groupe10.visittanger.ui.auth.RegisterScreen
 import com.groupe10.visittanger.ui.favorites.FavoritesScreen
@@ -16,9 +18,15 @@ import com.groupe10.visittanger.ui.profile.ProfileScreen
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    startDestination: String = Screen.Login.route,
+    authViewModel: AuthViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    val startDestination = if (authViewModel.isUserLoggedIn()) {
+        Screen.Home.route
+    } else {
+        Screen.Login.route
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -28,8 +36,14 @@ fun AppNavGraph(
         composable(Screen.Map.route) { MapScreen() }
         composable(Screen.Itinerary.route) { ItineraryScreen() }
         composable(Screen.Favorites.route) { FavoritesScreen() }
-        composable(Screen.Profile.route) { ProfileScreen() }
-        composable(Screen.Login.route) { LoginScreen() }
-        composable(Screen.Register.route) { RegisterScreen() }
+        composable(Screen.Profile.route) { 
+            ProfileScreen(navController = navController, viewModel = authViewModel) 
+        }
+        composable(Screen.Login.route) { 
+            LoginScreen(navController = navController, viewModel = authViewModel) 
+        }
+        composable(Screen.Register.route) { 
+            RegisterScreen(navController = navController, viewModel = authViewModel) 
+        }
     }
 }
