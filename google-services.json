@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "161250144948",
+    "project_id": "visit-tanger",
+    "storage_bucket": "visit-tanger.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161250144948:android:308b1d35d0d64a559b5de1",
+        "android_client_info": {
+          "package_name": "com.groupe10.visittanger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASSWUee2n7WuN-gEtdeNDLByZavDBO6II"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
