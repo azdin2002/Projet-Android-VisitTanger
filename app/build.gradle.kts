@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     // Kotlin is built-in with AGP 9.2.0, no need for org.jetbrains.kotlin.android
@@ -6,6 +8,16 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
+
+
+val mapsApiKey: String = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.inputStream())
+    }
+}.getProperty("MAPS_API_KEY")
+    ?: project.findProperty("MAPS_API_KEY") as String?
+    ?: throw GradleException("MAPS_API_KEY not found in local.properties")
 
 android {
     namespace = "com.groupe10.visittanger"
@@ -18,6 +30,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
