@@ -1,4 +1,4 @@
-package com.groupe10.visittanger.ui.main
+package com.groupe10.visittanger.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -21,8 +21,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.groupe10.visittanger.ui.navigation.AppNavGraph
-import com.groupe10.visittanger.ui.navigation.Screen
 import com.groupe10.visittanger.ui.theme.TangerGreen
 
 sealed class BottomNavItem(val screen: Screen, val title: String, val icon: ImageVector) {

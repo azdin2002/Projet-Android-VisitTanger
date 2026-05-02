@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.groupe10.visittanger.ui.main.MainScreen
+import com.groupe10.visittanger.ui.navigation.MainScreen
 import com.groupe10.visittanger.ui.theme.VisitTangerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
