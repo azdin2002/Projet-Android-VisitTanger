@@ -1,0 +1,8 @@
+package com.groupe10.visittanger.domain.model
+
+data class User(
+    val uid: String,
+    val email: String,
+    val displayName: String,
+    val photoUrl: String? = null
+)
