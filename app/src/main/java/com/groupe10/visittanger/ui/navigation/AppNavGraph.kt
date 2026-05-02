@@ -43,7 +43,11 @@ fun AppNavGraph(
                 navController.navigate(Screen.Details.createRoute(placeId))
             }) 
         }
-        composable(Screen.Map.route) { MapScreen() }
+        composable(Screen.Map.route) { 
+            MapScreen(onPlaceClick = { placeId ->
+                navController.navigate(Screen.Details.createRoute(placeId))
+            }) 
+        }
         composable(Screen.Itinerary.route) { ItineraryScreen() }
         composable(Screen.Favorites.route) { FavoritesScreen() }
         composable(Screen.Profile.route) { 
