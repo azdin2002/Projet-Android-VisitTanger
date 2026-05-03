@@ -10,14 +10,24 @@ plugins {
 }
 
 
-val mapsApiKey: String = Properties().apply {
+val props = Properties().apply {
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
         load(localPropertiesFile.inputStream())
     }
-}.getProperty("MAPS_API_KEY")
+}
+
+val mapsApiKey: String = props.getProperty("MAPS_API_KEY")
     ?: project.findProperty("MAPS_API_KEY") as String?
     ?: throw GradleException("MAPS_API_KEY not found in local.properties")
+
+val facebookAppId: String = props.getProperty("FACEBOOK_APP_ID")
+    ?: project.findProperty("FACEBOOK_APP_ID") as String?
+    ?: "0"
+
+val facebookClientToken: String = props.getProperty("FACEBOOK_CLIENT_TOKEN")
+    ?: project.findProperty("FACEBOOK_CLIENT_TOKEN") as String?
+    ?: ""
 
 android {
     namespace = "com.groupe10.visittanger"
@@ -30,7 +40,11 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        manifestPlaceholders["FACEBOOK_APP_ID"] = facebookAppId
+        manifestPlaceholders["FACEBOOK_CLIENT_TOKEN"] = facebookClientToken
+        manifestPlaceholders["FB_LOGIN_PROTOCOL_SCHEME"] = "fb$facebookAppId"
     }
 
     buildTypes {
