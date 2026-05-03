@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
 import com.groupe10.visittanger.ui.theme.TangerGreen
@@ -89,11 +91,12 @@ fun MapScreen(
                 .background(Color.White.copy(alpha = 0.8f))
                 .padding(bottom = 8.dp)
         ) {
-            TangerTopBar(title = "Carte")
+            TangerTopBar(title = stringResource(R.string.map_title))
             
             TangerSearchBar(
                 query = uiState.searchQuery,
                 onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                placeholder = stringResource(R.string.home_search_hint),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
 
@@ -105,14 +108,14 @@ fun MapScreen(
                     FilterChip(
                         selected = uiState.selectedCategory == null,
                         onClick = { viewModel.onCategorySelected(null) },
-                        label = { Text("Tout") },
+                        label = { Text(stringResource(R.string.category_all)) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = TangerGreen,
                             selectedLabelColor = Color.White
                         )
                     )
                 }
-                items(Category.entries.toTypedArray()) { category ->
+                items(Category.values()) { category ->
                     CategoryChip(
                         category = category,
                         isSelected = uiState.selectedCategory == category,

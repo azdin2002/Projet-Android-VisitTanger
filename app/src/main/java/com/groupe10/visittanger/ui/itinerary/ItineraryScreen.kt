@@ -17,6 +17,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.domain.model.ItineraryType
 import com.groupe10.visittanger.ui.components.TangerTopBar
 
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.R
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItineraryScreen(
@@ -26,7 +29,7 @@ fun ItineraryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = { TangerTopBar(title = "Itinéraires") }
+        topBar = { TangerTopBar(title = stringResource(R.string.itinerary_title)) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -37,12 +40,12 @@ fun ItineraryScreen(
             item {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Explorez Tanger",
+                        text = stringResource(R.string.itinerary_explore),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Choisissez votre aventure",
+                        text = stringResource(R.string.itinerary_subtitle),
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -60,7 +63,7 @@ fun ItineraryScreen(
                         FilterChip(
                             selected = uiState.selectedType == null,
                             onClick = { viewModel.onTypeSelected(null) },
-                            label = { Text("Tous") }
+                            label = { Text(stringResource(R.string.itinerary_all)) }
                         )
                     }
                     items(ItineraryType.values()) { type ->
@@ -92,7 +95,7 @@ fun ItineraryScreen(
             // 4. LISTE ITINÉRAIRES
             item {
                 Text(
-                    text = "Tous les itinéraires",
+                    text = stringResource(R.string.itinerary_all_title),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(
                         start = 16.dp, top = 16.dp, bottom = 8.dp

@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.TangerGreen
 
 @Composable
@@ -23,7 +25,7 @@ fun DescriptionSection(description: String) {
             .padding(16.dp)
     ) {
         Text(
-            text = "À propos",
+            text = stringResource(R.string.detail_about),
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
@@ -44,7 +46,7 @@ fun DescriptionSection(description: String) {
             )
             
             Text(
-                text = if (isExpanded) "Réduire" else "Lire la suite",
+                text = if (isExpanded) stringResource(R.string.show_less) else stringResource(R.string.read_more),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = TangerGreen,
                     fontWeight = FontWeight.Bold

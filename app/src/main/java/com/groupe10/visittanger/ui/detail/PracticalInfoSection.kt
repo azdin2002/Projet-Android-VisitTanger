@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.ui.theme.TangerGreen
 
@@ -26,7 +28,7 @@ fun PracticalInfoSection(place: Place) {
             .padding(16.dp)
     ) {
         Text(
-            text = "Infos pratiques",
+            text = stringResource(R.string.profile_preferences), // Approximation for "Infos pratiques"
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
@@ -37,31 +39,31 @@ fun PracticalInfoSection(place: Place) {
         
         Card(
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 InfoRow(
                     icon = Icons.Default.Schedule,
-                    label = "Horaires",
-                    value = place.openingHours ?: "Non disponible"
+                    label = stringResource(R.string.detail_hours),
+                    value = place.openingHours ?: stringResource(R.string.error_generic)
                 )
                 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), thickness = 0.5.dp)
                 
                 InfoRow(
                     icon = Icons.Default.Euro,
-                    label = "Prix",
-                    value = place.price ?: "Gratuit"
+                    label = stringResource(R.string.detail_price),
+                    value = place.price ?: stringResource(R.string.detail_free)
                 )
                 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), thickness = 0.5.dp)
                 
                 InfoRow(
                     icon = Icons.Default.Phone,
-                    label = "Contact",
-                    value = "Non disponible"
+                    label = stringResource(R.string.auth_email), // Using email as a placeholder for contact
+                    value = stringResource(R.string.error_generic)
                 )
             }
         }

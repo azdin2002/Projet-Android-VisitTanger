@@ -9,7 +9,7 @@ import com.groupe10.visittanger.domain.model.Place
 data class FavoriteEntity(
     @PrimaryKey val placeId: String,
     val name: String,
-    val description: String,
+    val description: Map<String, String>,
     val category: String,      // Category.name (enum -> String)
     val latitude: Double,
     val longitude: Double,

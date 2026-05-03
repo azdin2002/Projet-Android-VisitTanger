@@ -16,10 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.*
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.TangerCoral
 import com.groupe10.visittanger.ui.theme.TangerGreen
 
@@ -28,11 +31,13 @@ fun DetailScreen(
     placeId: String,
     onBackClick: () -> Unit,
     onMapClick: (Double, Double) -> Unit,
-    viewModel: DetailViewModel = hiltViewModel()
+    viewModel: DetailViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberLazyListState()
     val context = LocalContext.current
+    val lang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
     
     // Simple estimation of scroll offset
     val isScrolled by remember {
@@ -73,15 +78,18 @@ fun DetailScreen(
             LoadingIndicator()
         } else if (uiState.error != null) {
             ErrorView(
-                message = uiState.error ?: "Erreur inconnue",
+                message = uiState.error ?: stringResource(R.string.error_generic),
                 onRetry = { viewModel.loadPlace() }
             )
         } else if (uiState.place == null) {
             EmptyView(
-                message = "Lieu introuvable"
+                message = stringResource(R.string.map_no_places)
             )
         } else {
             val place = uiState.place!!
+            val localizedDescription = remember(lang, place) {
+                place.description[lang] ?: place.description["fr"] ?: ""
+            }
             
             LazyColumn(
                 state = scrollState,
@@ -103,7 +111,7 @@ fun DetailScreen(
 
                 // 3. DESCRIPTION
                 item {
-                    DescriptionSection(description = place.description)
+                    DescriptionSection(description = localizedDescription)
                 }
 
                 // 4. INFOS PRATIQUES
@@ -141,14 +149,14 @@ fun DetailScreen(
                     IconButton(onClick = viewModel::onFavoriteToggled) {
                         Icon(
                             imageVector = if (place.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (place.isFavorite) "Retirer des favoris" else "Ajouter aux favoris",
+                            contentDescription = if (place.isFavorite) stringResource(R.string.detail_remove_favorite) else stringResource(R.string.detail_add_favorite),
                             tint = if (place.isFavorite) TangerCoral else Color.White
                         )
                     }
                     IconButton(onClick = { /* Share logic */ }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = "Partager",
+                            contentDescription = null,
                             tint = Color.White
                         )
                     }
@@ -177,7 +185,7 @@ fun DetailScreen(
                     ) {
                         Icon(Icons.Default.Map, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Sur la carte")
+                        Text(stringResource(R.string.nav_map))
                     }
 
                     Button(
@@ -187,7 +195,7 @@ fun DetailScreen(
                     ) {
                         Icon(Icons.Default.Navigation, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Itinéraire")
+                        Text(stringResource(R.string.itinerary_start))
                     }
                 }
             }

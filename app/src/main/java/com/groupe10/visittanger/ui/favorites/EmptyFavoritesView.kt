@@ -7,10 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.TangerGreen
 import com.groupe10.visittanger.ui.theme.TangerGreenLight
 
@@ -36,7 +38,7 @@ fun EmptyFavoritesView(
             Spacer(modifier = Modifier.height(16.dp))
             
             Text(
-                text = "Aucun favori pour l'instant",
+                text = stringResource(R.string.favorites_empty),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -46,7 +48,7 @@ fun EmptyFavoritesView(
             Spacer(modifier = Modifier.height(8.dp))
             
             Text(
-                text = "Explorez Tanger et ajoutez vos lieux préférés",
+                text = stringResource(R.string.favorites_empty_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = androidx.compose.ui.graphics.Color.Gray,
                 fontSize = 14.sp,
@@ -61,7 +63,7 @@ fun EmptyFavoritesView(
                     containerColor = TangerGreen
                 )
             ) {
-                Text("Explorer Tanger")
+                Text(stringResource(R.string.home_see_all)) // Approximation for "Explorer"
             }
         }
     }

@@ -14,13 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
+import com.groupe10.visittanger.ui.theme.toLocalizedName
 
 @Composable
 fun HomeScreen(
@@ -33,7 +36,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = "Visit Tanger",
+                title = stringResource(R.string.app_name),
                 actions = {
                     IconButton(onClick = { /* Action info ou profil */ }) {
                         Icon(
@@ -50,7 +53,7 @@ fun HomeScreen(
             LoadingIndicator()
         } else if (uiState.error != null && uiState.places.isEmpty()) {
             ErrorView(
-                message = uiState.error ?: "Une erreur est survenue",
+                message = uiState.error ?: stringResource(R.string.error_generic),
                 onRetry = { viewModel.loadPlaces() }
             )
         } else {
@@ -70,6 +73,7 @@ fun HomeScreen(
                     TangerSearchBar(
                         query = uiState.searchQuery,
                         onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                        placeholder = stringResource(R.string.home_search_hint),
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -85,7 +89,7 @@ fun HomeScreen(
                 // Featured Section (only if no search/filter)
                 if (uiState.searchQuery.isEmpty() && uiState.selectedCategory == null) {
                     item {
-                        SectionHeader(title = "À découvrir", onSeeAllClick = {})
+                        SectionHeader(title = stringResource(R.string.home_popular), onSeeAllClick = {})
                     }
                     item {
                         LazyRow(
@@ -107,9 +111,9 @@ fun HomeScreen(
                 // Main List Section Header
                 item {
                     val title = if (uiState.searchQuery.isNotEmpty() || uiState.selectedCategory != null) {
-                        "Résultats"
+                        stringResource(R.string.home_no_results) // Approximation based on context provided earlier
                     } else {
-                        "Tous les lieux"
+                        stringResource(R.string.home_nearby)
                     }
                     SectionHeader(title = title, onSeeAllClick = {})
                 }
@@ -149,13 +153,13 @@ fun BannerHeader(backgroundColor: Color) {
     ) {
         Column(modifier = Modifier.align(Alignment.CenterStart)) {
             Text(
-                text = "Bienvenue à Tanger",
+                text = stringResource(R.string.home_title),
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Découvrez la perle du nord",
+                text = stringResource(R.string.home_subtitle),
                 color = Color.White.copy(alpha = 0.9f),
                 fontSize = 16.sp
             )
@@ -186,7 +190,7 @@ fun CategoriesSection(
             FilterChip(
                 selected = selectedCategory == null,
                 onClick = { onCategorySelected(null) },
-                label = { Text("Tout") },
+                label = { Text(stringResource(R.string.category_all)) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = Color(0xFF009966),
                     selectedLabelColor = Color.White
@@ -221,7 +225,7 @@ fun SectionHeader(
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Voir tout",
+            text = stringResource(R.string.home_see_all),
             color = Color(0xFF009966),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
