@@ -1,9 +1,6 @@
 package com.groupe10.visittanger.ui.navigation
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -49,7 +46,18 @@ fun AppNavGraph(
             }) 
         }
         composable(Screen.Itinerary.route) { ItineraryScreen() }
-        composable(Screen.Favorites.route) { FavoritesScreen() }
+        composable(Screen.Favorites.route) { 
+            FavoritesScreen(
+                onPlaceClick = { placeId ->
+                    navController.navigate(Screen.Details.createRoute(placeId))
+                },
+                onExploreClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                }
+            ) 
+        }
         composable(Screen.Profile.route) { 
             ProfileScreen(navController = navController, viewModel = authViewModel) 
         }
