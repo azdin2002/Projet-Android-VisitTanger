@@ -150,7 +150,7 @@ fun PlaceCardPreview() {
         place = Place(
             id = "1",
             name = "Kasbah de Tanger",
-            description = "Description",
+            description = mapOf("fr" to "Description"),
             category = Category.HISTORY,
             latitude = 0.0,
             longitude = 0.0,

@@ -13,6 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.ui.components.PlaceCard
 
@@ -54,7 +56,7 @@ fun SwipeToDeleteFavoriteCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Supprimer",
+                        text = stringResource(R.string.favorites_remove),
                         color = Color.White,
                         fontSize = 12.sp
                     )

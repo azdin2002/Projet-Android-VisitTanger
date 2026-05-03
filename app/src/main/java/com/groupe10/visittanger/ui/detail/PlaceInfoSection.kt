@@ -11,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.ui.components.CategoryChip
 import com.groupe10.visittanger.ui.components.RatingBar
@@ -83,7 +85,7 @@ fun PlaceInfoSection(place: Place) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "${String.format("%.1f", distance)} km de vous",
+                    text = "${String.format("%.1f", distance)} ${stringResource(R.string.km_away)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                     fontSize = 12.sp

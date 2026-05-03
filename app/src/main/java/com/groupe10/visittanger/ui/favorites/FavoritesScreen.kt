@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.LoadingIndicator
 import com.groupe10.visittanger.ui.components.TangerTopBar
 
@@ -27,11 +29,11 @@ fun FavoritesScreen(
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = "Mes Favoris",
+                title = stringResource(id = R.string.favorites_title),
                 actions = {
                     if (uiState.favoritesCount > 0) {
                         Text(
-                            text = "${uiState.favoritesCount} lieu(x)",
+                            text = "${uiState.favoritesCount} ${stringResource(id = R.string.favorites_remove).lowercase()}",
                             color = Color.White,
                             fontSize = 12.sp,
                             modifier = Modifier.padding(end = 16.dp)
