@@ -1,6 +1,5 @@
 package com.groupe10.visittanger.ui.navigation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +14,7 @@ import androidx.navigation.navArgument
 import com.groupe10.visittanger.ui.auth.AuthViewModel
 import com.groupe10.visittanger.ui.auth.LoginScreen
 import com.groupe10.visittanger.ui.auth.RegisterScreen
+import com.groupe10.visittanger.ui.detail.DetailScreen
 import com.groupe10.visittanger.ui.favorites.FavoritesScreen
 import com.groupe10.visittanger.ui.home.HomeScreen
 import com.groupe10.visittanger.ui.itinerary.ItineraryScreen
@@ -63,10 +63,16 @@ fun AppNavGraph(
             route = Screen.Details.route,
             arguments = listOf(navArgument("placeId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val placeId = backStackEntry.arguments?.getString("placeId")
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Place Detail for $placeId (Coming Soon)")
-            }
+            val placeId = backStackEntry.arguments?.getString("placeId") ?: ""
+            DetailScreen(
+                placeId = placeId,
+                onBackClick = { navController.popBackStack() },
+                onMapClick = { lat, lng ->
+                    navController.navigate(Screen.Map.route) {
+                        popUpTo(Screen.Map.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
