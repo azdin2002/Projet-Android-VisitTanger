@@ -81,7 +81,7 @@
     <string name="profile_language">اللغة</string>
     <string name="profile_theme">المظهر</string>
     <string name="profile_logout">تسجيل الخروج</string>
-    <string name="profile_version">الإصدار %s</string>
+    <string name="profile_version">Visit Tanger v%s</string>
     <string name="profile_about">حول التطبيق</string>
     <string name="profile_dark_mode">الوضع الداكن</string>
     <string name="profile_notifications">الإشعارات</string>

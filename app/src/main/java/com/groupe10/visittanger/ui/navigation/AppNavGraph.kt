@@ -77,7 +77,13 @@ fun AppNavGraph(
             ) 
         }
         composable(Screen.Profile.route) { 
-            ProfileScreen(navController = navController, viewModel = authViewModel) 
+            ProfileScreen(
+                onLogoutSuccess = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(Screen.Login.route) { 
             LoginScreen(navController = navController, viewModel = authViewModel) 
