@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.ui.navigation
 
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +23,7 @@ import com.groupe10.visittanger.ui.profile.ProfileScreen
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
+    windowSizeClass: WindowSizeClass,
     authViewModel: AuthViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -37,9 +39,12 @@ fun AppNavGraph(
         modifier = modifier
     ) {
         composable(Screen.Home.route) { 
-            HomeScreen(onPlaceClick = { placeId ->
-                navController.navigate(Screen.Details.createRoute(placeId))
-            }) 
+            HomeScreen(
+                windowSizeClass = windowSizeClass,
+                onPlaceClick = { placeId ->
+                    navController.navigate(Screen.Details.createRoute(placeId))
+                }
+            ) 
         }
         composable(Screen.Map.route) { 
             MapScreen(onPlaceClick = { placeId ->
@@ -47,9 +52,12 @@ fun AppNavGraph(
             }) 
         }
         composable(Screen.Itinerary.route) { 
-            ItineraryScreen(onItineraryClick = { id ->
-                navController.navigate(Screen.ItineraryDetail.createRoute(id))
-            }) 
+            ItineraryScreen(
+                windowSizeClass = windowSizeClass,
+                onItineraryClick = { id ->
+                    navController.navigate(Screen.ItineraryDetail.createRoute(id))
+                }
+            ) 
         }
         composable(
             route = Screen.ItineraryDetail.route,
@@ -83,7 +91,7 @@ fun AppNavGraph(
                         popUpTo(0) { inclusive = true }
                     }
                 }
-            )
+            ) 
         }
         composable(Screen.Login.route) { 
             LoginScreen(navController = navController, viewModel = authViewModel) 
@@ -98,6 +106,7 @@ fun AppNavGraph(
             val placeId = backStackEntry.arguments?.getString("placeId") ?: ""
             DetailScreen(
                 placeId = placeId,
+                windowSizeClass = windowSizeClass,
                 onBackClick = { navController.popBackStack() },
                 onMapClick = { lat, lng ->
                     navController.navigate(Screen.Map.route) {
