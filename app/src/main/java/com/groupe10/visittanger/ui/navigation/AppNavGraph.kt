@@ -15,6 +15,7 @@ import com.groupe10.visittanger.ui.detail.DetailScreen
 import com.groupe10.visittanger.ui.favorites.FavoritesScreen
 import com.groupe10.visittanger.ui.home.HomeScreen
 import com.groupe10.visittanger.ui.itinerary.ItineraryScreen
+import com.groupe10.visittanger.ui.itinerary.detail.ItineraryDetailScreen
 import com.groupe10.visittanger.ui.map.MapScreen
 import com.groupe10.visittanger.ui.profile.ProfileScreen
 
@@ -45,7 +46,24 @@ fun AppNavGraph(
                 navController.navigate(Screen.Details.createRoute(placeId))
             }) 
         }
-        composable(Screen.Itinerary.route) { ItineraryScreen() }
+        composable(Screen.Itinerary.route) { 
+            ItineraryScreen(onItineraryClick = { id ->
+                navController.navigate(Screen.ItineraryDetail.createRoute(id))
+            }) 
+        }
+        composable(
+            route = Screen.ItineraryDetail.route,
+            arguments = listOf(navArgument("itineraryId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val itineraryId = backStackEntry.arguments?.getString("itineraryId") ?: ""
+            ItineraryDetailScreen(
+                itineraryId = itineraryId,
+                onBackClick = { navController.popBackStack() },
+                onPlaceClick = { placeId ->
+                    navController.navigate(Screen.Details.createRoute(placeId))
+                }
+            )
+        }
         composable(Screen.Favorites.route) { 
             FavoritesScreen(
                 onPlaceClick = { placeId ->
