@@ -5,10 +5,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,16 +28,54 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
-import com.groupe10.visittanger.ui.theme.toLocalizedName
+import com.groupe10.visittanger.ui.theme.TangerGreen
 
 @Composable
 fun HomeScreen(
+    windowSizeClass: WindowSizeClass,
     onPlaceClick: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val tangerineGreen = Color(0xFF009966)
 
+    val columns = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 1
+        WindowWidthSizeClass.Medium -> 2
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 1
+    }
+
+    if (columns == 1) {
+        HomePhoneLayout(
+            uiState = uiState,
+            onPlaceClick = onPlaceClick,
+            onCategorySelected = viewModel::onCategorySelected,
+            onSearchChanged = viewModel::onSearchQueryChanged,
+            onFavoriteToggled = viewModel::onFavoriteToggled,
+            onRetry = viewModel::loadPlaces
+        )
+    } else {
+        HomeTabletLayout(
+            uiState = uiState,
+            columns = columns,
+            onPlaceClick = onPlaceClick,
+            onCategorySelected = viewModel::onCategorySelected,
+            onSearchChanged = viewModel::onSearchQueryChanged,
+            onFavoriteToggled = viewModel::onFavoriteToggled,
+            onRetry = viewModel::loadPlaces
+        )
+    }
+}
+
+@Composable
+fun HomePhoneLayout(
+    uiState: HomeUiState,
+    onPlaceClick: (String) -> Unit,
+    onCategorySelected: (Category?) -> Unit,
+    onSearchChanged: (String) -> Unit,
+    onFavoriteToggled: (String) -> Unit,
+    onRetry: () -> Unit
+) {
     Scaffold(
         topBar = {
             TangerTopBar(
@@ -54,7 +97,7 @@ fun HomeScreen(
         } else if (uiState.error != null && uiState.places.isEmpty()) {
             ErrorView(
                 message = uiState.error ?: stringResource(R.string.error_generic),
-                onRetry = { viewModel.loadPlaces() }
+                onRetry = onRetry
             )
         } else {
             LazyColumn(
@@ -64,15 +107,13 @@ fun HomeScreen(
                 contentPadding = PaddingValues(bottom = 24.dp)
             ) {
                 // Header Banner
-                item {
-                    BannerHeader(tangerineGreen)
-                }
+                item { BannerHeader(TangerGreen) }
 
                 // Search Bar
                 item {
                     TangerSearchBar(
                         query = uiState.searchQuery,
-                        onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                        onQueryChange = onSearchChanged,
                         placeholder = stringResource(R.string.home_search_hint),
                         modifier = Modifier.padding(16.dp)
                     )
@@ -82,15 +123,13 @@ fun HomeScreen(
                 item {
                     CategoriesSection(
                         selectedCategory = uiState.selectedCategory,
-                        onCategorySelected = { viewModel.onCategorySelected(it) }
+                        onCategorySelected = onCategorySelected
                     )
                 }
 
-                // Featured Section (only if no search/filter)
+                // Featured Section
                 if (uiState.searchQuery.isEmpty() && uiState.selectedCategory == null) {
-                    item {
-                        SectionHeader(title = stringResource(R.string.home_popular), onSeeAllClick = {})
-                    }
+                    item { SectionHeader(title = stringResource(R.string.home_popular), onSeeAllClick = {}) }
                     item {
                         LazyRow(
                             contentPadding = PaddingValues(horizontal = 16.dp),
@@ -100,7 +139,7 @@ fun HomeScreen(
                                 PlaceCard(
                                     place = place,
                                     onPlaceClick = onPlaceClick,
-                                    onFavoriteClick = { viewModel.onFavoriteToggled(it) },
+                                    onFavoriteClick = onFavoriteToggled,
                                     modifier = Modifier.width(280.dp)
                                 )
                             }
@@ -108,32 +147,88 @@ fun HomeScreen(
                     }
                 }
 
-                // Main List Section Header
                 item {
                     val title = if (uiState.searchQuery.isNotEmpty() || uiState.selectedCategory != null) {
-                        stringResource(R.string.home_no_results) // Approximation based on context provided earlier
+                        stringResource(R.string.home_no_results)
                     } else {
                         stringResource(R.string.home_nearby)
                     }
                     SectionHeader(title = title, onSeeAllClick = {})
                 }
 
-                // Main List
                 if (uiState.filteredPlaces.isEmpty()) {
                     item {
-                        EmptyView(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
-                        )
+                        EmptyView(modifier = Modifier.fillMaxWidth().height(200.dp))
                     }
                 } else {
                     items(uiState.filteredPlaces) { place ->
                         PlaceCard(
                             place = place,
                             onPlaceClick = onPlaceClick,
-                            onFavoriteClick = { viewModel.onFavoriteToggled(it) },
+                            onFavoriteClick = onFavoriteToggled,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeTabletLayout(
+    uiState: HomeUiState,
+    columns: Int,
+    onPlaceClick: (String) -> Unit,
+    onCategorySelected: (Category?) -> Unit,
+    onSearchChanged: (String) -> Unit,
+    onFavoriteToggled: (String) -> Unit,
+    onRetry: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TangerTopBar(title = stringResource(R.string.app_name))
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            TangerSearchBar(
+                query = uiState.searchQuery,
+                onQueryChange = onSearchChanged,
+                placeholder = stringResource(R.string.home_search_hint),
+                modifier = Modifier.padding(16.dp)
+            )
+            
+            CategoriesSection(
+                selectedCategory = uiState.selectedCategory,
+                onCategorySelected = onCategorySelected
+            )
+
+            if (uiState.isLoading && uiState.places.isEmpty()) {
+                LoadingIndicator()
+            } else if (uiState.error != null && uiState.places.isEmpty()) {
+                ErrorView(
+                    message = uiState.error ?: stringResource(R.string.error_generic),
+                    onRetry = onRetry
+                )
+            } else if (uiState.filteredPlaces.isEmpty()) {
+                EmptyView(modifier = Modifier.fillMaxSize())
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(uiState.filteredPlaces, key = { it.id }) { place ->
+                        PlaceCard(
+                            place = place,
+                            onPlaceClick = onPlaceClick,
+                            onFavoriteClick = onFavoriteToggled
                         )
                     }
                 }
@@ -192,7 +287,7 @@ fun CategoriesSection(
                 onClick = { onCategorySelected(null) },
                 label = { Text(stringResource(R.string.category_all)) },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = Color(0xFF009966),
+                    selectedContainerColor = TangerGreen,
                     selectedLabelColor = Color.White
                 )
             )
@@ -226,7 +321,7 @@ fun SectionHeader(
         )
         Text(
             text = stringResource(R.string.home_see_all),
-            color = Color(0xFF009966),
+            color = TangerGreen,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.clickable { onSeeAllClick() }

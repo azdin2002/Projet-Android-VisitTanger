@@ -11,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,15 +33,101 @@ fun DetailScreen(
     placeId: String,
     onBackClick: () -> Unit,
     onMapClick: (Double, Double) -> Unit,
+    windowSizeClass: WindowSizeClass,
     viewModel: DetailViewModel = hiltViewModel(),
     languageViewModel: LanguageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
+    val lang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+
+    if (isExpanded && uiState.place != null) {
+        val place = uiState.place!!
+        val localizedDescription = remember(lang, place) {
+            place.description[lang] ?: place.description["fr"] ?: ""
+        }
+        
+        Row(Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .weight(0.4f)
+                    .fillMaxHeight()
+            ) {
+                PhotoGallerySection(
+                    photos = place.photos,
+                    selectedIndex = uiState.selectedPhotoIndex,
+                    onPhotoSelected = viewModel::onPhotoSelected
+                )
+                PlaceInfoSection(place = place)
+                PracticalInfoSection(place = place)
+            }
+
+            VerticalDivider(modifier = Modifier.fillMaxHeight().width(1.dp))
+
+            LazyColumn(
+                modifier = Modifier
+                    .weight(0.6f)
+                    .fillMaxHeight()
+            ) {
+                item {
+                    TangerTopBar(
+                        title = place.name,
+                        onBackClick = onBackClick,
+                        actions = {
+                            IconButton(onClick = viewModel::onFavoriteToggled) {
+                                Icon(
+                                    imageVector = if (place.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = null,
+                                    tint = if (place.isFavorite) TangerCoral else TangerGreen
+                                )
+                            }
+                        }
+                    )
+                }
+                item {
+                    DescriptionSection(description = localizedDescription)
+                }
+                item {
+                    LocationSection(
+                        place = place,
+                        onMapClick = { onMapClick(place.latitude, place.longitude) }
+                    )
+                }
+                item {
+                    ReviewsSection(
+                        reviews = uiState.reviews,
+                        showAll = uiState.showAllReviews,
+                        onToggleShowAll = viewModel::toggleShowAllReviews
+                    )
+                }
+            }
+        }
+    } else {
+        DetailPhoneLayout(
+            uiState = uiState,
+            onBackClick = onBackClick,
+            onMapClick = onMapClick,
+            onFavoriteToggled = viewModel::onFavoriteToggled,
+            onPhotoSelected = viewModel::onPhotoSelected,
+            onToggleReviews = viewModel::toggleShowAllReviews,
+            lang = lang
+        )
+    }
+}
+
+@Composable
+fun DetailPhoneLayout(
+    uiState: DetailUiState,
+    onBackClick: () -> Unit,
+    onMapClick: (Double, Double) -> Unit,
+    onFavoriteToggled: () -> Unit,
+    onPhotoSelected: (Int) -> Unit,
+    onToggleReviews: () -> Unit,
+    lang: String
+) {
     val scrollState = rememberLazyListState()
     val context = LocalContext.current
-    val lang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
     
-    // Simple estimation of scroll offset
     val isScrolled by remember {
         derivedStateOf {
             scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > 200
@@ -54,20 +142,12 @@ fun DetailScreen(
     val openNavigation = {
         val place = uiState.place
         if (place != null) {
-            val navigationUri = Uri.parse(
-                "google.navigation:q=${place.latitude},${place.longitude}&mode=d"
-            )
-            val mapsIntent = Intent(Intent.ACTION_VIEW, navigationUri).apply {
-                setPackage("com.google.android.apps.maps")
-            }
+            val navigationUri = Uri.parse("google.navigation:q=${place.latitude},${place.longitude}&mode=d")
+            val mapsIntent = Intent(Intent.ACTION_VIEW, navigationUri).apply { setPackage("com.google.android.apps.maps") }
             if (mapsIntent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(mapsIntent)
             } else {
-                val browserUri = Uri.parse(
-                    "https://www.google.com/maps/dir/?api=1" +
-                    "&destination=${place.latitude},${place.longitude}" +
-                    "&travelmode=driving"
-                )
+                val browserUri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}&travelmode=driving")
                 context.startActivity(Intent(Intent.ACTION_VIEW, browserUri))
             }
         }
@@ -77,106 +157,45 @@ fun DetailScreen(
         if (uiState.isLoading) {
             LoadingIndicator()
         } else if (uiState.error != null) {
-            ErrorView(
-                message = uiState.error ?: stringResource(R.string.error_generic),
-                onRetry = { viewModel.loadPlace() }
-            )
+            ErrorView(message = uiState.error ?: stringResource(R.string.error_generic), onRetry = {})
         } else if (uiState.place == null) {
-            EmptyView(
-                message = stringResource(R.string.map_no_places)
-            )
+            EmptyView(message = stringResource(R.string.map_no_places))
         } else {
             val place = uiState.place!!
             val localizedDescription = remember(lang, place) {
                 place.description[lang] ?: place.description["fr"] ?: ""
             }
             
-            LazyColumn(
-                state = scrollState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                // 1. GALERIE PHOTOS
-                item {
-                    PhotoGallerySection(
-                        photos = place.photos,
-                        selectedIndex = uiState.selectedPhotoIndex,
-                        onPhotoSelected = viewModel::onPhotoSelected
-                    )
-                }
-
-                // 2. INFOS PRINCIPALES
-                item {
-                    PlaceInfoSection(place = place)
-                }
-
-                // 3. DESCRIPTION
-                item {
-                    DescriptionSection(description = localizedDescription)
-                }
-
-                // 4. INFOS PRATIQUES
-                item {
-                    PracticalInfoSection(place = place)
-                }
-
-                // 5. LOCALISATION
-                item {
-                    LocationSection(
-                        place = place,
-                        onMapClick = { onMapClick(place.latitude, place.longitude) }
-                    )
-                }
-
-                // 6. AVIS UTILISATEURS
-                item {
-                    ReviewsSection(
-                        reviews = uiState.reviews,
-                        showAll = uiState.showAllReviews,
-                        onToggleShowAll = viewModel::toggleShowAllReviews
-                    )
-                }
-
-                // Bottom spacing for buttons
+            LazyColumn(state = scrollState, modifier = Modifier.fillMaxSize()) {
+                item { PhotoGallerySection(place.photos, uiState.selectedPhotoIndex, onPhotoSelected) }
+                item { PlaceInfoSection(place = place) }
+                item { DescriptionSection(description = localizedDescription) }
+                item { PracticalInfoSection(place = place) }
+                item { LocationSection(place, onMapClick = { onMapClick(place.latitude, place.longitude) }) }
+                item { ReviewsSection(uiState.reviews, uiState.showAllReviews, onToggleReviews) }
                 item { Spacer(modifier = Modifier.height(100.dp)) }
             }
 
-            // TOP BAR flottante
             TangerTopBar(
                 title = if (isScrolled) place.name else "",
                 onBackClick = onBackClick,
                 containerColor = topBarColor,
                 actions = {
-                    IconButton(onClick = viewModel::onFavoriteToggled) {
+                    IconButton(onClick = onFavoriteToggled) {
                         Icon(
                             imageVector = if (place.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (place.isFavorite) stringResource(R.string.detail_remove_favorite) else stringResource(R.string.detail_add_favorite),
-                            tint = if (place.isFavorite) TangerCoral else Color.White
-                        )
-                    }
-                    IconButton(onClick = { /* Share logic */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
                             contentDescription = null,
-                            tint = Color.White
+                            tint = if (place.isFavorite) TangerCoral else Color.White
                         )
                     }
                 }
             )
 
-            // BOUTONS BAS (fixed)
             Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth(),
-                shadowElevation = 8.dp,
-                color = Color.White
+                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
+                shadowElevation = 8.dp, color = Color.White
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .navigationBarsPadding(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
+                Row(modifier = Modifier.padding(16.dp).navigationBarsPadding(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(
                         onClick = { onMapClick(place.latitude, place.longitude) },
                         modifier = Modifier.weight(1f),
@@ -187,12 +206,7 @@ fun DetailScreen(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.nav_map))
                     }
-
-                    Button(
-                        onClick = openNavigation,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = TangerGreen)
-                    ) {
+                    Button(onClick = openNavigation, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = TangerGreen)) {
                         Icon(Icons.Default.Navigation, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.itinerary_start))

@@ -102,6 +102,10 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // Adaptive UI
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
+    implementation("androidx.window:window:1.3.0")
+
     // Google Maps
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
