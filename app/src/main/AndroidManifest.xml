@@ -27,7 +27,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.VisitTanger">
+        android:theme="@style/Theme.VisitTanger"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="34">
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="${FACEBOOK_APP_ID}"/>
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="${FACEBOOK_CLIENT_TOKEN}"/>
