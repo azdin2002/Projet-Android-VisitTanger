@@ -1,89 +1,176 @@
 package com.groupe10.visittanger.ui.navigation
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Route
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.groupe10.visittanger.ui.adaptive.AdaptiveLayoutConfig
+import com.groupe10.visittanger.ui.adaptive.DeviceType
+import com.groupe10.visittanger.ui.main.DrawerNavContent
+import com.groupe10.visittanger.ui.main.NavItem
+import com.groupe10.visittanger.ui.main.TangerBottomNavBar
 import com.groupe10.visittanger.ui.theme.TangerGreen
-
-import androidx.compose.ui.res.stringResource
-import com.groupe10.visittanger.R
-
-sealed class BottomNavItem(val screen: Screen, val titleRes: Int, val icon: ImageVector) {
-    object Home : BottomNavItem(Screen.Home, R.string.nav_home, Icons.Default.Home)
-    object Map : BottomNavItem(Screen.Map, R.string.nav_map, Icons.Default.Map)
-    object Itinerary : BottomNavItem(Screen.Itinerary, R.string.nav_itineraries, Icons.Default.Route)
-    object Favorites : BottomNavItem(Screen.Favorites, R.string.nav_favorites, Icons.Default.Favorite)
-    object Profile : BottomNavItem(Screen.Profile, R.string.nav_profile, Icons.Default.Person)
-}
+import com.groupe10.visittanger.ui.theme.TangerGreenLight
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    windowSizeClass: WindowSizeClass
+) {
+    val deviceType = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> DeviceType.PHONE_PORTRAIT
+        WindowWidthSizeClass.Medium -> DeviceType.PHONE_LANDSCAPE
+        WindowWidthSizeClass.Expanded -> DeviceType.TABLET_LANDSCAPE
+        else -> DeviceType.PHONE_PORTRAIT
+    }
+    val config = AdaptiveLayoutConfig.from(deviceType)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val currentRoute = navBackStackEntry?.destination?.route
 
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Map,
-        BottomNavItem.Itinerary,
-        BottomNavItem.Favorites,
-        BottomNavItem.Profile
+    // Destinations bottom nav
+    val navItems = listOf(
+        NavItem(Screen.Home, Icons.Default.Home,
+                Icons.Outlined.Home, "Accueil"),
+        NavItem(Screen.Map, Icons.Default.Map,
+                Icons.Outlined.Map, "Carte"),
+        NavItem(Screen.Itinerary, Icons.Default.Route,
+                Icons.Outlined.Route, "Itinéraires"),
+        NavItem(Screen.Favorites, Icons.Default.Favorite,
+                Icons.Outlined.FavoriteBorder, "Favoris"),
+        NavItem(Screen.Profile, Icons.Default.Person,
+                Icons.Outlined.Person, "Profil")
     )
 
-    val showBottomBar = items.any { it.screen.route == currentDestination?.route }
+    // Écrans qui cachent la nav
+    val hideNavRoutes = listOf(
+        Screen.Login.route,
+        Screen.Register.route,
+        Screen.Details.route, // Note: Screen.Details.route and not Screen.Detail.route
+        Screen.ItineraryDetail.route
+    )
+    val showNav = currentRoute !in hideNavRoutes
 
-    Scaffold(
-        bottomBar = {
-            if (showBottomBar) {
-                NavigationBar {
-                    items.forEach { item ->
-                        val selected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true
-                        val title = stringResource(item.titleRes)
-                        NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = title) },
-                            label = { Text(title) },
-                            selected = selected,
-                            onClick = {
-                                navController.navigate(item.screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
+    when {
+        // EXPANDED → NavigationDrawer
+        config.showNavigationDrawer -> {
+            PermanentNavigationDrawer(
+                drawerContent = {
+                    PermanentDrawerSheet(
+                        modifier = Modifier.width(240.dp)
+                    ) {
+                        DrawerNavContent(
+                            navItems = navItems,
+                            currentRoute = currentRoute,
+                            onNavClick = { screen ->
+                                navController.navigate(screen.route) {
+                                    popUpTo(Screen.Home.route) {
                                         saveState = true
                                     }
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = TangerGreen,
-                                selectedTextColor = TangerGreen,
-                                indicatorColor = TangerGreen.copy(alpha = 0.1f)
-                            )
+                            }
                         )
                     }
                 }
+            ) {
+                AppNavGraph(
+                    navController = navController,
+                    windowSizeClass = windowSizeClass
+                )
             }
         }
-    ) { innerPadding ->
-        AppNavGraph(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding)
-        )
+
+        // MEDIUM → NavigationRail
+        config.showNavigationRail -> {
+            Row(Modifier.fillMaxSize()) {
+                if (showNav) {
+                    NavigationRail(
+                        containerColor = Color.White,
+                        contentColor = TangerGreen
+                    ) {
+                        Spacer(Modifier.weight(1f))
+                        navItems.forEach { item ->
+                            val selected = currentRoute == item.screen.route
+                            NavigationRailItem(
+                                icon = {
+                                    Icon(
+                                        if (selected) item.selectedIcon
+                                        else item.unselectedIcon,
+                                        contentDescription = item.label
+                                    )
+                                },
+                                label = { Text(item.label,
+                                              fontSize = 10.sp) },
+                                selected = selected,
+                                onClick = {
+                                    navController.navigate(
+                                        item.screen.route
+                                    ) {
+                                        popUpTo(Screen.Home.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                colors = NavigationRailItemDefaults
+                                    .colors(
+                                        selectedIconColor = TangerGreen,
+                                        selectedTextColor = TangerGreen,
+                                        indicatorColor = TangerGreenLight
+                                    )
+                            )
+                        }
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
+                AppNavGraph(
+                    navController = navController,
+                    windowSizeClass = windowSizeClass,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        // COMPACT → BottomNavBar (comportement actuel)
+        else -> {
+            Scaffold(
+                bottomBar = {
+                    if (showNav) {
+                        TangerBottomNavBar(
+                            navItems = navItems,
+                            currentRoute = currentRoute,
+                            onNavClick = { screen ->
+                                navController.navigate(screen.route) {
+                                    popUpTo(Screen.Home.route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        )
+                    }
+                }
+            ) { paddingValues ->
+                AppNavGraph(
+                    navController = navController,
+                    windowSizeClass = windowSizeClass,
+                    modifier = Modifier.padding(paddingValues)
+                )
+            }
+        }
     }
 }

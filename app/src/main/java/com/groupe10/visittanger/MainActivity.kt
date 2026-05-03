@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,6 +55,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -61,12 +64,14 @@ class MainActivity : ComponentActivity() {
             val currentLang by languageViewModel.currentLanguage
                 .collectAsStateWithLifecycle()
 
+            val windowSizeClass = calculateWindowSizeClass(this)
+
             VisitTangerTheme {
                 CompositionLocalProvider(
                     LocalLayoutDirection provides
                         LanguageManager.getLayoutDirection(currentLang)
                 ) {
-                    MainScreen()
+                    MainScreen(windowSizeClass = windowSizeClass)
                 }
             }
         }
