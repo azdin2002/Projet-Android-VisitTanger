@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
+import com.groupe10.visittanger.domain.usecase.GetPlaceByIdUseCase
 import com.groupe10.visittanger.domain.usecase.GetPlacesByCategoryUseCase
 import com.groupe10.visittanger.domain.usecase.GetPlacesUseCase
 import com.groupe10.visittanger.domain.usecase.SearchPlacesUseCase
-import com.groupe10.visittanger.domain.usecase.ToggleFavoriteUseCase
+import com.groupe10.visittanger.domain.usecase.ToggleFavoriteWithRepoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -21,7 +21,8 @@ class HomeViewModel @Inject constructor(
     private val getPlacesUseCase: GetPlacesUseCase,
     private val getPlacesByCategoryUseCase: GetPlacesByCategoryUseCase,
     private val searchPlacesUseCase: SearchPlacesUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val toggleFavoriteWithRepoUseCase: ToggleFavoriteWithRepoUseCase,
+    private val getPlaceByIdUseCase: GetPlaceByIdUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -69,8 +70,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onFavoriteToggled(placeId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            toggleFavoriteUseCase(placeId)
+        viewModelScope.launch {
+            val place = getPlaceByIdUseCase(placeId)
+            place?.let { toggleFavoriteWithRepoUseCase(it) }
         }
     }
 

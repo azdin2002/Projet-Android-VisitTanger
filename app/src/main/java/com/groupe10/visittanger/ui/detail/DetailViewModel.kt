@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.data.mock.ReviewMockData
 import com.groupe10.visittanger.domain.usecase.GetPlaceByIdUseCase
-import com.groupe10.visittanger.domain.usecase.ToggleFavoriteUseCase
+import com.groupe10.visittanger.domain.usecase.IsFavoriteUseCase
+import com.groupe10.visittanger.domain.usecase.ToggleFavoriteWithRepoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val getPlaceByIdUseCase: GetPlaceByIdUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val toggleFavoriteWithRepoUseCase: ToggleFavoriteWithRepoUseCase,
+    private val isFavoriteUseCase: IsFavoriteUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -28,6 +30,17 @@ class DetailViewModel @Inject constructor(
 
     init {
         loadPlace()
+        observeFavoriteStatus()
+    }
+
+    private fun observeFavoriteStatus() {
+        viewModelScope.launch {
+            isFavoriteUseCase(placeId).collect { isFav ->
+                _uiState.update { state ->
+                    state.copy(place = state.place?.copy(isFavorite = isFav))
+                }
+            }
+        }
     }
 
     fun loadPlace() {
@@ -49,20 +62,8 @@ class DetailViewModel @Inject constructor(
 
     fun onFavoriteToggled() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isFavoriteToggling = true) }
-            try {
-                toggleFavoriteUseCase(placeId)
-                _uiState.update { currentState ->
-                    val updatedPlace = currentState.place?.copy(
-                        isFavorite = !currentState.place.isFavorite
-                    )
-                    currentState.copy(
-                        place = updatedPlace,
-                        isFavoriteToggling = false
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isFavoriteToggling = false, error = e.message) }
+            _uiState.value.place?.let { place ->
+                toggleFavoriteWithRepoUseCase(place)
             }
         }
     }
