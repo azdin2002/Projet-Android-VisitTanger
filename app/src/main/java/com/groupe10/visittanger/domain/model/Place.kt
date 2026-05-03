@@ -3,7 +3,7 @@ package com.groupe10.visittanger.domain.model
 data class Place(
     val id: String,
     val name: String,
-    val description: String,
+    val description: Map<String, String>,
     val category: Category,
     val latitude: Double,
     val longitude: Double,

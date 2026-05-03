@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.groupe10.visittanger.domain.model.Category
+import com.groupe10.visittanger.ui.theme.toLocalizedName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,7 @@ fun CategoryChip(
         onClick = onClick,
         label = {
             Text(
-                text = category.labelFr,
+                text = category.toLocalizedName(),
                 color = textColor
             )
         },

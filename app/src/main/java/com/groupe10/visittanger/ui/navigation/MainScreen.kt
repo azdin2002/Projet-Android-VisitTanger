@@ -23,12 +23,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.groupe10.visittanger.ui.theme.TangerGreen
 
-sealed class BottomNavItem(val screen: Screen, val title: String, val icon: ImageVector) {
-    object Home : BottomNavItem(Screen.Home, "Home", Icons.Default.Home)
-    object Map : BottomNavItem(Screen.Map, "Map", Icons.Default.Map)
-    object Itinerary : BottomNavItem(Screen.Itinerary, "Itinerary", Icons.Default.Route)
-    object Favorites : BottomNavItem(Screen.Favorites, "Favorites", Icons.Default.Favorite)
-    object Profile : BottomNavItem(Screen.Profile, "Profile", Icons.Default.Person)
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.R
+
+sealed class BottomNavItem(val screen: Screen, val titleRes: Int, val icon: ImageVector) {
+    object Home : BottomNavItem(Screen.Home, R.string.nav_home, Icons.Default.Home)
+    object Map : BottomNavItem(Screen.Map, R.string.nav_map, Icons.Default.Map)
+    object Itinerary : BottomNavItem(Screen.Itinerary, R.string.nav_itineraries, Icons.Default.Route)
+    object Favorites : BottomNavItem(Screen.Favorites, R.string.nav_favorites, Icons.Default.Favorite)
+    object Profile : BottomNavItem(Screen.Profile, R.string.nav_profile, Icons.Default.Person)
 }
 
 @Composable
@@ -53,9 +56,10 @@ fun MainScreen() {
                 NavigationBar {
                     items.forEach { item ->
                         val selected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true
+                        val title = stringResource(item.titleRes)
                         NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = item.title) },
-                            label = { Text(item.title) },
+                            icon = { Icon(item.icon, contentDescription = title) },
+                            label = { Text(title) },
                             selected = selected,
                             onClick = {
                                 navController.navigate(item.screen.route) {
