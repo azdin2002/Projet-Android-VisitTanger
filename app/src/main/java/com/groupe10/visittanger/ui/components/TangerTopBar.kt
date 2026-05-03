@@ -13,10 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 fun TangerTopBar(
     title: String,
     onBackClick: (() -> Unit)? = null,
+    containerColor: Color = Color(0xFF009966), // TangerGreen
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    val tangerineGreen = Color(0xFF009966)
-
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -38,7 +37,7 @@ fun TangerTopBar(
         },
         actions = actions,
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = tangerineGreen
+            containerColor = containerColor
         )
     )
 }
