@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.ui.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -22,6 +23,23 @@ import com.groupe10.visittanger.ui.main.NavItem
 import com.groupe10.visittanger.ui.main.TangerBottomNavBar
 import com.groupe10.visittanger.ui.theme.TangerGreen
 import com.groupe10.visittanger.ui.theme.TangerGreenLight
+
+private const val TAG_NAV = "VisitTanger.Nav"
+
+/**
+ * Racine des onglets = Home (pas [findStartDestination] du graphe, qui peut rester « login »
+ * après connexion et faire sélectionner la mauvaise entrée au popUpTo).
+ */
+private fun androidx.navigation.NavController.navigateToTab(route: String) {
+    navigate(route) {
+        popUpTo(Screen.Home.route) {
+            saveState = true
+            inclusive = false
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
 
 @Composable
 fun MainScreen(
@@ -73,13 +91,8 @@ fun MainScreen(
                             navItems = navItems,
                             currentRoute = currentRoute,
                             onNavClick = { screen ->
-                                navController.navigate(screen.route) {
-                                    popUpTo(Screen.Home.route) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                Log.d(TAG_NAV, "Drawer navigate -> ${screen.route} from=$currentRoute")
+                                navController.navigateToTab(screen.route)
                             }
                         )
                     }
@@ -115,15 +128,8 @@ fun MainScreen(
                                               fontSize = 10.sp) },
                                 selected = selected,
                                 onClick = {
-                                    navController.navigate(
-                                        item.screen.route
-                                    ) {
-                                        popUpTo(Screen.Home.route) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                                    Log.d(TAG_NAV, "Rail navigate -> ${item.screen.route} from=$currentRoute")
+                                    navController.navigateToTab(item.screen.route)
                                 },
                                 colors = NavigationRailItemDefaults
                                     .colors(
@@ -153,13 +159,8 @@ fun MainScreen(
                             navItems = navItems,
                             currentRoute = currentRoute,
                             onNavClick = { screen ->
-                                navController.navigate(screen.route) {
-                                    popUpTo(Screen.Home.route) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                Log.d(TAG_NAV, "BottomNav navigate -> ${screen.route} from=$currentRoute")
+                                navController.navigateToTab(screen.route)
                             }
                         )
                     }

@@ -1,6 +1,7 @@
 package com.groupe10.visittanger.data.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -31,6 +32,7 @@ class UserPreferencesDataStore @Inject constructor(
         .map { it[DARK_MODE_KEY] ?: false }
 
     suspend fun setDarkMode(enabled: Boolean) {
+        Log.d("VisitTanger.Theme", "UserPreferencesDataStore.setDarkMode(enabled=$enabled)")
         dataStore.edit { it[DARK_MODE_KEY] = enabled }
     }
 
