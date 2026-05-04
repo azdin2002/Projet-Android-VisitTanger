@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "161250144948-pd3cdlg6d5a539bnkarceusrhc25hfnd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.groupe10.visittanger",
+            "certificate_hash": "7367c370a17549eea87001db01882f45cc0c6a52"
+          }
+        },
+        {
           "client_id": "161250144948-jva9o21ir48ktmisveta262ifm7839qu.apps.googleusercontent.com",
           "client_type": 3
         }

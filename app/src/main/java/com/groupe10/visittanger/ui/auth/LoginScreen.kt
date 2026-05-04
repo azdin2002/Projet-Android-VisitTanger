@@ -30,8 +30,6 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.groupe10.visittanger.ui.navigation.Screen
 
 private const val TAG_LOGOUT = "VisitTanger.Logout"
@@ -54,16 +52,8 @@ fun LoginScreen(
 
     // Google Sign-In Launcher
     val googleSignInLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        try {
-            val account = task.getResult(Exception::class.java)
-            account?.idToken?.let { viewModel.loginWithGoogle(it) }
-        } catch (e: Exception) {
-            // Error handling
-        }
-    }
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result -> viewModel.handleGoogleSignInResult(result) }
 
     // Facebook Login Handling
     val callbackManager = remember { CallbackManager.Factory.create() }
@@ -185,14 +175,7 @@ fun LoginScreen(
 
             // Google Button
             OutlinedButton(
-                onClick = {
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken("YOUR_WEB_CLIENT_ID") // REMPLACEZ PAR VOTRE WEB CLIENT ID
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                    googleSignInLauncher.launch(googleSignInClient.signInIntent)
-                },
+                onClick = { googleSignInLauncher.launch(viewModel.getGoogleSignInIntent()) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading
             ) {
