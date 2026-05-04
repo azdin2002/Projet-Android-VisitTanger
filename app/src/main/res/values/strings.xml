@@ -135,4 +135,13 @@
     <string name="km_away">km</string>
     <string name="hours_open">Ouvert</string>
     <string name="rating_count">avis</string>
+
+    <!-- Météo -->
+    <string name="weather_humidity">Humidité</string>
+    <string name="weather_wind">Vent</string>
+    <string name="weather_feels_like">Ressenti</string>
+    <string name="weather_unavailable">Météo indisponible</string>
+    <string name="weather_retry">Réessayer</string>
+    <string name="weather_min">Min</string>
+    <string name="weather_max">Max</string>
 </resources>

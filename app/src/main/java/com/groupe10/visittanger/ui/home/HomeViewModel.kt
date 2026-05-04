@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
+import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
 import com.groupe10.visittanger.domain.usecase.GetPlaceByIdUseCase
 import com.groupe10.visittanger.domain.usecase.GetPlacesByCategoryUseCase
 import com.groupe10.visittanger.domain.usecase.GetPlacesUseCase
+import com.groupe10.visittanger.domain.usecase.GetWeatherUseCase
 import com.groupe10.visittanger.domain.usecase.SearchPlacesUseCase
 import com.groupe10.visittanger.domain.usecase.ToggleFavoriteWithRepoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,16 +24,42 @@ class HomeViewModel @Inject constructor(
     private val getPlacesByCategoryUseCase: GetPlacesByCategoryUseCase,
     private val searchPlacesUseCase: SearchPlacesUseCase,
     private val toggleFavoriteWithRepoUseCase: ToggleFavoriteWithRepoUseCase,
-    private val getPlaceByIdUseCase: GetPlaceByIdUseCase
+    private val getPlaceByIdUseCase: GetPlaceByIdUseCase,
+    private val getWeatherUseCase: GetWeatherUseCase,
+    private val userPreferencesDataStore: UserPreferencesDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val _weatherState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
+    val weatherState: StateFlow<WeatherUiState> = _weatherState.asStateFlow()
+
     private var searchJob: Job? = null
 
     init {
         loadPlaces()
+        loadWeather()
+    }
+
+    fun loadWeather() {
+        viewModelScope.launch {
+            _weatherState.value = WeatherUiState.Loading
+            val lang = userPreferencesDataStore.language.first()
+            getWeatherUseCase(lang = lang)
+                .onSuccess { weather ->
+                    _weatherState.value = WeatherUiState.Success(weather)
+                }
+                .onFailure { e ->
+                    _weatherState.value = WeatherUiState.Error(
+                        e.message ?: "Erreur météo"
+                    )
+                }
+        }
+    }
+
+    fun dismissWeather() {
+        _weatherState.value = WeatherUiState.Hidden
     }
 
     fun loadPlaces() {
