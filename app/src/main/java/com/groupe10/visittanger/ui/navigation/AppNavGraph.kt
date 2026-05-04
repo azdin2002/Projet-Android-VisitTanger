@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.ui.navigation
 
+import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,8 @@ import com.groupe10.visittanger.ui.itinerary.detail.ItineraryDetailScreen
 import com.groupe10.visittanger.ui.map.MapScreen
 import com.groupe10.visittanger.ui.profile.ProfileScreen
 
+private const val TAG_LOGOUT = "VisitTanger.Logout"
+
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
@@ -30,7 +33,7 @@ fun AppNavGraph(
     val startDestination = if (authViewModel.isUserLoggedIn()) {
         Screen.Home.route
     } else {
-        Screen.Home.route
+        Screen.Login.route
     }
 
     NavHost(
@@ -87,6 +90,8 @@ fun AppNavGraph(
         composable(Screen.Profile.route) { 
             ProfileScreen(
                 onLogoutSuccess = {
+                    Log.d(TAG_LOGOUT, "onLogoutSuccess: reset AuthUiState + navigate to Login")
+                    authViewModel.resetAuthUiState()
                     navController.navigate(Screen.Login.route) {
                         popUpTo(0) { inclusive = true }
                     }

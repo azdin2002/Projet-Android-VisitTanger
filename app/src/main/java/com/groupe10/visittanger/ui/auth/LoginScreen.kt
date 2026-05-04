@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.ui.auth
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +33,8 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.groupe10.visittanger.ui.navigation.Screen
+
+private const val TAG_LOGOUT = "VisitTanger.Logout"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +84,14 @@ fun LoginScreen(
     }
 
     LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
+        // isSuccess n’est pas remis à false après la première connexion : sans ce garde-fou,
+        // un retour sur Login après logout déclenche une navigation immédiate vers Home.
+        val loggedIn = viewModel.isUserLoggedIn()
+        Log.d(
+            TAG_LOGOUT,
+            "LoginScreen LaunchedEffect: isSuccess=${uiState.isSuccess} isUserLoggedIn=$loggedIn"
+        )
+        if (uiState.isSuccess && loggedIn) {
             navController.navigate(Screen.Home.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
