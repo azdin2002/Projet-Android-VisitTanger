@@ -106,4 +106,12 @@ class AuthViewModel @Inject constructor(
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
+
+    /**
+     * Réinitialise l’UI d’auth (ex. isSuccess) après déconnexion depuis le profil.
+     * Sans cela, [LoginScreen] voit encore isSuccess == true et renvoie tout de suite vers Home.
+     */
+    fun resetAuthUiState() {
+        _uiState.value = AuthUiState()
+    }
 }

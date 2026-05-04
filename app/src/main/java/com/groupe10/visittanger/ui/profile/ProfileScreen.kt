@@ -1,6 +1,7 @@
 package com.groupe10.visittanger.ui.profile
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,8 @@ import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.language.LanguageManager
 import com.groupe10.visittanger.ui.language.LanguageSelectorDialog
 
+private const val TAG_LOGOUT = "VisitTanger.Logout"
+
 @Composable
 fun ProfileScreen(
     onLogoutSuccess: () -> Unit,
@@ -28,9 +31,16 @@ fun ProfileScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    // Redirection après logout
-    LaunchedEffect(uiState.logoutSuccess) {
-        if (uiState.logoutSuccess) onLogoutSuccess()
+    // Redirection après logout via event SharedFlow
+    LaunchedEffect(viewModel) {
+        Log.d(TAG_LOGOUT, "ProfileScreen: start collecting navigationEvent")
+        viewModel.navigationEvent.collect { destination ->
+            Log.d(TAG_LOGOUT, "ProfileScreen: navigationEvent received=$destination")
+            if (destination == "login") {
+                Log.d(TAG_LOGOUT, "ProfileScreen: invoking onLogoutSuccess()")
+                onLogoutSuccess()
+            }
+        }
     }
 
     // Recreate pour appliquer la nouvelle langue

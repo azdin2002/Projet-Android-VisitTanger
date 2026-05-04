@@ -12,6 +12,5 @@ data class ProfileUiState(
     val isDarkMode: Boolean = false,
     val currentLanguage: String = "fr",
     val showLogoutDialog: Boolean = false,
-    val showLanguageDialog: Boolean = false,
-    val logoutSuccess: Boolean = false
+    val showLanguageDialog: Boolean = false
 )
