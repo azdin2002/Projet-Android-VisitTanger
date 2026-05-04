@@ -29,6 +29,10 @@ val facebookClientToken: String = props.getProperty("FACEBOOK_CLIENT_TOKEN")
     ?: project.findProperty("FACEBOOK_CLIENT_TOKEN") as String?
     ?: ""
 
+val weatherApiKey: String = props.getProperty("OPENWEATHER_API_KEY")
+    ?: project.findProperty("OPENWEATHER_API_KEY") as String?
+    ?: ""
+
 android {
     namespace = "com.groupe10.visittanger"
     compileSdk = 36
@@ -45,6 +49,8 @@ android {
         manifestPlaceholders["FACEBOOK_APP_ID"] = facebookAppId
         manifestPlaceholders["FACEBOOK_CLIENT_TOKEN"] = facebookClientToken
         manifestPlaceholders["FB_LOGIN_PROTOCOL_SCHEME"] = "fb$facebookAppId"
+
+        buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
     }
 
     buildTypes {

@@ -113,4 +113,13 @@
     <string name="km_away">كم</string>
     <string name="hours_open">مفتوح</string>
     <string name="rating_count">تقييم</string>
+
+    <!-- Weather -->
+    <string name="weather_humidity">الرطوبة</string>
+    <string name="weather_wind">الرياح</string>
+    <string name="weather_feels_like">الإحساس</string>
+    <string name="weather_unavailable">الطقس غير متاح</string>
+    <string name="weather_retry">إعادة المحاولة</string>
+    <string name="weather_min">أدنى</string>
+    <string name="weather_max">أقصى</string>
 </resources>
