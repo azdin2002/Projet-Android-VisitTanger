@@ -37,6 +37,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
 
     val columns = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 1
@@ -48,21 +49,27 @@ fun HomeScreen(
     if (columns == 1) {
         HomePhoneLayout(
             uiState = uiState,
+            weatherState = weatherState,
             onPlaceClick = onPlaceClick,
             onCategorySelected = viewModel::onCategorySelected,
             onSearchChanged = viewModel::onSearchQueryChanged,
             onFavoriteToggled = viewModel::onFavoriteToggled,
-            onRetry = viewModel::loadPlaces
+            onRetry = viewModel::loadPlaces,
+            onWeatherRetry = viewModel::loadWeather,
+            onWeatherDismiss = viewModel::dismissWeather
         )
     } else {
         HomeTabletLayout(
             uiState = uiState,
+            weatherState = weatherState,
             columns = columns,
             onPlaceClick = onPlaceClick,
             onCategorySelected = viewModel::onCategorySelected,
             onSearchChanged = viewModel::onSearchQueryChanged,
             onFavoriteToggled = viewModel::onFavoriteToggled,
-            onRetry = viewModel::loadPlaces
+            onRetry = viewModel::loadPlaces,
+            onWeatherRetry = viewModel::loadWeather,
+            onWeatherDismiss = viewModel::dismissWeather
         )
     }
 }
@@ -70,11 +77,14 @@ fun HomeScreen(
 @Composable
 fun HomePhoneLayout(
     uiState: HomeUiState,
+    weatherState: WeatherUiState,
     onPlaceClick: (String) -> Unit,
     onCategorySelected: (Category?) -> Unit,
     onSearchChanged: (String) -> Unit,
     onFavoriteToggled: (String) -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onWeatherRetry: () -> Unit,
+    onWeatherDismiss: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -108,6 +118,15 @@ fun HomePhoneLayout(
             ) {
                 // Header Banner
                 item { BannerHeader(TangerGreen) }
+
+                // Weather Widget
+                item {
+                    WeatherWidget(
+                        weatherState = weatherState,
+                        onRetry = onWeatherRetry,
+                        onDismiss = onWeatherDismiss
+                    )
+                }
 
                 // Search Bar
                 item {
@@ -178,12 +197,15 @@ fun HomePhoneLayout(
 @Composable
 fun HomeTabletLayout(
     uiState: HomeUiState,
+    weatherState: WeatherUiState,
     columns: Int,
     onPlaceClick: (String) -> Unit,
     onCategorySelected: (Category?) -> Unit,
     onSearchChanged: (String) -> Unit,
     onFavoriteToggled: (String) -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onWeatherRetry: () -> Unit,
+    onWeatherDismiss: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -195,6 +217,12 @@ fun HomeTabletLayout(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            WeatherWidget(
+                weatherState = weatherState,
+                onRetry = onWeatherRetry,
+                onDismiss = onWeatherDismiss
+            )
+
             TangerSearchBar(
                 query = uiState.searchQuery,
                 onQueryChange = onSearchChanged,

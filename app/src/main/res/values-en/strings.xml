@@ -113,4 +113,13 @@
     <string name="km_away">km</string>
     <string name="hours_open">Open</string>
     <string name="rating_count">reviews</string>
+
+    <!-- Weather -->
+    <string name="weather_humidity">Humidity</string>
+    <string name="weather_wind">Wind</string>
+    <string name="weather_feels_like">Feels like</string>
+    <string name="weather_unavailable">Weather unavailable</string>
+    <string name="weather_retry">Retry</string>
+    <string name="weather_min">Min</string>
+    <string name="weather_max">Max</string>
 </resources>
