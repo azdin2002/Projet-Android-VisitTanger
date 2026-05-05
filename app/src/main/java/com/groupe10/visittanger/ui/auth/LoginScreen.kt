@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.ui.auth
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,9 +30,9 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.groupe10.visittanger.ui.navigation.Screen
+
+private const val TAG_LOGOUT = "VisitTanger.Logout"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,16 +52,8 @@ fun LoginScreen(
 
     // Google Sign-In Launcher
     val googleSignInLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        try {
-            val account = task.getResult(Exception::class.java)
-            account?.idToken?.let { viewModel.loginWithGoogle(it) }
-        } catch (e: Exception) {
-            // Error handling
-        }
-    }
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result -> viewModel.handleGoogleSignInResult(result) }
 
     // Facebook Login Handling
     val callbackManager = remember { CallbackManager.Factory.create() }
@@ -81,7 +74,14 @@ fun LoginScreen(
     }
 
     LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
+        // isSuccess n’est pas remis à false après la première connexion : sans ce garde-fou,
+        // un retour sur Login après logout déclenche une navigation immédiate vers Home.
+        val loggedIn = viewModel.isUserLoggedIn()
+        Log.d(
+            TAG_LOGOUT,
+            "LoginScreen LaunchedEffect: isSuccess=${uiState.isSuccess} isUserLoggedIn=$loggedIn"
+        )
+        if (uiState.isSuccess && loggedIn) {
             navController.navigate(Screen.Home.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
@@ -175,14 +175,7 @@ fun LoginScreen(
 
             // Google Button
             OutlinedButton(
-                onClick = {
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken("YOUR_WEB_CLIENT_ID") // REMPLACEZ PAR VOTRE WEB CLIENT ID
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                    googleSignInLauncher.launch(googleSignInClient.signInIntent)
-                },
+                onClick = { googleSignInLauncher.launch(viewModel.getGoogleSignInIntent()) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading
             ) {

@@ -2,6 +2,7 @@ package com.groupe10.visittanger
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -9,6 +10,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
@@ -23,6 +25,7 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -30,8 +33,13 @@ interface UserPreferencesEntryPoint {
     fun userPreferencesDataStore(): UserPreferencesDataStore
 }
 
+private const val TAG_THEME = "VisitTanger.Theme"
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var userPreferencesDataStore: UserPreferencesDataStore
 
     /**
      * Applique la langue AVANT que le layout soit gonflé.
@@ -64,9 +72,20 @@ class MainActivity : ComponentActivity() {
             val currentLang by languageViewModel.currentLanguage
                 .collectAsStateWithLifecycle()
 
+            val lifecycleOwner = LocalLifecycleOwner.current
+            val isDarkMode by userPreferencesDataStore.isDarkMode
+                .collectAsStateWithLifecycle(
+                    initialValue = false,
+                    lifecycle = lifecycleOwner.lifecycle,
+                )
+
+            LaunchedEffect(isDarkMode) {
+                Log.d(TAG_THEME, "VisitTangerTheme darkTheme=$isDarkMode (DataStore)")
+            }
+
             val windowSizeClass = calculateWindowSizeClass(this)
 
-            VisitTangerTheme {
+            VisitTangerTheme(darkTheme = isDarkMode) {
                 CompositionLocalProvider(
                     LocalLayoutDirection provides
                         LanguageManager.getLayoutDirection(currentLang)

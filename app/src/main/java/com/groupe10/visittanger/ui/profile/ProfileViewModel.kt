@@ -1,8 +1,10 @@
 package com.groupe10.visittanger.ui.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
+import kotlinx.coroutines.flow.first
 import com.groupe10.visittanger.domain.repository.UserRepository
 import com.groupe10.visittanger.domain.usecase.GetCurrentUserUseCase
 import com.groupe10.visittanger.domain.usecase.LogoutUseCase
@@ -11,6 +13,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val TAG_LOGOUT = "VisitTanger.Logout"
+private const val TAG_PROFILE = "VisitTanger.Profile"
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -23,6 +28,9 @@ class ProfileViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    private val _navigationEvent = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val navigationEvent = _navigationEvent.asSharedFlow()
 
     init {
         observeUser()
@@ -61,13 +69,22 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onSaveName() {
-        val newName = _uiState.value.editNameValue
+        val newName = _uiState.value.editNameValue.trim()
         viewModelScope.launch {
+            Log.d(TAG_PROFILE, "onSaveName: submit displayName=$newName")
             _uiState.update { it.copy(isLoading = true) }
             val result = updateProfileUseCase(name = newName)
             if (result.isSuccess) {
-                _uiState.update { it.copy(isEditingName = false, isLoading = false) }
+                _uiState.update { s ->
+                    s.copy(
+                        isEditingName = false,
+                        isLoading = false,
+                        user = s.user?.copy(displayName = newName),
+                    )
+                }
+                Log.d(TAG_PROFILE, "onSaveName: success (UI + Firebase)")
             } else {
+                Log.e(TAG_PROFILE, "onSaveName: failed", result.exceptionOrNull())
                 _uiState.update { it.copy(error = result.exceptionOrNull()?.message, isLoading = false) }
             }
         }
@@ -79,7 +96,10 @@ class ProfileViewModel @Inject constructor(
 
     fun onDarkModeToggle() {
         viewModelScope.launch {
-            userPreferencesDataStore.setDarkMode(!_uiState.value.isDarkMode)
+            val current = userPreferencesDataStore.isDarkMode.first()
+            val next = !current
+            Log.d(TAG_PROFILE, "onDarkModeToggle: DataStore current=$current -> next=$next")
+            userPreferencesDataStore.setDarkMode(next)
         }
     }
 
@@ -107,9 +127,17 @@ class ProfileViewModel @Inject constructor(
 
     fun onLogoutConfirmed() {
         viewModelScope.launch {
+            Log.d(TAG_LOGOUT, "onLogoutConfirmed: calling logoutUseCase()")
             val result = logoutUseCase()
+            Log.d(
+                TAG_LOGOUT,
+                "onLogoutConfirmed: logoutUseCase result isSuccess=${result.isSuccess} " +
+                    "error=${result.exceptionOrNull()?.message}"
+            )
             if (result.isSuccess) {
-                _uiState.update { it.copy(logoutSuccess = true, showLogoutDialog = false) }
+                _uiState.update { it.copy(showLogoutDialog = false) }
+                Log.d(TAG_LOGOUT, "onLogoutConfirmed: emit navigationEvent login")
+                _navigationEvent.emit("login")
             } else {
                 _uiState.update { it.copy(error = result.exceptionOrNull()?.message) }
             }

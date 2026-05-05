@@ -12,7 +12,12 @@
           "package_name": "com.groupe10.visittanger"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "161250144948-jva9o21ir48ktmisveta262ifm7839qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyASSWUee2n7WuN-gEtdeNDLByZavDBO6II"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161250144948-jva9o21ir48ktmisveta262ifm7839qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

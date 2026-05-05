@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.data.repository
 
+import android.util.Log
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -65,10 +66,13 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun loginWithGoogle(idToken: String): Result<User> {
         return try {
+            Log.d(TAG_GOOGLE, "Firebase: création credential GoogleAuthProvider")
             val credential = GoogleAuthProvider.getCredential(idToken, null)
+            Log.d(TAG_GOOGLE, "Firebase: signInWithCredential en cours…")
             val result = firebaseAuth.signInWithCredential(credential).await()
             val firebaseUser = result.user
             if (firebaseUser != null) {
+                Log.d(TAG_GOOGLE, "Firebase: succès uid=${firebaseUser.uid} email=${firebaseUser.email}")
                 Result.success(
                     User(
                         uid = firebaseUser.uid,
@@ -78,9 +82,11 @@ class AuthRepositoryImpl @Inject constructor(
                     )
                 )
             } else {
+                Log.e(TAG_GOOGLE, "Firebase: result.user null après signInWithCredential")
                 Result.failure(Exception("Connexion Google échouée"))
             }
         } catch (e: Exception) {
+            Log.e(TAG_GOOGLE, "Firebase: signInWithCredential exception", e)
             Result.failure(e)
         }
     }
@@ -124,5 +130,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun isUserLoggedIn(): Boolean {
         return firebaseAuth.currentUser != null
+    }
+
+    private companion object {
+        const val TAG_GOOGLE = "VisitTanger.GoogleSignIn"
     }
 }

@@ -95,7 +95,7 @@ fun MapScreen(
             
             TangerSearchBar(
                 query = uiState.searchQuery,
-                onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                onQueryChange = { viewModel.onSearchQueryChange(it) },
                 placeholder = stringResource(R.string.home_search_hint),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
