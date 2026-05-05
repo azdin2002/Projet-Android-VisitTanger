@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,31 +37,39 @@ class MapViewModel @Inject constructor(
 
     fun loadPlaces() {
         viewModelScope.launch {
+            Log.d(TAG_MAP, "loadPlaces: starting collection")
             _uiState.update { it.copy(isLoading = true, error = null) }
-            val places = getPlacesUseCase()
+            getPlacesUseCase()
                 .catch { e ->
                     Log.e(TAG_MAP, "loadPlaces error", e)
-                    _uiState.update { it.copy(error = e.message) }
-                    emit(emptyList())
+                    _uiState.update { it.copy(error = e.message, isLoading = false) }
                 }
-                .first()
-            allPlaces = places
-            Log.d(TAG_MAP, "loadPlaces: cached ${places.size} places")
-            applyPlacesFilter()
+                .collect { places ->
+                    allPlaces = places
+                    Log.d(TAG_MAP, "loadPlaces: collected ${places.size} places")
+                    applyPlacesFilter()
+                }
         }
     }
 
     private fun matchesSearch(place: Place, query: String): Boolean {
         if (query.isBlank()) return true
-        if (place.name.contains(query, ignoreCase = true)) return true
-        if (place.address.contains(query, ignoreCase = true)) return true
-        return place.description.values.any { it.contains(query, ignoreCase = true) }
+        val q = query.trim()
+        // Recherche par nom (priorité)
+        if (place.name.contains(q, ignoreCase = true)) return true
+        // Recherche par adresse
+        if (place.address.contains(q, ignoreCase = true)) return true
+        // Recherche dans les descriptions (multi-langue)
+        return place.description.values.any { it.contains(q, ignoreCase = true) }
     }
 
     private fun applyPlacesFilter() {
         val state = _uiState.value
         val cat = state.selectedCategory
-        val q = state.searchQuery.trim()
+        val q = state.searchQuery
+        
+        Log.d(TAG_MAP, "applyPlacesFilter: query='$q', category=$cat, total=${allPlaces.size}")
+        
         var list = allPlaces
         if (cat != null) {
             list = list.filter { it.category == cat }
@@ -70,29 +77,29 @@ class MapViewModel @Inject constructor(
         if (q.isNotBlank()) {
             list = list.filter { place -> matchesSearch(place, q) }
         }
-        Log.d(
-            TAG_MAP,
-            "applyPlacesFilter: allPlaces=${allPlaces.size} category=$cat query='$q' -> ${list.size} places",
-        )
+        
+        Log.d(TAG_MAP, "applyPlacesFilter: result=${list.size} places")
+        
         val selected = state.selectedPlace
         val selectedStillVisible = selected != null && list.any { it.id == selected.id }
+        
         _uiState.update {
             it.copy(
                 places = list,
                 isLoading = false,
-                error = null,
-                selectedPlace = if (selectedStillVisible) selected else null,
+                selectedPlace = if (selectedStillVisible) selected else null
             )
         }
     }
 
     fun onCategorySelected(category: Category?) {
+        Log.d(TAG_MAP, "onCategorySelected: $category")
         _uiState.update { it.copy(selectedCategory = category) }
         applyPlacesFilter()
     }
 
-    fun onSearchQueryChanged(query: String) {
-        Log.d(TAG_MAP, "onSearchQueryChanged: '$query' (cachedPlaces=${allPlaces.size})")
+    fun onSearchQueryChange(query: String) {
+        Log.d(TAG_MAP, "onSearchQueryChange: '$query'")
         _uiState.update { it.copy(searchQuery = query) }
         applyPlacesFilter()
     }
