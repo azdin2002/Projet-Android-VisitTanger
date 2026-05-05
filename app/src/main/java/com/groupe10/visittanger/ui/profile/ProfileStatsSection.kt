@@ -2,7 +2,6 @@ package com.groupe10.visittanger.ui.profile
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
@@ -44,19 +43,10 @@ fun ProfileStatsSection(uiState: ProfileUiState) {
             VerticalDivider(modifier = Modifier.height(40.dp))
             
             StatItem(
-                value = "0",
+                value = uiState.visitedCount.toString(),
                 label = stringResource(R.string.profile_visited),
                 icon = Icons.Default.Place,
                 iconColor = Color(0xFF4CAF50)
-            )
-            
-            VerticalDivider(modifier = Modifier.height(40.dp))
-            
-            StatItem(
-                value = "0",
-                label = stringResource(R.string.profile_itineraries_done),
-                icon = Icons.Default.Directions,
-                iconColor = Color(0xFF2196F3)
             )
         }
     }

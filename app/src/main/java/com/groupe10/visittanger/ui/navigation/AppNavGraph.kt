@@ -54,13 +54,13 @@ fun AppNavGraph(
                 navController.navigate(Screen.Details.createRoute(placeId))
             }) 
         }
-        composable(Screen.Itinerary.route) { 
+        composable(Screen.Itinerary.route) {
             ItineraryScreen(
                 windowSizeClass = windowSizeClass,
                 onItineraryClick = { id ->
                     navController.navigate(Screen.ItineraryDetail.createRoute(id))
                 }
-            ) 
+            )
         }
         composable(
             route = Screen.ItineraryDetail.route,

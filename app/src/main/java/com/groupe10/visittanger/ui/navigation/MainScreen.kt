@@ -75,7 +75,7 @@ fun MainScreen(
         Screen.Login.route,
         Screen.Register.route,
         Screen.Details.route, // Note: Screen.Details.route and not Screen.Detail.route
-        Screen.ItineraryDetail.route
+        Screen.ItineraryDetail.route,
     )
     val showNav = currentRoute !in hideNavRoutes
 
