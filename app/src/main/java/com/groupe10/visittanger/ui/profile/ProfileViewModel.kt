@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
 import kotlinx.coroutines.flow.first
 import com.groupe10.visittanger.domain.repository.UserRepository
+import com.groupe10.visittanger.domain.repository.VisitedPlaceRepository
 import com.groupe10.visittanger.domain.usecase.GetCurrentUserUseCase
 import com.groupe10.visittanger.domain.usecase.LogoutUseCase
 import com.groupe10.visittanger.domain.usecase.UpdateProfileUseCase
@@ -23,7 +24,8 @@ class ProfileViewModel @Inject constructor(
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val userPreferencesDataStore: UserPreferencesDataStore,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val visitedPlaceRepository: VisitedPlaceRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -38,12 +40,32 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun observeUser() {
-        combine(
-            getCurrentUserUseCase(),
-            userRepository.getFavoritesCount()
-        ) { user, favoritesCount ->
-            _uiState.update { it.copy(user = user, favoritesCount = favoritesCount) }
-        }.launchIn(viewModelScope)
+        getCurrentUserUseCase()
+            .flatMapLatest { user ->
+                val uid = user?.uid.orEmpty()
+                combine(
+                    userRepository.getFavoritesCount(),
+                    visitedPlaceRepository.getVisitedCount(uid),
+                ) { favoritesCount, visitedCount ->
+                    UserStats(
+                        user = user,
+                        favoritesCount = favoritesCount.coerceAtLeast(0),
+                        visitedCount = visitedCount.coerceAtLeast(0),
+                        itineraryCount = 0,
+                    )
+                }
+            }
+            .onEach { stats ->
+                _uiState.update {
+                    it.copy(
+                        user = stats.user,
+                        favoritesCount = stats.favoritesCount,
+                        visitedCount = stats.visitedCount,
+                        itinerariesCount = stats.itineraryCount,
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun observePreferences() {
@@ -148,3 +170,10 @@ class ProfileViewModel @Inject constructor(
         _uiState.update { it.copy(error = null) }
     }
 }
+
+private data class UserStats(
+    val user: com.groupe10.visittanger.domain.model.User?,
+    val favoritesCount: Int,
+    val visitedCount: Int,
+    val itineraryCount: Int,
+)

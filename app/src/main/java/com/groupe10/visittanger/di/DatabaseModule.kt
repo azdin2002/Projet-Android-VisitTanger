@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.groupe10.visittanger.data.local.AppDatabase
 import com.groupe10.visittanger.data.local.dao.FavoriteDao
+import com.groupe10.visittanger.data.local.dao.VisitedPlaceDao
 import com.groupe10.visittanger.data.repository.FavoriteRepositoryImpl
+import com.groupe10.visittanger.data.repository.VisitedPlaceRepositoryImpl
 import com.groupe10.visittanger.domain.repository.FavoriteRepository
+import com.groupe10.visittanger.domain.repository.VisitedPlaceRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +29,8 @@ object DatabaseModule {
             AppDatabase.DATABASE_NAME,
         )
             .addMigrations(AppDatabase.MIGRATION_1_2)
+            .addMigrations(AppDatabase.MIGRATION_2_3)
+            .addMigrations(AppDatabase.MIGRATION_3_4)
             .build()
 
     @Provides
@@ -35,7 +40,18 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideVisitedPlaceDao(database: AppDatabase): VisitedPlaceDao =
+        database.visitedPlaceDao()
+
+    @Provides
+    @Singleton
     fun provideFavoriteRepository(
         impl: FavoriteRepositoryImpl,
     ): FavoriteRepository = impl
+
+    @Provides
+    @Singleton
+    fun provideVisitedPlaceRepository(
+        impl: VisitedPlaceRepositoryImpl,
+    ): VisitedPlaceRepository = impl
 }
