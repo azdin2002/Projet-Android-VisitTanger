@@ -23,10 +23,10 @@ object DatabaseModule {
         Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            AppDatabase.DATABASE_NAME
+            AppDatabase.DATABASE_NAME,
         )
-        .fallbackToDestructiveMigration()
-        .build()
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
 
     @Provides
     @Singleton
@@ -36,6 +36,6 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideFavoriteRepository(
-        impl: FavoriteRepositoryImpl
+        impl: FavoriteRepositoryImpl,
     ): FavoriteRepository = impl
 }
