@@ -5,6 +5,8 @@ import com.groupe10.visittanger.domain.model.User
 data class ProfileUiState(
     val user: User? = null,
     val favoritesCount: Int = 0,
+    val visitedCount: Int = 0,
+    val itinerariesCount: Int = 0,
     val isLoading: Boolean = false,
     val error: String? = null,
     val isEditingName: Boolean = false,

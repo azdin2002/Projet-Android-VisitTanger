@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.data.mock.ReviewMockData
+import com.groupe10.visittanger.domain.repository.VisitedPlaceRepository
 import com.groupe10.visittanger.domain.usecase.GetPlaceByIdUseCase
 import com.groupe10.visittanger.domain.usecase.IsFavoriteUseCase
 import com.groupe10.visittanger.domain.usecase.ToggleFavoriteWithRepoUseCase
@@ -20,6 +21,7 @@ class DetailViewModel @Inject constructor(
     private val getPlaceByIdUseCase: GetPlaceByIdUseCase,
     private val toggleFavoriteWithRepoUseCase: ToggleFavoriteWithRepoUseCase,
     private val isFavoriteUseCase: IsFavoriteUseCase,
+    private val visitedPlaceRepository: VisitedPlaceRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -49,6 +51,9 @@ class DetailViewModel @Inject constructor(
             try {
                 val place = getPlaceByIdUseCase(placeId)
                 val reviews = ReviewMockData.getReviewsForPlace(placeId)
+                if (place != null) {
+                    visitedPlaceRepository.markAsVisited(placeId = placeId)
+                }
                 _uiState.update {
                     it.copy(place = place, reviews = reviews, isLoading = false, error = null)
                 }
