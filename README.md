@@ -156,9 +156,6 @@ app/
 | Tests | JUnit + Mockk |
 | Versioning | Git + GitHub |
 
----
-
-## ⚙️ Dépendances à télécharger
 
 
 ---
