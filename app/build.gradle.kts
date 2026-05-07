@@ -121,8 +121,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
-    implementation("com.google.firebase:firebase-firestore-ktx")
-
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.1")
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.1.0")
 
