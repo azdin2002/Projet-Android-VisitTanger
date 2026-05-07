@@ -6,7 +6,9 @@ import com.groupe10.visittanger.domain.model.Place
 data class PlaceDto(
     val id: String = "",
     val name: String = "",
-    val description: Map<String, String> = emptyMap(),
+    val descriptionFr: String = "",
+    val descriptionEn: String = "",
+    val descriptionAr: String = "",
     val category: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
@@ -15,17 +17,17 @@ data class PlaceDto(
     val rating: Float = 0f,
     val reviewCount: Int = 0,
     val openingHours: String? = null,
-    val price: String? = null,
-    val distanceKm: Double? = null,
-)
-
-fun PlaceDto.toDomain(): Place {
-    val safeCategory = runCatching { Category.valueOf(category.uppercase()) }.getOrDefault(Category.HISTORY)
-    return Place(
+    val price: String? = null
+) {
+    fun toDomain() = Place(
         id = id,
         name = name,
-        description = description,
-        category = safeCategory,
+        description = mapOf(
+            "fr" to descriptionFr,
+            "en" to descriptionEn,
+            "ar" to descriptionAr,
+        ),
+        category = Category.valueOf(category),
         latitude = latitude,
         longitude = longitude,
         address = address,
@@ -34,6 +36,5 @@ fun PlaceDto.toDomain(): Place {
         reviewCount = reviewCount,
         openingHours = openingHours,
         price = price,
-        distanceKm = distanceKm,
     )
 }

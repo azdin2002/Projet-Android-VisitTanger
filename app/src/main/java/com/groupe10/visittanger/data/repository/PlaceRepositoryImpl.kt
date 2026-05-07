@@ -8,7 +8,6 @@ import com.groupe10.visittanger.data.local.entity.toDomainModel
 import com.groupe10.visittanger.data.local.entity.toPlaceEntity
 import com.groupe10.visittanger.data.local.entity.toFavoriteEntity
 import com.groupe10.visittanger.data.remote.dto.PlaceDto
-import com.groupe10.visittanger.data.remote.dto.toDomain
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.domain.repository.PlaceRepository
