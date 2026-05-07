@@ -7,19 +7,22 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.groupe10.visittanger.data.local.converter.MapConverter
 import com.groupe10.visittanger.data.local.dao.FavoriteDao
+import com.groupe10.visittanger.data.local.dao.PlaceDao
 import com.groupe10.visittanger.data.local.dao.VisitedPlaceDao
 import com.groupe10.visittanger.data.local.entity.FavoriteEntity
+import com.groupe10.visittanger.data.local.entity.PlaceEntity
 import com.groupe10.visittanger.data.local.entity.VisitedPlaceEntity
 
 @Database(
-    entities = [FavoriteEntity::class, VisitedPlaceEntity::class],
-    version = 4,
+    entities = [FavoriteEntity::class, VisitedPlaceEntity::class, PlaceEntity::class],
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(MapConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun visitedPlaceDao(): VisitedPlaceDao
+    abstract fun placeDao(): PlaceDao
 
     companion object {
         const val DATABASE_NAME = "visit_tanger_db"
@@ -94,6 +97,31 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 db.execSQL("DROP TABLE `visited_places`")
                 db.execSQL("ALTER TABLE `visited_places_new` RENAME TO `visited_places`")
+            }
+        }
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `places` (
+                        `id` TEXT NOT NULL,
+                        `name` TEXT NOT NULL,
+                        `description` TEXT NOT NULL,
+                        `category` TEXT NOT NULL,
+                        `latitude` REAL NOT NULL,
+                        `longitude` REAL NOT NULL,
+                        `address` TEXT NOT NULL,
+                        `photos` TEXT NOT NULL,
+                        `rating` REAL NOT NULL,
+                        `reviewCount` INTEGER NOT NULL,
+                        `openingHours` TEXT,
+                        `price` TEXT,
+                        `distanceKm` REAL,
+                        PRIMARY KEY(`id`)
+                    )
+                    """.trimIndent(),
+                )
             }
         }
     }
