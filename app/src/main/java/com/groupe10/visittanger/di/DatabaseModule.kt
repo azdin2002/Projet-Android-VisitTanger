@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.groupe10.visittanger.data.local.AppDatabase
 import com.groupe10.visittanger.data.local.dao.FavoriteDao
+import com.groupe10.visittanger.data.local.dao.PlaceDao
 import com.groupe10.visittanger.data.local.dao.VisitedPlaceDao
 import com.groupe10.visittanger.data.repository.FavoriteRepositoryImpl
 import com.groupe10.visittanger.data.repository.VisitedPlaceRepositoryImpl
@@ -31,6 +32,7 @@ object DatabaseModule {
             .addMigrations(AppDatabase.MIGRATION_1_2)
             .addMigrations(AppDatabase.MIGRATION_2_3)
             .addMigrations(AppDatabase.MIGRATION_3_4)
+            .addMigrations(AppDatabase.MIGRATION_4_5)
             .build()
 
     @Provides
@@ -42,6 +44,11 @@ object DatabaseModule {
     @Singleton
     fun provideVisitedPlaceDao(database: AppDatabase): VisitedPlaceDao =
         database.visitedPlaceDao()
+
+    @Provides
+    @Singleton
+    fun providePlaceDao(database: AppDatabase): PlaceDao =
+        database.placeDao()
 
     @Provides
     @Singleton
