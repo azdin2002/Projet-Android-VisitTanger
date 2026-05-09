@@ -1,7 +1,6 @@
 package com.groupe10.visittanger.ui.auth
 
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -15,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -41,7 +39,6 @@ fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     var email by remember { mutableStateOf("") }
@@ -57,17 +54,15 @@ fun LoginScreen(
 
     // Facebook Login Handling
     val callbackManager = remember { CallbackManager.Factory.create() }
-    
+
+    // Launcher pour intercepter le flux de l'activité Facebook
+    val facebookLauncher = rememberLauncherForActivityResult(
+        LoginManager.getInstance().createLogInActivityResultContract(callbackManager, null)
+    ) { }
+
+    // Initialisation du callback via le ViewModel
     DisposableEffect(Unit) {
-        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(result: LoginResult) {
-                viewModel.loginWithFacebook(result.accessToken.token)
-            }
-            override fun onCancel() {}
-            override fun onError(error: FacebookException) {
-                // Handle error
-            }
-        })
+        viewModel.initFacebookCallback(callbackManager)
         onDispose {
             LoginManager.getInstance().unregisterCallback(callbackManager)
         }
@@ -186,15 +181,7 @@ fun LoginScreen(
 
             // Facebook Button
             OutlinedButton(
-                onClick = {
-                    val activity = context as? ComponentActivity
-                    activity?.let {
-                        LoginManager.getInstance().logInWithReadPermissions(
-                            it,
-                            listOf("email", "public_profile")
-                        )
-                    }
-                },
+                onClick = { viewModel.onFacebookLoginClick(facebookLauncher) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isLoading
             ) {
