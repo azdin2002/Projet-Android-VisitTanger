@@ -11,9 +11,11 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
+import com.groupe10.visittanger.data.remote.FirestoreSeeder
 import com.groupe10.visittanger.ui.language.LanguageManager
 import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.navigation.MainScreen
@@ -24,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -40,6 +43,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var userPreferencesDataStore: UserPreferencesDataStore
+
+    @Inject
+    lateinit var firestoreSeeder: FirestoreSeeder
 
     /**
      * Applique la langue AVANT que le layout soit gonflé.
@@ -67,6 +73,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        lifecycleScope.launch {
+            firestoreSeeder.seedPlacesIfEmpty()
+        }
+
         setContent {
             val languageViewModel: LanguageViewModel = hiltViewModel()
             val currentLang by languageViewModel.currentLanguage
