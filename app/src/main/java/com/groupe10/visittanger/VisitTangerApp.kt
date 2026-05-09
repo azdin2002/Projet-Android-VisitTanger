@@ -1,6 +1,7 @@
 package com.groupe10.visittanger
 
 import android.app.Application
+import com.facebook.FacebookSdk
 import com.groupe10.visittanger.data.remote.FirestoreSeeder
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ class VisitTangerApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        FacebookSdk.sdkInitialize(this)
         applicationScope.launch {
             firestoreSeeder.seedPlacesIfEmpty()
         }

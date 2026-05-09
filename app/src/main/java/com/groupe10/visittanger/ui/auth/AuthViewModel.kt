@@ -22,12 +22,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import androidx.activity.result.ActivityResultLauncher
 
 data class AuthUiState(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val error: String? = null,
-    val user: User? = null
+    val user: User? = null,
 )
 
 @HiltViewModel
@@ -160,6 +167,32 @@ class AuthViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun initFacebookCallback(callbackManager: CallbackManager) {
+        LoginManager.getInstance().registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    onFacebookResult(result.accessToken)
+                }
+                override fun onCancel() {
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+                override fun onError(error: FacebookException) {
+                    _uiState.update { it.copy(isLoading = false, error = error.message) }
+                }
+            }
+        )
+    }
+
+    fun onFacebookLoginClick(launcher: ActivityResultLauncher<Collection<String>>) {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        launcher.launch(listOf("email", "public_profile"))
+    }
+
+    fun onFacebookResult(token: AccessToken) {
+        loginWithFacebook(token.token)
     }
 
     fun logout() {

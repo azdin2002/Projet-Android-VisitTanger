@@ -46,9 +46,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
-        manifestPlaceholders["FACEBOOK_APP_ID"] = facebookAppId
-        manifestPlaceholders["FACEBOOK_CLIENT_TOKEN"] = facebookClientToken
-        manifestPlaceholders["FB_LOGIN_PROTOCOL_SCHEME"] = "fb$facebookAppId"
+        resValue("string", "facebook_app_id", facebookAppId)
+        resValue("string", "facebook_client_token", facebookClientToken)
+        resValue("string", "fb_login_protocol_scheme", "fb$facebookAppId")
 
         buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
     }
@@ -69,6 +69,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
 }
 
@@ -113,9 +114,9 @@ dependencies {
     implementation("androidx.window:window:1.3.0")
 
     // Google Maps
-    implementation("com.google.maps.android:maps-compose:4.3.3")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.google.maps.android:maps-compose:8.3.0")
+    implementation("com.google.android.gms:play-services-maps:20.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Firebase
     implementation(platform(libs.firebase.bom))
@@ -123,7 +124,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.1")
     // Google Sign-In
-    implementation("com.google.android.gms:play-services-auth:21.1.0")
+    implementation("com.google.android.gms:play-services-auth:21.5.1")
 
     // Facebook
     implementation("com.facebook.android:facebook-login:16.3.0")
