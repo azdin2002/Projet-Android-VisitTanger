@@ -44,7 +44,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        
+        multiDexEnabled = true
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
         resValue("string", "facebook_app_id", facebookAppId)
         resValue("string", "facebook_client_token", facebookClientToken)
@@ -71,6 +71,13 @@ android {
         buildConfig = true
         resValues = true
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
 }
 
 dependencies {
@@ -84,6 +91,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("androidx.multidex:multidex:2.0.1")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
