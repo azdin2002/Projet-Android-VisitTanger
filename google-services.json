@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "161250144948-raod594hc372abeg2sciohmm305m0en0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.groupe10.visittanger",
+            "certificate_hash": "9e89a4e1fa59f0b835d614e0fa5894fed268672c"
+          }
+        },
+        {
           "client_id": "161250144948-jva9o21ir48ktmisveta262ifm7839qu.apps.googleusercontent.com",
           "client_type": 3
         }
