@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Tangier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e6e5b9",
+                    "surface-tint": "#175ead",
+                    "inverse-on-surface": "#f5f3c7",
+                    "secondary-fixed-dim": "#ffb781",
+                    "secondary-fixed": "#ffdcc4",
+                    "on-tertiary-fixed-variant": "#005316",
+                    "on-surface": "#1d1d03",
+                    "primary": "#003e7a",
+                    "on-primary-fixed": "#001b3c",
+                    "surface-dim": "#dedcb1",
+                    "on-tertiary-fixed": "#002105",
+                    "tertiary-fixed": "#93f993",
+                    "on-secondary-container": "#733a00",
+                    "primary-container": "#0055a4",
+                    "tertiary-fixed-dim": "#77dc7a",
+                    "primary-fixed": "#d5e3ff",
+                    "background": "#fefccf",
+                    "secondary-container": "#fea45d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#004689",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f8f6c9",
+                    "outline": "#727783",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#2f1400",
+                    "on-secondary-fixed-variant": "#703800",
+                    "surface-bright": "#fefccf",
+                    "tertiary-container": "#00641c",
+                    "tertiary": "#004912",
+                    "on-primary-container": "#afccff",
+                    "surface": "#fefccf",
+                    "on-background": "#1d1d03",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e6e5b9",
+                    "on-surface-variant": "#424751",
+                    "secondary": "#914c08",
+                    "surface-container": "#f2f0c4",
+                    "inverse-surface": "#323214",
+                    "inverse-primary": "#a8c8ff",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#eceabe",
+                    "primary-fixed-dim": "#a8c8ff",
+                    "outline-variant": "#c2c6d3",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#7ce17e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "margin-mobile": "20px",
+                    "unit": "8px",
+                    "section-gap": "80px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Montserrat"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "body-md": ["Montserrat"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-lg": ["Montserrat"],
+                    "label-md": ["Montserrat"],
+                    "headline-md": ["Playfair Display"],
+                    "headline-xl": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>.zellige-pattern {
+    background-color: #fefccf;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBDl7oiBpQiM7NnQwMhkt58IYWO4hM8KyJaor1J79pecBxVe-ALg2QPbaFrXb_gAthOwr59D_Gs1_1Q6tRHxvHMuJbhnDb4n8pGshXMpnbaa30bvkoCKhhvvqVf8GGYuoLjH_zw5E_Sx2W0UnEVp-KgiQD-sp6SwggL7wTJstDutvh-06nLadFahdlDgO4iwR94qwmCNed06K8F5WVM8XloaHS_dhwzTKfylZ6m94hjN5rfxn1547v-rKiJXECKSFNPmnJt3fhGQw4);
+    opacity: 0.05
+    }
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px)
+    }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen flex flex-col font-body-md text-on-surface selection:bg-secondary-container">
+<!-- Subtle Decorative Background -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-96 zellige-pattern opacity-10"></div>
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-secondary-container/20 rounded-full blur-3xl"></div>
+<div class="absolute bottom-0 -left-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Main Content -->
+<main class="relative z-10 flex-grow flex items-center justify-center px-margin-mobile md:px-margin-desktop py-12">
+<div class="w-full max-w-md">
+<!-- Logo & Welcome Section -->
+<header class="text-center mb-10">
+<div class="inline-flex items-center justify-center mb-6">
+<span class="font-headline-xl text-headline-xl text-primary tracking-tight">Tangier</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Welcome Back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Experience the Bride of the North</p>
+</header>
+<!-- Login Form Card -->
+<div class="glass-card rounded-xl p-8 shadow-[0_8px_30px_rgb(227,142,73,0.12)] border border-surface-variant/30">
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block font-label-md text-label-md text-on-surface-variant ml-1" for="email">Email Address</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3.5 focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 shadow-sm outline-none group-hover:shadow-md" id="email" name="email" placeholder="marhaba@tangier.com" type="email"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+</div>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="block font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors" href="#">Forgot Password?</a>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3.5 focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 shadow-sm outline-none group-hover:shadow-md" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Sign In Button -->
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-lg shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-300 border-b-2 border-primary-container" type="submit">
+                        Sign In
+                    </button>
+<!-- Divider -->
+<div class="relative py-4">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant"></div>
+</div>
+<div class="relative flex justify-center text-label-sm">
+<span class="bg-white/50 px-4 text-on-surface-variant font-label-sm">Or continue with</span>
+</div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-lg py-3 hover:bg-surface-container-low transition-all duration-200 active:scale-95 shadow-sm">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnhGVF21HtQW9hyv2E9haAwTR0aF4l7oT1hlrPNtdMIzVlwOLCNAA8ue78dV8BZh_3rrTDsg6Q0I05qX95BicZFdAZKNgUaH7BYXRSOfr00oTqckZt_8SM5189Bm7ZLNb99BeGuFdIZZK8TtcJHMsaE2R36N2hsf1l8PlecIhT51duj8-X-VIaq5GnzTUKYf1WftJBuo-JudU49L_nU7O36-7Pg-yW9Rn6OBfKOpMcCD_eqmyBdjiF4ch8fgRMEX69YfKlVGnKtNI"/>
+<span class="font-label-md text-label-md text-on-surface">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-lg py-3 hover:bg-surface-container-low transition-all duration-200 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="apple">apps</span>
+<span class="font-label-md text-label-md text-on-surface">Apple</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Sign Up CTA -->
+<footer class="mt-8 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Don't have an account? 
+                    <a class="font-label-md text-label-md text-secondary hover:text-primary transition-colors decoration-2 underline-offset-4 hover:underline" href="#">Sign Up</a>
+</p>
+</footer>
+</div>
+</main>
+<!-- Side Image Decor (Desktop) -->
+<div class="hidden lg:block fixed right-0 top-0 bottom-0 w-1/3 z-0 pointer-events-none">
+<div class="h-full w-full relative overflow-hidden">
+<img class="h-full w-full object-cover opacity-80 brightness-95" data-alt="A cinematic, sun-drenched view of the Tangier Kasbah with its iconic white-washed walls and intricate Moroccan architecture under a clear Mediterranean sky. The lighting is warm and golden, casting long, soft shadows that enhance the artisanal textures of the stone streets. The overall mood is peaceful and sophisticated, reflecting a bohemian travel aesthetic with a palette of cream, terracotta, and deep Atlantic blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0oUQZt0WzNYbV2e155nlPci3nlCO3gCqx_EQDv0xMwLGfJOSruatAC_0Pgk4nAHAgahtTerP7JzIB00tONII7kCkMDy_5g205fKpsJ1SMxvAx9bZhNkRn7kHYLoIMi7q5I4ZJFZxc9enW5RTbJDi-VfjgmPEunuiih9K4ERrzYLuHBsqEX3wBmrGgWMF27gzM5IYYxO1mQgjru8AjpHyxe4_MqLidrCsuVpTXOfTHCee69C2BciB5GGCydI9o18qB3NpqLyvsdCw"/>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent"></div>
+<!-- Decorative Zellige Tile Mask Overlay -->
+<div class="absolute top-1/2 left-0 -translate-y-1/2 w-32 h-64 opacity-20 border-r-4 border-secondary/30 zellige-pattern rotate-12"></div>
+</div>
+</div>
+<script>
+        // Micro-interactions for form inputs
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.closest('.glass-card').style.transform = 'translateY(-2px)';
+                input.parentElement.closest('.glass-card').style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.closest('.glass-card').style.transform = 'translateY(0)';
+            });
+        });
+
+        // Simple visibility toggle logic
+        const toggleBtn = document.querySelector('button[type="button"]');
+        const passInput = document.getElementById('password');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const isPass = passInput.type === 'password';
+                passInput.type = isPass ? 'text' : 'password';
+                toggleBtn.children[0].textContent = isPass ? 'visibility_off' : 'visibility';
+            });
+        }
+    </script>
+</body></html>

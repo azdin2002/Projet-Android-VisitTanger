@@ -20,6 +20,7 @@ import com.groupe10.visittanger.ui.itinerary.ItineraryScreen
 import com.groupe10.visittanger.ui.itinerary.detail.ItineraryDetailScreen
 import com.groupe10.visittanger.ui.map.MapScreen
 import com.groupe10.visittanger.ui.profile.ProfileScreen
+import com.groupe10.visittanger.ui.welcome.WelcomeScreen
 
 private const val TAG_LOGOUT = "VisitTanger.Logout"
 
@@ -33,7 +34,7 @@ fun AppNavGraph(
     val startDestination = if (authViewModel.isUserLoggedIn()) {
         Screen.Home.route
     } else {
-        Screen.Login.route
+        Screen.Welcome.route
     }
 
     NavHost(
@@ -41,6 +42,13 @@ fun AppNavGraph(
         startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(
+                onGetStartedClick = {
+                    navController.navigate(Screen.Login.route)
+                }
+            )
+        }
         composable(Screen.Home.route) { 
             HomeScreen(
                 windowSizeClass = windowSizeClass,

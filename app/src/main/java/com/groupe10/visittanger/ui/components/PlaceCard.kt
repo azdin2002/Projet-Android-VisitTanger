@@ -25,6 +25,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
+import com.groupe10.visittanger.ui.theme.StitchBackground
+import com.groupe10.visittanger.ui.theme.StitchOnSurface
+import com.groupe10.visittanger.ui.theme.StitchPrimary
+
+import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun PlaceCard(
@@ -34,7 +39,7 @@ fun PlaceCard(
     modifier: Modifier = Modifier
 ) {
     val favoriteColor by animateColorAsState(
-        targetValue = if (place.isFavorite) Color.Red else Color.Gray,
+        targetValue = if (place.isFavorite) Color.Red else Color.Gray.copy(alpha = 0.5f),
         label = "favoriteColor"
     )
 
@@ -42,17 +47,16 @@ fun PlaceCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onPlaceClick(place.id) },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
-            // Image Section
+            // Image Section (Full Bleed)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .background(Color.LightGray)
+                    .height(200.dp)
             ) {
                 if (place.photos.isNotEmpty()) {
                     AsyncImage(
@@ -62,82 +66,88 @@ fun PlaceCard(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    Icon(
-                        imageVector = Icons.Default.Place,
-                        contentDescription = null,
+                    Box(
                         modifier = Modifier
-                            .size(48.dp)
-                            .align(Alignment.Center),
-                        tint = Color.Gray
+                            .fillMaxSize()
+                            .background(Color.LightGray.copy(alpha = 0.3f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = Color.Gray
+                        )
+                    }
+                }
+                
+                // Favorite Button Overlay
+                IconButton(
+                    onClick = { onFavoriteClick(place.id) },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(Color.White.copy(alpha = 0.7f), CircleShape)
+                        .size(36.dp)
+                ) {
+                    Icon(
+                        imageVector = if (place.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = favoriteColor,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
 
-            // Content Section
+            // Content Section (Cream background as per DESIGN.md)
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .background(StitchBackground.copy(alpha = 0.5f))
+                    .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = place.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconButton(
-                        onClick = { onFavoriteClick(place.id) },
-                        modifier = Modifier.size(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (place.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite",
-                            tint = favoriteColor
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    val (bgColor, txtColor) = getCategoryColors(place.category)
-                    Surface(
-                        color = bgColor,
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Text(
-                            text = place.category.labelFr,
-                            color = txtColor,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    }
-                    
-                    if (place.distanceKm != null) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "${place.distanceKm} km",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                    }
-                }
+                Text(
+                    text = place.name,
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        fontSize = 20.sp,
+                        color = StitchOnSurface
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                RatingBar(
-                    rating = place.rating,
-                    reviewCount = place.reviewCount
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        val (_, txtColor) = getCategoryColors(place.category)
+                        Text(
+                            text = place.category.labelFr.uppercase(),
+                            color = StitchPrimary,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
+                        )
+                        
+                        if (place.distanceKm != null) {
+                            Text(
+                                text = " • ${place.distanceKm} km",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+
+                    RatingBar(
+                        rating = place.rating,
+                        reviewCount = place.reviewCount
+                    )
+                }
             }
         }
     }

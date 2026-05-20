@@ -51,6 +51,7 @@ class AuthViewModel @Inject constructor(
 
     fun getGoogleSignInIntent(): Intent {
         Log.d(TAG_GOOGLE, "Construction / lancement préparation intent Google Sign-In")
+        _uiState.update { it.copy(isLoading = true, error = null) }
         return googleSignInIntentProvider.getSignInIntent()
     }
 

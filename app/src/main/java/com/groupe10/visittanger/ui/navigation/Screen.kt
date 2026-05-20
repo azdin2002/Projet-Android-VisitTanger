@@ -1,6 +1,7 @@
 package com.groupe10.visittanger.ui.navigation
 
 sealed class Screen(val route: String) {
+    object Welcome : Screen("welcome")
     object Home : Screen("home")
     object Map : Screen("map")
     object Itinerary : Screen("itinerary")

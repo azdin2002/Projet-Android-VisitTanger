@@ -28,7 +28,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
-import com.groupe10.visittanger.ui.theme.TangerGreen
+import com.groupe10.visittanger.ui.theme.StitchOnSurface
+import com.groupe10.visittanger.ui.theme.StitchPrimary
+import com.groupe10.visittanger.ui.theme.StitchSecondary
 
 @Composable
 fun HomeScreen(
@@ -117,7 +119,7 @@ fun HomePhoneLayout(
                 contentPadding = PaddingValues(bottom = 24.dp)
             ) {
                 // Header Banner
-                item { BannerHeader(TangerGreen) }
+                item { BannerHeader(StitchPrimary) }
 
                 // Weather Widget
                 item {
@@ -270,31 +272,31 @@ fun BannerHeader(backgroundColor: Color) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(200.dp)
             .background(backgroundColor)
             .padding(24.dp)
     ) {
-        Column(modifier = Modifier.align(Alignment.CenterStart)) {
+        Column(modifier = Modifier.align(Alignment.BottomStart)) {
             Text(
                 text = stringResource(R.string.home_title),
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.displayMedium,
+                color = Color.White
             )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.home_subtitle),
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 16.sp
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = 0.8f)
             )
         }
         Icon(
             imageVector = Icons.Default.WbSunny,
             contentDescription = null,
-            tint = Color.White.copy(alpha = 0.2f),
+            tint = Color.White.copy(alpha = 0.1f),
             modifier = Modifier
-                .size(100.dp)
+                .size(120.dp)
                 .align(Alignment.TopEnd)
-                .offset(x = 20.dp, y = (-20).dp)
+                .offset(x = 30.dp, y = (-30).dp)
         )
     }
 }
@@ -315,7 +317,7 @@ fun CategoriesSection(
                 onClick = { onCategorySelected(null) },
                 label = { Text(stringResource(R.string.category_all)) },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = TangerGreen,
+                    selectedContainerColor = StitchPrimary,
                     selectedLabelColor = Color.White
                 )
             )
@@ -349,7 +351,7 @@ fun SectionHeader(
         )
         Text(
             text = stringResource(R.string.home_see_all),
-            color = TangerGreen,
+            color = StitchPrimary,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.clickable { onSeeAllClick() }

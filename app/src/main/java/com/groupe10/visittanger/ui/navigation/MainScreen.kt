@@ -72,9 +72,10 @@ fun MainScreen(
 
     // Écrans qui cachent la nav
     val hideNavRoutes = listOf(
+        Screen.Welcome.route,
         Screen.Login.route,
         Screen.Register.route,
-        Screen.Details.route, // Note: Screen.Details.route and not Screen.Detail.route
+        Screen.Details.route,
         Screen.ItineraryDetail.route,
     )
     val showNav = currentRoute !in hideNavRoutes
