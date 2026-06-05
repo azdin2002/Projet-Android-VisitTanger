@@ -1,16 +1,17 @@
 package com.groupe10.visittanger.ui.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -18,19 +19,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
-import com.groupe10.visittanger.ui.theme.StitchOnSurface
-import com.groupe10.visittanger.ui.theme.StitchPrimary
-import com.groupe10.visittanger.ui.theme.StitchSecondary
+import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun HomeScreen(
@@ -41,320 +45,253 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
 
-    val columns = when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> 1
-        WindowWidthSizeClass.Medium -> 2
-        WindowWidthSizeClass.Expanded -> 3
-        else -> 1
-    }
-
-    if (columns == 1) {
-        HomePhoneLayout(
-            uiState = uiState,
-            weatherState = weatherState,
-            onPlaceClick = onPlaceClick,
-            onCategorySelected = viewModel::onCategorySelected,
-            onSearchChanged = viewModel::onSearchQueryChanged,
-            onFavoriteToggled = viewModel::onFavoriteToggled,
-            onRetry = viewModel::loadPlaces,
-            onWeatherRetry = viewModel::loadWeather,
-            onWeatherDismiss = viewModel::dismissWeather
-        )
-    } else {
-        HomeTabletLayout(
-            uiState = uiState,
-            weatherState = weatherState,
-            columns = columns,
-            onPlaceClick = onPlaceClick,
-            onCategorySelected = viewModel::onCategorySelected,
-            onSearchChanged = viewModel::onSearchQueryChanged,
-            onFavoriteToggled = viewModel::onFavoriteToggled,
-            onRetry = viewModel::loadPlaces,
-            onWeatherRetry = viewModel::loadWeather,
-            onWeatherDismiss = viewModel::dismissWeather
-        )
-    }
-}
-
-@Composable
-fun HomePhoneLayout(
-    uiState: HomeUiState,
-    weatherState: WeatherUiState,
-    onPlaceClick: (String) -> Unit,
-    onCategorySelected: (Category?) -> Unit,
-    onSearchChanged: (String) -> Unit,
-    onFavoriteToggled: (String) -> Unit,
-    onRetry: () -> Unit,
-    onWeatherRetry: () -> Unit,
-    onWeatherDismiss: () -> Unit
-) {
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(R.string.app_name),
-                actions = {
-                    IconButton(onClick = { /* Action info ou profil */ }) {
-                        Icon(
-                            imageVector = Icons.Default.WbSunny,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
-                }
+                title = "Tangier"
             )
-        }
+        },
+        containerColor = StitchBackground,
     ) { padding ->
-        if (uiState.isLoading && uiState.places.isEmpty()) {
-            LoadingIndicator()
-        } else if (uiState.error != null && uiState.places.isEmpty()) {
-            ErrorView(
-                message = uiState.error ?: stringResource(R.string.error_generic),
-                onRetry = onRetry
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                top = padding.calculateTopPadding(),
+                bottom = padding.calculateBottomPadding()
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(bottom = 24.dp)
-            ) {
-                // Header Banner
-                item { BannerHeader(StitchPrimary) }
-
-                // Weather Widget
-                item {
-                    WeatherWidget(
-                        weatherState = weatherState,
-                        onRetry = onWeatherRetry,
-                        onDismiss = onWeatherDismiss
-                    )
-                }
-
-                // Search Bar
-                item {
-                    TangerSearchBar(
-                        query = uiState.searchQuery,
-                        onQueryChange = onSearchChanged,
-                        placeholder = stringResource(R.string.home_search_hint),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-
-                // Categories Chips
-                item {
-                    CategoriesSection(
-                        selectedCategory = uiState.selectedCategory,
-                        onCategorySelected = onCategorySelected
-                    )
-                }
-
-                // Featured Section
-                if (uiState.searchQuery.isEmpty() && uiState.selectedCategory == null) {
-                    item { SectionHeader(title = stringResource(R.string.home_popular), onSeeAllClick = {}) }
-                    item {
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(uiState.featuredPlaces) { place ->
-                                PlaceCard(
-                                    place = place,
-                                    onPlaceClick = onPlaceClick,
-                                    onFavoriteClick = onFavoriteToggled,
-                                    modifier = Modifier.width(280.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                item {
-                    val title = if (uiState.searchQuery.isNotEmpty() || uiState.selectedCategory != null) {
-                        stringResource(R.string.home_no_results)
-                    } else {
-                        stringResource(R.string.home_nearby)
-                    }
-                    SectionHeader(title = title, onSeeAllClick = {})
-                }
-
-                if (uiState.filteredPlaces.isEmpty()) {
-                    item {
-                        EmptyView(modifier = Modifier.fillMaxWidth().height(200.dp))
-                    }
-                } else {
-                    items(uiState.filteredPlaces) { place ->
-                        PlaceCard(
-                            place = place,
-                            onPlaceClick = onPlaceClick,
-                            onFavoriteClick = onFavoriteToggled,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun HomeTabletLayout(
-    uiState: HomeUiState,
-    weatherState: WeatherUiState,
-    columns: Int,
-    onPlaceClick: (String) -> Unit,
-    onCategorySelected: (Category?) -> Unit,
-    onSearchChanged: (String) -> Unit,
-    onFavoriteToggled: (String) -> Unit,
-    onRetry: () -> Unit,
-    onWeatherRetry: () -> Unit,
-    onWeatherDismiss: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TangerTopBar(title = stringResource(R.string.app_name))
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
         ) {
-            WeatherWidget(
-                weatherState = weatherState,
-                onRetry = onWeatherRetry,
-                onDismiss = onWeatherDismiss
-            )
-
-            TangerSearchBar(
-                query = uiState.searchQuery,
-                onQueryChange = onSearchChanged,
-                placeholder = stringResource(R.string.home_search_hint),
-                modifier = Modifier.padding(16.dp)
-            )
-            
-            CategoriesSection(
-                selectedCategory = uiState.selectedCategory,
-                onCategorySelected = onCategorySelected
-            )
-
-            if (uiState.isLoading && uiState.places.isEmpty()) {
-                LoadingIndicator()
-            } else if (uiState.error != null && uiState.places.isEmpty()) {
-                ErrorView(
-                    message = uiState.error ?: stringResource(R.string.error_generic),
-                    onRetry = onRetry
+            // Search Bar (In-content as per HTML)
+            item {
+                TangerSearchBar(
+                    query = uiState.searchQuery,
+                    onQueryChange = viewModel::onSearchQueryChanged,
+                    placeholder = "Search the white city...",
+                    modifier = Modifier.padding(20.dp)
                 )
-            } else if (uiState.filteredPlaces.isEmpty()) {
-                EmptyView(modifier = Modifier.fillMaxSize())
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(columns),
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(uiState.filteredPlaces, key = { it.id }) { place ->
-                        PlaceCard(
-                            place = place,
-                            onPlaceClick = onPlaceClick,
-                            onFavoriteClick = onFavoriteToggled
-                        )
-                    }
+            }
+
+            // Explore by Category
+            item {
+                Column(modifier = Modifier.padding(bottom = 24.dp)) {
+                    Text(
+                        text = "Explore by Category",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = StitchOnSurface,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    )
+                    HomeCategoriesRow(
+                        selectedCategory = uiState.selectedCategory,
+                        onCategorySelected = viewModel::onCategorySelected
+                    )
                 }
+            }
+
+            // Featured Today
+            item {
+                FeaturedHeroSection(onExploreClick = { /* Navigate to featured */ })
+            }
+
+            // Trending Spots
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Trending Spots",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = StitchOnSurface
+                    )
+                    Text(
+                        text = "View All",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = StitchPrimary,
+                        modifier = Modifier.clickable { /* See All */ }
+                    )
+                }
+            }
+
+            items(uiState.filteredPlaces) { place ->
+                PlaceCard(
+                    place = place,
+                    onPlaceClick = onPlaceClick,
+                    onFavoriteClick = viewModel::onFavoriteToggled,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+                )
+            }
+
+            // Did You Know?
+            item {
+                DidYouKnowSection()
             }
         }
     }
 }
 
 @Composable
-fun BannerHeader(backgroundColor: Color) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .background(backgroundColor)
-            .padding(24.dp)
-    ) {
-        Column(modifier = Modifier.align(Alignment.BottomStart)) {
-            Text(
-                text = stringResource(R.string.home_title),
-                style = MaterialTheme.typography.displayMedium,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = stringResource(R.string.home_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White.copy(alpha = 0.8f)
-            )
-        }
-        Icon(
-            imageVector = Icons.Default.WbSunny,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = 0.1f),
-            modifier = Modifier
-                .size(120.dp)
-                .align(Alignment.TopEnd)
-                .offset(x = 30.dp, y = (-30).dp)
-        )
-    }
-}
-
-@Composable
-fun CategoriesSection(
+fun HomeCategoriesRow(
     selectedCategory: Category?,
     onCategorySelected: (Category?) -> Unit
 ) {
+    val categories = listOf(
+        Triple(Category.BEACH, "Beaches", Icons.Default.BeachAccess),
+        Triple(Category.SHOPPING, "Markets", Icons.Default.Storefront),
+        Triple(Category.HISTORY, "History", Icons.Default.Castle),
+        Triple(Category.FOOD, "Food", Icons.Default.Restaurant),
+        Triple(Category.EVENTS, "Art", Icons.Default.ArtTrack)
+    )
+
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(vertical = 8.dp)
+        contentPadding = PaddingValues(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            FilterChip(
-                selected = selectedCategory == null,
-                onClick = { onCategorySelected(null) },
-                label = { Text(stringResource(R.string.category_all)) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = StitchPrimary,
-                    selectedLabelColor = Color.White
+        items(categories) { (category, label, icon) ->
+            val isSelected = selectedCategory == category
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .width(72.dp)
+                    .clickable { onCategorySelected(if (isSelected) null else category) }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(if (isSelected) StitchSecondaryContainer else StitchSurfaceContainerHighest),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = label,
+                        tint = if (isSelected) StitchOnSecondaryContainer else StitchPrimary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = StitchOnSurfaceVariant
                 )
-            )
-        }
-        items(Category.values()) { category ->
-            CategoryChip(
-                category = category,
-                isSelected = selectedCategory == category,
-                onClick = { onCategorySelected(category) }
-            )
+            }
         }
     }
 }
 
 @Composable
-fun SectionHeader(
-    title: String,
-    onSeeAllClick: () -> Unit
-) {
-    Row(
+fun FeaturedHeroSection(onExploreClick: () -> Unit) {
+    Box(
         modifier = Modifier
+            .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .height(550.dp)
+            .clip(RoundedCornerShape(32.dp))
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+        AsyncImage(
+            model = "https://lh3.googleusercontent.com/aida-public/AB6AXuAtMRy4Z1c1nbM0Uj0wlSllN0kM-8AhLeTjInzomNrZmy0Ik_PK_2MDAn-qXzZJ33pb0p6EuPusC5Gn5fOpZ_NCXmbxW0mL_atUpO2-LmdvN9-tuRr6ux_S5IdPw5SAaWaiuM8IXg2AJkT4DDLSt5sDsFGX-2fQPFKw5lsArufWu_N6A6XZ4qc3Kfe0JRHKI2_k35aWj60fv0RUFIXUAgpL7EDl3MyLGSAvG4pvyDMy-xjvs3cMYY2jUDsyfu5DM1gAiwFtQmOwQI",
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
-        Text(
-            text = stringResource(R.string.home_see_all),
-            color = StitchPrimary,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.clickable { onSeeAllClick() }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.9f)),
+                        startY = 600f
+                    )
+                )
         )
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(32.dp)
+        ) {
+            Surface(
+                color = StitchSecondary,
+                shape = CircleShape
+            ) {
+                Text(
+                    text = "FEATURED TODAY",
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Golden Hour at the Gateway to Africa",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 42.sp
+                ),
+                color = Color.White
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = "Experience the legendary sunset where the Atlantic meets the Mediterranean, a sight that has inspired artists for centuries.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = 0.9f)
+            )
+            Spacer(Modifier.height(32.dp))
+            Button(
+                onClick = onExploreClick,
+                colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary),
+                shape = CircleShape,
+                modifier = Modifier.height(56.dp),
+                contentPadding = PaddingValues(horizontal = 32.dp)
+            ) {
+                Text("Explore Now", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.Default.ArrowForward, null, modifier = Modifier.size(20.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun DidYouKnowSection() {
+    Surface(
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxWidth(),
+        color = StitchSurfaceContainer.copy(alpha = 0.5f),
+        shape = RoundedCornerShape(32.dp),
+        border = BorderStroke(1.dp, StitchSurfaceVariant)
+    ) {
+        // Simple approximation of the zellige pattern using a drawing modifier could be added,
+        // but for now we focus on the layout.
+        Row(
+            modifier = Modifier.padding(24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(StitchPrimary),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.Lightbulb, null, tint = Color.White, modifier = Modifier.size(32.dp))
+            }
+            Column {
+                Text(
+                    text = "Did You Know?",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    color = StitchPrimary
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = "Tangier was once an \"International Zone,\" governed by several countries simultaneously from 1923 to 1956, giving it a unique multicultural DNA you can still feel today.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = StitchOnSurfaceVariant
+                )
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.groupe10.visittanger.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,26 +16,31 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.groupe10.visittanger.ui.theme.*
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TangerSearchBar(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
-    placeholder: String = "Rechercher un lieu..."
+    placeholder: String = "Search the white city..."
 ) {
-    val tangerineGreen = Color(0xFF009966)
-    val surfaceLight = Color(0xFFF8F8F8)
-
     TextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { Text(placeholder, color = Color.Gray) },
+        placeholder = { 
+            Text(
+                text = placeholder,
+                style = MaterialTheme.typography.bodyLarge,
+                color = StitchOutline
+            ) 
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = tangerineGreen
+                tint = StitchOutline
             )
         },
         trailingIcon = {
@@ -43,23 +49,25 @@ fun TangerSearchBar(
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = "Clear",
-                        tint = Color.Gray
+                        tint = StitchOutline
                     )
                 }
             }
         },
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 56.dp)
-            .background(surfaceLight, RoundedCornerShape(24.dp)),
-        shape = RoundedCornerShape(24.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = surfaceLight,
-            unfocusedContainerColor = surfaceLight,
-            disabledContainerColor = surfaceLight,
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent,
+            .heightIn(min = 64.dp)
+            .border(1.dp, StitchSurfaceVariant, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = StitchSurfaceContainerLow,
+            unfocusedContainerColor = StitchSurfaceContainerLow,
+            disabledContainerColor = StitchSurfaceContainerLow,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = StitchPrimary
         ),
+        textStyle = MaterialTheme.typography.bodyLarge,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         singleLine = true
     )

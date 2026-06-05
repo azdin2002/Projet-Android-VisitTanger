@@ -29,21 +29,15 @@ fun FavoritesScreen(
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(id = R.string.favorites_title),
-                actions = {
-                    if (uiState.favoritesCount > 0) {
-                        Text(
-                            text = "${uiState.favoritesCount} ${stringResource(id = R.string.favorites_remove).lowercase()}",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                    }
-                }
+                title = stringResource(id = R.string.favorites_title)
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = paddingValues.calculateBottomPadding())
+        ) {
             when {
                 uiState.isLoading -> LoadingIndicator()
                 
@@ -52,7 +46,12 @@ fun FavoritesScreen(
                 )
 
                 else -> LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {

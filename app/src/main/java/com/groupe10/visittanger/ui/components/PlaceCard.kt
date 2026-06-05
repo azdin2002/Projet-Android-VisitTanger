@@ -1,20 +1,24 @@
 package com.groupe10.visittanger.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -25,11 +29,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
-import com.groupe10.visittanger.ui.theme.StitchBackground
-import com.groupe10.visittanger.ui.theme.StitchOnSurface
-import com.groupe10.visittanger.ui.theme.StitchPrimary
-
-import androidx.compose.foundation.shape.CircleShape
+import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun PlaceCard(
@@ -39,7 +39,7 @@ fun PlaceCard(
     modifier: Modifier = Modifier
 ) {
     val favoriteColor by animateColorAsState(
-        targetValue = if (place.isFavorite) Color.Red else Color.Gray.copy(alpha = 0.5f),
+        targetValue = if (place.isFavorite) Color.Red else StitchOutline,
         label = "favoriteColor"
     )
 
@@ -47,16 +47,17 @@ fun PlaceCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onPlaceClick(place.id) },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = StitchSurfaceContainerLow),
+        border = BorderStroke(1.dp, StitchSurfaceVariant)
     ) {
         Column {
-            // Image Section (Full Bleed)
+            // Image Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(180.dp)
             ) {
                 if (place.photos.isNotEmpty()) {
                     AsyncImage(
@@ -69,85 +70,95 @@ fun PlaceCard(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.LightGray.copy(alpha = 0.3f)),
+                            .background(StitchSurfaceVariant.copy(alpha = 0.3f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Place,
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color.Gray
-                        )
+                        Icon(Icons.Default.Place, null, tint = StitchOutline)
                     }
                 }
                 
-                // Favorite Button Overlay
-                IconButton(
-                    onClick = { onFavoriteClick(place.id) },
+                // Star Rating Badge
+                Surface(
+                    color = StitchSurface.copy(alpha = 0.9f),
+                    shape = CircleShape,
                     modifier = Modifier
+                        .padding(16.dp)
                         .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .background(Color.White.copy(alpha = 0.7f), CircleShape)
-                        .size(36.dp)
                 ) {
-                    Icon(
-                        imageVector = if (place.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = favoriteColor,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = StitchSecondary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = "${place.rating}",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = StitchOnSurface
+                        )
+                    }
                 }
             }
 
-            // Content Section (Cream background as per DESIGN.md)
+            // Content Section
             Column(
                 modifier = Modifier
-                    .background(StitchBackground.copy(alpha = 0.5f))
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "${place.category.name.uppercase()} • TANGER",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = StitchSecondary,
+                            letterSpacing = 1.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = place.name,
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = StitchPrimary
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    
+                    IconButton(
+                        onClick = { onFavoriteClick(place.id) },
+                        modifier = Modifier.offset(x = 12.dp, y = (-4).dp)
+                    ) {
+                        Icon(
+                            imageVector = if (place.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite",
+                            tint = favoriteColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Text(
-                    text = place.name,
-                    style = MaterialTheme.typography.displayMedium.copy(
-                        fontSize = 20.sp,
-                        color = StitchOnSurface
-                    ),
-                    maxLines = 1,
+                    text = place.description["fr"] ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = StitchOnSurfaceVariant,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        val (_, txtColor) = getCategoryColors(place.category)
-                        Text(
-                            text = place.category.labelFr.uppercase(),
-                            color = StitchPrimary,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 1.sp
-                            )
-                        )
-                        
-                        if (place.distanceKm != null) {
-                            Text(
-                                text = " • ${place.distanceKm} km",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray
-                            )
-                        }
-                    }
-
-                    RatingBar(
-                        rating = place.rating,
-                        reviewCount = place.reviewCount
-                    )
-                }
             }
         }
     }

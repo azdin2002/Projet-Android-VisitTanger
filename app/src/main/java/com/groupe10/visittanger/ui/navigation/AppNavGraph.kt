@@ -64,7 +64,6 @@ fun AppNavGraph(
         }
         composable(Screen.Itinerary.route) {
             ItineraryScreen(
-                windowSizeClass = windowSizeClass,
                 onItineraryClick = { id ->
                     navController.navigate(Screen.ItineraryDetail.createRoute(id))
                 }

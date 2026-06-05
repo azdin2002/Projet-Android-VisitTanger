@@ -98,6 +98,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
+
                     Brush.verticalGradient(
                         colors = listOf(StitchSecondary.copy(alpha = 0.08f), Color.Transparent)
                     )
