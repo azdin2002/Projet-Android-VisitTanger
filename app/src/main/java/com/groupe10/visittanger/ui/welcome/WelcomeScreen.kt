@@ -110,7 +110,7 @@ fun WelcomeScreen(
                     .background(Color.White.copy(alpha = 0.1f))
             ) {
                 AsyncImage(
-                    model = "https://lh3.googleusercontent.com/aida-public/AB6AXuC3KvkzvmStJfJUniNjS_LgDyt9pNXg46qzS8vxsBI4AN8d2-0UD41EDolt9hqqOmTveNAM9-smAiFTy-kSjQ9-trsZL2x1J1SC_Jnaz-rlEvt8N8VVu8FNVoPVbTm88y24IjzD7duqNJRntw6xc9V6n8NeOiIi1EaMLXomH8Puj292EWfAvMUi7clcGkBBCprvl58BNYLfeAhjgavL702Lya8JuhqsRqCLKWU7dVA7VA9LRz7g42NB-gbajtpj9QO27eh9kwzBXI0",
+                    model = R.drawable.img_user_placeholder,
                     contentDescription = "Profile",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

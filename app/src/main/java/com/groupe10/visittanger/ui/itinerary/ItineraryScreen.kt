@@ -60,7 +60,7 @@ fun ItineraryScreen(
                         .clip(RoundedCornerShape(24.dp))
                 ) {
                     AsyncImage(
-                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ub-cRNWYy1FufX2GrvBNvXxnc5lb4CA2joEmw_G3WGTT8KTLNWNEmhQeuZ2OKmbCjx3vKE1ByVEdWrEzpAwyJhsmuslmNvZbx52ccucSiyLx6ftsFTPcPNmVwqGSgzsCmPOWhmJSMRGDsVtEw2Nqkrcn93v7Iu4_Rmv-b0VNgBCTTA0eADG20e88raje4bSTvCGFcsZmcyo9C_Quz7QOyvDUvwqIyk8S7BfP1wXWin1q5WFNRv7y1mbdzYIdSEGDHfy_bZldLP0",
+                        model = R.drawable.img_itinerary_header,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -155,7 +155,7 @@ fun TimelineItem(title: String, time: String, onItineraryClick: () -> Unit) {
             Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Box(modifier = Modifier.size(80.dp).clip(RoundedCornerShape(12.dp)).background(StitchSurfaceVariant)) {
                      AsyncImage(
-                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuBJWA4R_H5PZJUxu0yAJvcPYw5LK9b1Uctm2Q83ytkF3OymXmbpi1x_ec8D5qNeE1xLQwA6kYm4VMUqPpASQA4TUJ2Z_iImj412m0HQ8b_ZXwrU_f1ZwtUd1xkmy1I7tlrjz6IjOfpy3a22sXGLGhBYk7UQnuPY2W8Gx0RTxNpXzXMC3pSD43hcYefTKcel0UbqWqgC1NyaMz9vgbwrQ1mfjH2olPFgJCMYDss7gmfQBsjBCk_AHF-n0W_seVEPIXui-erBUNDTGks",
+                        model = R.drawable.img_home_hero_kasbah,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
