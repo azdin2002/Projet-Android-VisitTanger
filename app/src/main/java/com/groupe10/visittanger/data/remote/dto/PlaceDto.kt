@@ -9,7 +9,13 @@ data class PlaceDto(
     val descriptionFr: String = "",
     val descriptionEn: String = "",
     val descriptionAr: String = "",
-    val category: String = "",
+    val teaserFr: String = "",
+    val teaserEn: String = "",
+    val teaserAr: String = "",
+    val localTipFr: String = "",
+    val localTipEn: String = "",
+    val localTipAr: String = "",
+    val category: String = "HISTORY",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val address: String = "",
@@ -19,22 +25,22 @@ data class PlaceDto(
     val openingHours: String? = null,
     val price: String? = null
 ) {
-    fun toDomain() = Place(
-        id = id,
-        name = name,
-        description = mapOf(
-            "fr" to descriptionFr,
-            "en" to descriptionEn,
-            "ar" to descriptionAr,
-        ),
-        category = Category.valueOf(category),
-        latitude = latitude,
-        longitude = longitude,
-        address = address,
-        photos = photos,
-        rating = rating,
-        reviewCount = reviewCount,
-        openingHours = openingHours,
-        price = price,
-    )
+    fun toDomain(): Place {
+        return Place(
+            id = id,
+            name = name,
+            description = mapOf("fr" to descriptionFr, "en" to descriptionEn, "ar" to descriptionAr),
+            teaser = mapOf("fr" to teaserFr, "en" to teaserEn, "ar" to teaserAr),
+            localTips = mapOf("fr" to localTipFr, "en" to localTipEn, "ar" to localTipAr),
+            category = Category.valueOf(category),
+            latitude = latitude,
+            longitude = longitude,
+            address = address,
+            photos = photos,
+            rating = rating,
+            reviewCount = reviewCount,
+            openingHours = openingHours,
+            price = price
+        )
+    }
 }

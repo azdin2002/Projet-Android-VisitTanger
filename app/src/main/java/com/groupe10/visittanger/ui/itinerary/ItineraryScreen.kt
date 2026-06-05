@@ -171,6 +171,9 @@ fun TimelineItem(
             horizontalAlignment = Alignment.CenterHorizontally, 
             modifier = Modifier.width(64.dp)
         ) {
+            // Adjusted spacer to be higher (20dp instead of 36dp)
+            Spacer(Modifier.height(20.dp))
+
             Text(
                 time.split(" ")[0], 
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold), 
@@ -182,7 +185,7 @@ fun TimelineItem(
                 color = StitchOutline
             )
             
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
             
             Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(StitchPrimary))
             

@@ -34,16 +34,19 @@ import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun HomeScreen(
     windowSizeClass: WindowSizeClass,
     onPlaceClick: (String) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -60,7 +63,7 @@ fun HomeScreen(
                 bottom = padding.calculateBottomPadding()
             )
         ) {
-            // Search Bar (In-content as per HTML)
+            // Search Bar
             item {
                 TangerSearchBar(
                     query = uiState.searchQuery,
@@ -119,7 +122,8 @@ fun HomeScreen(
                     place = place,
                     onPlaceClick = onPlaceClick,
                     onFavoriteClick = viewModel::onFavoriteToggled,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                    lang = currentLang
                 )
             }
 
@@ -218,7 +222,7 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
                 Text(
                     text = "FEATURED TODAY",
                     color = Color.White,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                 )
             }
@@ -263,8 +267,6 @@ fun DidYouKnowSection() {
         shape = RoundedCornerShape(32.dp),
         border = BorderStroke(1.dp, StitchSurfaceVariant)
     ) {
-        // Simple approximation of the zellige pattern using a drawing modifier could be added,
-        // but for now we focus on the layout.
         Row(
             modifier = Modifier.padding(24.dp),
             verticalAlignment = Alignment.CenterVertically,

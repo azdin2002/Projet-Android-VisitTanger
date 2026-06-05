@@ -1,8 +1,6 @@
 package com.groupe10.visittanger.ui.detail
 
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,22 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.groupe10.visittanger.domain.model.Place
-import com.groupe10.visittanger.ui.theme.TangerGreen
+import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun LocationSection(
     place: Place,
     onMapClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val placeLatLng = LatLng(place.latitude, place.longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(placeLatLng, 15f)
@@ -36,24 +31,26 @@ fun LocationSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
         Text(
-            text = "Localisation",
-            style = MaterialTheme.typography.titleLarge.copy(
+            text = "Location",
+            style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                color = StitchPrimary
             )
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         
-        Card(
-            onClick = onMapClick,
-            shape = RoundedCornerShape(12.dp),
+        Surface(
+            shape = RoundedCornerShape(24.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(240.dp)
+                .clickable { onMapClick() },
+            border = androidx.compose.foundation.BorderStroke(1.dp, StitchSurfaceVariant),
+            shadowElevation = 2.dp
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 GoogleMap(
@@ -78,59 +75,30 @@ fun LocationSection(
                 }
                 
                 // Overlay adresse
-                Box(
+                Surface(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .background(Color.Black.copy(alpha = 0.6f))
-                        .padding(8.dp)
+                        .padding(12.dp),
+                    color = StitchSurface.copy(alpha = 0.9f),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(
-                        text = place.address,
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1
-                    )
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.Map, null, tint = StitchSecondary, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = place.address,
+                            color = StitchOnSurface,
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
-        }
-        
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        TextButton(
-            onClick = {
-                val navigationUri = Uri.parse(
-                    "google.navigation:q=${place.latitude},${place.longitude}&mode=d"
-                )
-                val mapsIntent = Intent(Intent.ACTION_VIEW, navigationUri).apply {
-                    setPackage("com.google.android.apps.maps")
-                }
-                if (mapsIntent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(mapsIntent)
-                } else {
-                    // Fallback: ouvrir dans navigateur
-                    val browserUri = Uri.parse(
-                        "https://www.google.com/maps/dir/?api=1" +
-                        "&destination=${place.latitude},${place.longitude}" +
-                        "&travelmode=driving"
-                    )
-                    context.startActivity(Intent(Intent.ACTION_VIEW, browserUri))
-                }
-            },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Map,
-                contentDescription = null,
-                modifier = Modifier.size(18.dp),
-                tint = TangerGreen
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Ouvrir dans Google Maps",
-                color = TangerGreen,
-                fontWeight = FontWeight.Bold
-            )
         }
     }
 }

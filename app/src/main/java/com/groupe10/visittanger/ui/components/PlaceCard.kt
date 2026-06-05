@@ -30,7 +30,6 @@ import coil.compose.AsyncImage
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.ui.theme.*
-
 import com.groupe10.visittanger.R
 
 @Composable
@@ -38,14 +37,20 @@ fun PlaceCard(
     place: Place,
     onPlaceClick: (String) -> Unit,
     onFavoriteClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lang: String = "en"
 ) {
     val favoriteColor by animateColorAsState(
         targetValue = if (place.isFavorite) Color.Red else StitchOutline,
         label = "favoriteColor"
     )
 
-    // Fallback images for known places if remote photo is missing
+    val teaserText = if (place.teaser[lang].isNullOrBlank()) {
+        place.teaser["en"] ?: ""
+    } else {
+        place.teaser[lang]!!
+    }
+
     val localImageRes = when {
         place.name.contains("Kasbah de Tanger", ignoreCase = true) -> R.drawable.img_home_hero_kasbah
         place.name.contains("Cap Spartel", ignoreCase = true) -> R.drawable.img_place_cap_spartel
@@ -73,7 +78,6 @@ fun PlaceCard(
         border = BorderStroke(1.dp, StitchSurfaceVariant)
     ) {
         Column {
-            // Image Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -82,62 +86,33 @@ fun PlaceCard(
                 val imageModel = when {
                     place.photos.isNotEmpty() -> place.photos.first()
                     localImageRes != null -> localImageRes
-                    else -> null
+                    else -> R.drawable.welcome_to_tangier_image_2
                 }
 
-                if (imageModel != null) {
-                    AsyncImage(
-                        model = imageModel,
-                        contentDescription = place.name,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(StitchSurfaceVariant.copy(alpha = 0.3f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(Icons.Default.Place, null, tint = StitchOutline)
-                    }
-                }
+                AsyncImage(
+                    model = imageModel,
+                    contentDescription = place.name,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
                 
-                // Star Rating Badge
                 Surface(
                     color = StitchSurface.copy(alpha = 0.9f),
                     shape = CircleShape,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.TopEnd)
+                    modifier = Modifier.padding(16.dp).align(Alignment.TopEnd)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = null,
-                            tint = StitchSecondary,
-                            modifier = Modifier.size(14.dp)
-                        )
+                        Icon(Icons.Default.Star, null, tint = StitchSecondary, modifier = Modifier.size(14.dp))
                         Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = "${place.rating}",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = StitchOnSurface
-                        )
+                        Text(text = "${place.rating}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     }
                 }
             }
 
-            // Content Section
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -154,32 +129,25 @@ fun PlaceCard(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = place.name,
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = StitchPrimary
-                            ),
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold, color = StitchPrimary),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    
-                    IconButton(
-                        onClick = { onFavoriteClick(place.id) },
-                        modifier = Modifier.offset(x = 12.dp, y = (-4).dp)
-                    ) {
+                    IconButton(onClick = { onFavoriteClick(place.id) }, modifier = Modifier.offset(x = 12.dp, y = (-4).dp)) {
                         Icon(
                             imageVector = if (place.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite",
+                            contentDescription = null,
                             tint = favoriteColor,
                             modifier = Modifier.size(24.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = place.description["fr"] ?: "",
+                    text = teaserText,
                     style = MaterialTheme.typography.bodyMedium,
                     color = StitchOnSurfaceVariant,
                     maxLines = 2,
@@ -197,15 +165,15 @@ fun PlaceCardPreview() {
         place = Place(
             id = "1",
             name = "Kasbah de Tanger",
-            description = mapOf("fr" to "Description"),
+            description = mapOf("en" to "Description"),
+            teaser = mapOf("en" to "A majestic 15th-century fortress..."),
             category = Category.HISTORY,
             latitude = 0.0,
             longitude = 0.0,
             address = "Tanger",
             photos = emptyList(),
             rating = 4.8f,
-            reviewCount = 120,
-            distanceKm = 1.2
+            reviewCount = 120
         ),
         onPlaceClick = {},
         onFavoriteClick = {}
