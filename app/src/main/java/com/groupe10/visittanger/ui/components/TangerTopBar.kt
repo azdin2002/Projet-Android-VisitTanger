@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.StitchPrimary
 import com.groupe10.visittanger.ui.theme.StitchSurface
 
@@ -76,7 +77,7 @@ fun TangerTopBar(
                             .border(2.dp, StitchPrimary.copy(alpha = 0.1f), CircleShape)
                     ) {
                         AsyncImage(
-                            model = "https://lh3.googleusercontent.com/aida-public/AB6AXuBcbZfUd4lo9ucG5XDaatgZMjrfOOaP06FUxR1huCISCX9z8OGVr3RbjiCN8ZC8j_wPe4XLBETOGYAxVvtxKLMgXLaDgIBQJhLdqHj-fvnQjX0GV1AGHhsUIvGBICSChD1dhnj7KvRVQJigSMXdzSfFa25rk9DasRTuEphmEtG6rf_E2e7MdK32BrCp1YoQwLuz7jVISzKVEVOpA1tI7bxh6LRDalzzXH7ZH1znms1-PV2jRPt25F2_sx4A6yNX0FNtMFYmKe6bu7Q",
+                            model = R.drawable.img_user_placeholder,
                             contentDescription = "Profile",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop

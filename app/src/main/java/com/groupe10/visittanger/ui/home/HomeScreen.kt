@@ -191,7 +191,7 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
             .clip(RoundedCornerShape(32.dp))
     ) {
         AsyncImage(
-            model = "https://lh3.googleusercontent.com/aida-public/AB6AXuAtMRy4Z1c1nbM0Uj0wlSllN0kM-8AhLeTjInzomNrZmy0Ik_PK_2MDAn-qXzZJ33pb0p6EuPusC5Gn5fOpZ_NCXmbxW0mL_atUpO2-LmdvN9-tuRr6ux_S5IdPw5SAaWaiuM8IXg2AJkT4DDLSt5sDsFGX-2fQPFKw5lsArufWu_N6A6XZ4qc3Kfe0JRHKI2_k35aWj60fv0RUFIXUAgpL7EDl3MyLGSAvG4pvyDMy-xjvs3cMYY2jUDsyfu5DM1gAiwFtQmOwQI",
+            model = R.drawable.img_home_hero_sunset,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

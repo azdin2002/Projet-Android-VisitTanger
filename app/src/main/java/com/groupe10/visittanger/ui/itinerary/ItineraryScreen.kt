@@ -112,10 +112,11 @@ fun ItineraryScreen(
             // Timeline Items
             itemsIndexed(uiState.itineraries) { index, itinerary ->
                 // Map local images based on index for variety
-                val placeholderImg = when(index % 3) {
-                    0 -> R.drawable.img_place_kasbah
+                val placeholderImg = when(index % 4) {
+                    0 -> R.drawable.img_home_hero_kasbah
                     1 -> R.drawable.img_place_medina
-                    else -> R.drawable.img_place_grand_socco
+                    2 -> R.drawable.img_place_grand_socco
+                    else -> R.drawable.img_place_cafe_hafa
                 }
                 
                 TimelineItem(

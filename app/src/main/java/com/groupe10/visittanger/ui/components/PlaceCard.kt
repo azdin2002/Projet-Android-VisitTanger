@@ -31,6 +31,8 @@ import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.ui.theme.*
 
+import com.groupe10.visittanger.R
+
 @Composable
 fun PlaceCard(
     place: Place,
@@ -42,6 +44,24 @@ fun PlaceCard(
         targetValue = if (place.isFavorite) Color.Red else StitchOutline,
         label = "favoriteColor"
     )
+
+    // Fallback images for known places if remote photo is missing
+    val localImageRes = when {
+        place.name.contains("Kasbah de Tanger", ignoreCase = true) -> R.drawable.img_home_hero_kasbah
+        place.name.contains("Cap Spartel", ignoreCase = true) -> R.drawable.img_place_cap_spartel
+        place.name.contains("Grottes d Hercule", ignoreCase = true) -> R.drawable.img_place_hercules_caves
+        place.name.contains("Medina de Tanger", ignoreCase = true) -> R.drawable.img_place_medina
+        place.name.contains("Grand Socco", ignoreCase = true) -> R.drawable.img_place_grand_socco
+        place.name.contains("Plage Malabata", ignoreCase = true) -> R.drawable.img_place_malabata
+        place.name.contains("Stade Ibn Battouta", ignoreCase = true) -> R.drawable.img_place_stadium
+        place.name.contains("Plage de Tanger", ignoreCase = true) -> R.drawable.img_place_beach_city
+        place.name.contains("Souk de Tanger", ignoreCase = true) -> R.drawable.img_place_souk
+        place.name.contains("Restaurant El Korsan", ignoreCase = true) -> R.drawable.img_place_restaurant
+        place.name.contains("Parc Perdicaris", ignoreCase = true) -> R.drawable.img_place_perdicaris
+        place.name.contains("Musée de la Kasbah", ignoreCase = true) -> R.drawable.img_place_kasbah_museum
+        place.name.contains("Hafa", ignoreCase = true) -> R.drawable.img_place_cafe_hafa
+        else -> null
+    }
 
     Card(
         modifier = modifier
@@ -59,9 +79,15 @@ fun PlaceCard(
                     .fillMaxWidth()
                     .height(180.dp)
             ) {
-                if (place.photos.isNotEmpty()) {
+                val imageModel = when {
+                    place.photos.isNotEmpty() -> place.photos.first()
+                    localImageRes != null -> localImageRes
+                    else -> null
+                }
+
+                if (imageModel != null) {
                     AsyncImage(
-                        model = place.photos.first(),
+                        model = imageModel,
                         contentDescription = place.name,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop

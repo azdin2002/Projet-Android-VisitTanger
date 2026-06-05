@@ -91,7 +91,7 @@ fun ProfileScreen(
                                     .border(4.dp, StitchSurface, CircleShape)
                             ) {
                                 AsyncImage(
-                                    model = uiState.user?.photoUrl ?: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvXHHAgAPajcbuyMwN-Xsjmt70uXb340_auh294dmu25g3PIcTmm6mYiww9folz8kdtw5uqTJsrk5oOy6ZOzyczchME0yeDv2Tt9_L66yR5nvnzPZd7C1UNzDujUf6wrF6KfM_l4bBD_7e3zykdBdS5-2zNr73Ws7kd6Fu2-WVtva6fhvc1yWgcSksgMGsVE-qedOFGkwXXensLiZQFSzf1kYUx1J0TrVPvswWocBc1G2IIzeqiOV1WZEx3zCmvFJHUkjnbAOMoSo",
+                                    model = uiState.user?.photoUrl ?: R.drawable.img_user_placeholder,
                                     contentDescription = "Avatar",
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Crop
