@@ -6,8 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,7 +26,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
-import com.groupe10.visittanger.domain.model.ItineraryType
 import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.theme.*
 
@@ -46,7 +43,7 @@ fun ItineraryScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding(),
+                top = paddingValues.calculateTopPadding() + 16.dp,
                 bottom = paddingValues.calculateBottomPadding() + 100.dp
             )
         ) {
@@ -54,73 +51,99 @@ fun ItineraryScreen(
             item {
                 Box(
                     modifier = Modifier
-                        .padding(20.dp)
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
                         .fillMaxWidth()
-                        .height(240.dp)
-                        .clip(RoundedCornerShape(24.dp))
+                        .height(260.dp)
+                        .clip(RoundedCornerShape(32.dp))
                 ) {
                     AsyncImage(
-                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuD4ub-cRNWYy1FufX2GrvBNvXxnc5lb4CA2joEmw_G3WGTT8KTLNWNEmhQeuZ2OKmbCjx3vKE1ByVEdWrEzpAwyJhsmuslmNvZbx52ccucSiyLx6ftsFTPcPNmVwqGSgzsCmPOWhmJSMRGDsVtEw2Nqkrcn93v7Iu4_Rmv-b0VNgBCTTA0eADG20e88raje4bSTvCGFcsZmcyo9C_Quz7QOyvDUvwqIyk8S7BfP1wXWin1q5WFNRv7y1mbdzYIdSEGDHfy_bZldLP0",
+                        model = R.drawable.img_itinerary_header,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
-                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.8f)))))
+                    Box(modifier = Modifier.fillMaxSize().background(
+                        Brush.verticalGradient(
+                            listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.9f)),
+                            startY = 400f
+                        )
+                    ))
                     Column(modifier = Modifier.align(Alignment.BottomStart).padding(24.dp)) {
-                        Text("My Trip to Tangier", style = MaterialTheme.typography.headlineLarge, color = Color.White)
+                        Surface(color = StitchSecondary, shape = CircleShape) {
+                            Text(
+                                "ACTIVE TRIP", 
+                                color = Color.White, 
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "The Pearl of the Strait", 
+                            style = MaterialTheme.typography.headlineLarge, 
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.CalendarMonth, null, tint = Color.White.copy(alpha = 0.8f), modifier = Modifier.size(16.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text("Oct 12 — Oct 15, 2026", style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.8f))
+                            Icon(Icons.Default.CalendarMonth, null, tint = Color.White.copy(alpha = 0.8f), modifier = Modifier.size(14.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text("Oct 12 — Oct 15", style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.8f))
                         }
                     }
                 }
             }
 
-            // Timeline Header
+            // Timeline Section Header
             item {
-                Row(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Surface(
-                        color = StitchSecondaryContainer,
-                        shape = CircleShape,
-                        modifier = Modifier.size(56.dp),
-                        border = BorderStroke(1.dp, StitchOnSecondaryContainer.copy(alpha = 0.1f))
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("1", style = MaterialTheme.typography.headlineMedium, color = StitchOnSecondaryContainer)
-                        }
-                    }
-                    Column {
-                        Text("Day 1: Arrival & Old City", style = MaterialTheme.typography.headlineSmall, color = StitchPrimary)
-                        Text("Monday, October 12", style = MaterialTheme.typography.labelSmall, color = StitchOnSurfaceVariant)
-                    }
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
+                    Text(
+                        "Plan for Today", 
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), 
+                        color = StitchPrimary
+                    )
+                    Text(
+                        "Monday, October 12 • Arrival & Old City", 
+                        style = MaterialTheme.typography.bodyMedium, 
+                        color = StitchOnSurfaceVariant
+                    )
                 }
             }
 
             // Timeline Items
-            items(uiState.itineraries) { itinerary ->
-                TimelineItem(itinerary.title, "9:00 AM", onItineraryClick = { onItineraryClick(itinerary.id) })
+            itemsIndexed(uiState.itineraries) { index, itinerary ->
+                // Map local images based on index for variety
+                val placeholderImg = when(index % 3) {
+                    0 -> R.drawable.img_place_kasbah
+                    1 -> R.drawable.img_place_medina
+                    else -> R.drawable.img_place_grand_socco
+                }
+                
+                TimelineItem(
+                    title = itinerary.title, 
+                    time = "09:30 AM", 
+                    image = placeholderImg,
+                    isLast = index == uiState.itineraries.size - 1,
+                    onItineraryClick = { onItineraryClick(itinerary.id) }
+                )
             }
 
             // Add Event Placeholder
             item {
-                Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+                Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
                     Surface(
-                        modifier = Modifier.fillMaxWidth().height(100.dp),
+                        modifier = Modifier.fillMaxWidth().height(80.dp),
                         color = Color.Transparent,
                         shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(2.dp, Brush.linearGradient(listOf(StitchOutlineVariant, Color.Transparent)))
+                        border = BorderStroke(1.dp, StitchOutlineVariant.copy(alpha = 0.5f))
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.clickable { /* Add activity */ }
                         ) {
-                            Icon(Icons.Default.AddCircle, null, tint = StitchOutline, modifier = Modifier.size(32.dp))
-                            Text("Add Activity to Day 1", style = MaterialTheme.typography.labelMedium, color = StitchOutline)
+                            Icon(Icons.Default.AddCircleOutline, null, tint = StitchPrimary, modifier = Modifier.size(24.dp))
+                            Spacer(Modifier.width(12.dp))
+                            Text("Add Activity", style = MaterialTheme.typography.labelLarge, color = StitchPrimary)
                         }
                     }
                 }
@@ -130,17 +153,51 @@ fun ItineraryScreen(
 }
 
 @Composable
-fun TimelineItem(title: String, time: String, onItineraryClick: () -> Unit) {
+fun TimelineItem(
+    title: String, 
+    time: String, 
+    image: Int,
+    isLast: Boolean,
+    onItineraryClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .height(IntrinsicSize.Min)
     ) {
-        // Vertical Line with Dot
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(56.dp)) {
-            Box(modifier = Modifier.size(16.dp).clip(CircleShape).background(StitchPrimary).border(4.dp, StitchBackground, CircleShape))
-            Box(modifier = Modifier.weight(1f).width(2.dp).background(Brush.verticalGradient(listOf(StitchPrimary, StitchSurfaceVariant))))
+        // Vertical Line and Time Info
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, 
+            modifier = Modifier.width(64.dp)
+        ) {
+            Text(
+                time.split(" ")[0], 
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold), 
+                color = StitchPrimary
+            )
+            Text(
+                time.split(" ")[1], 
+                style = MaterialTheme.typography.labelSmall, 
+                color = StitchOutline
+            )
+            
+            Spacer(Modifier.height(12.dp))
+            
+            Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(StitchPrimary))
+            
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .width(2.dp)
+                        .background(StitchOutlineVariant.copy(alpha = 0.3f))
+                )
+            } else {
+                Spacer(Modifier.height(24.dp))
+            }
         }
+        
+        Spacer(Modifier.width(16.dp))
         
         // Content Card
         Surface(
@@ -148,35 +205,47 @@ fun TimelineItem(title: String, time: String, onItineraryClick: () -> Unit) {
                 .padding(bottom = 24.dp)
                 .fillMaxWidth()
                 .clickable { onItineraryClick() },
-            color = Color.White.copy(alpha = 0.6f),
-            shape = RoundedCornerShape(20.dp),
-            border = BorderStroke(1.dp, StitchOutlineVariant.copy(alpha = 0.3f))
+            color = StitchSurfaceContainerLow,
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(1.dp, StitchSurfaceVariant)
         ) {
-            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(modifier = Modifier.size(80.dp).clip(RoundedCornerShape(12.dp)).background(StitchSurfaceVariant)) {
-                     AsyncImage(
-                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuBJWA4R_H5PZJUxu0yAJvcPYw5LK9b1Uctm2Q83ytkF3OymXmbpi1x_ec8D5qNeE1xLQwA6kYm4VMUqPpASQA4TUJ2Z_iImj412m0HQ8b_ZXwrU_f1ZwtUd1xkmy1I7tlrjz6IjOfpy3a22sXGLGhBYk7UQnuPY2W8Gx0RTxNpXzXMC3pSD43hcYefTKcel0UbqWqgC1NyaMz9vgbwrQ1mfjH2olPFgJCMYDss7gmfQBsjBCk_AHF-n0W_seVEPIXui-erBUNDTGks",
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                     )
-                }
+            Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+                
+                Spacer(Modifier.width(16.dp))
+                
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(title, style = MaterialTheme.typography.titleMedium, color = StitchPrimary, fontWeight = FontWeight.Bold)
-                        Surface(color = StitchSecondaryFixed, shape = CircleShape) {
-                            Text(time, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, color = StitchSecondary)
-                        }
-                    }
+                    Text(
+                        title, 
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), 
+                        color = StitchPrimary,
+                        maxLines = 1
+                    )
                     Spacer(Modifier.height(4.dp))
-                    Text("Explore the heart of the city's most famous square.", style = MaterialTheme.typography.bodySmall, color = StitchOnSurfaceVariant)
-                    Spacer(Modifier.height(12.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(onClick = {}, modifier = Modifier.height(36.dp), shape = RoundedCornerShape(8.dp), colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary)) {
-                            Icon(Icons.Default.Directions, null, modifier = Modifier.size(14.dp))
-                            Spacer(Modifier.width(4.dp))
-                            Text("Directions", style = MaterialTheme.typography.labelSmall)
-                        }
+                    Text(
+                        "Visit this iconic landmark...", 
+                        style = MaterialTheme.typography.bodyMedium, 
+                        color = StitchOnSurfaceVariant,
+                        maxLines = 1
+                    )
+                    
+                    Spacer(Modifier.height(8.dp))
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Directions, null, tint = StitchSecondary, modifier = Modifier.size(14.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            "Get Directions", 
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), 
+                            color = StitchSecondary
+                        )
                     }
                 }
             }
