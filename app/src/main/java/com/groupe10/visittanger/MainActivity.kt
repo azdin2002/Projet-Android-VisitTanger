@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
             VisitTangerTheme(darkTheme = isDarkMode) {
                 CompositionLocalProvider(
                     LocalLayoutDirection provides
-                        LanguageManager.getLayoutDirection(currentLang)
+                            LanguageManager.getLayoutDirection(currentLang)
                 ) {
                     MainScreen(windowSizeClass = windowSizeClass)
                 }
