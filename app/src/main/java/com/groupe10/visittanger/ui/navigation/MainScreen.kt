@@ -21,15 +21,10 @@ import com.groupe10.visittanger.ui.adaptive.DeviceType
 import com.groupe10.visittanger.ui.main.DrawerNavContent
 import com.groupe10.visittanger.ui.main.NavItem
 import com.groupe10.visittanger.ui.main.TangerBottomNavBar
-import com.groupe10.visittanger.ui.theme.TangerGreen
-import com.groupe10.visittanger.ui.theme.TangerGreenLight
+import com.groupe10.visittanger.ui.theme.*
 
 private const val TAG_NAV = "VisitTanger.Nav"
 
-/**
- * Racine des onglets = Home (pas [findStartDestination] du graphe, qui peut rester « login »
- * après connexion et faire sélectionner la mauvaise entrée au popUpTo).
- */
 private fun androidx.navigation.NavController.navigateToTab(route: String) {
     navigate(route) {
         popUpTo(Screen.Home.route) {
@@ -58,120 +53,48 @@ fun MainScreen(
 
     // Destinations bottom nav
     val navItems = listOf(
-        NavItem(Screen.Home, Icons.Default.Home,
-                Icons.Outlined.Home, "Accueil"),
+        NavItem(Screen.Home, Icons.Default.Explore,
+                Icons.Outlined.Explore, "Discover"),
         NavItem(Screen.Map, Icons.Default.Map,
-                Icons.Outlined.Map, "Carte"),
+                Icons.Outlined.Map, "Map"),
         NavItem(Screen.Itinerary, Icons.Default.Route,
-                Icons.Outlined.Route, "Itinéraires"),
-        NavItem(Screen.Favorites, Icons.Default.Favorite,
-                Icons.Outlined.FavoriteBorder, "Favoris"),
+                Icons.Outlined.Route, "Trips"),
+        NavItem(Screen.Favorites, Icons.Default.Bookmark,
+                Icons.Outlined.BookmarkBorder, "Saved"),
         NavItem(Screen.Profile, Icons.Default.Person,
-                Icons.Outlined.Person, "Profil")
+                Icons.Outlined.Person, "Profile")
     )
 
     // Écrans qui cachent la nav
     val hideNavRoutes = listOf(
+        Screen.Welcome.route,
         Screen.Login.route,
         Screen.Register.route,
-        Screen.Details.route, // Note: Screen.Details.route and not Screen.Detail.route
+        Screen.Details.route,
         Screen.ItineraryDetail.route,
     )
     val showNav = currentRoute !in hideNavRoutes
 
-    when {
-        // EXPANDED → NavigationDrawer
-        config.showNavigationDrawer -> {
-            PermanentNavigationDrawer(
-                drawerContent = {
-                    PermanentDrawerSheet(
-                        modifier = Modifier.width(240.dp)
-                    ) {
-                        DrawerNavContent(
-                            navItems = navItems,
-                            currentRoute = currentRoute,
-                            onNavClick = { screen ->
-                                Log.d(TAG_NAV, "Drawer navigate -> ${screen.route} from=$currentRoute")
-                                navController.navigateToTab(screen.route)
-                            }
-                        )
-                    }
-                }
-            ) {
-                AppNavGraph(
-                    navController = navController,
-                    windowSizeClass = windowSizeClass
-                )
-            }
-        }
-
-        // MEDIUM → NavigationRail
-        config.showNavigationRail -> {
-            Row(Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            bottomBar = {
                 if (showNav) {
-                    NavigationRail(
-                        containerColor = Color.White,
-                        contentColor = TangerGreen
-                    ) {
-                        Spacer(Modifier.weight(1f))
-                        navItems.forEach { item ->
-                            val selected = currentRoute == item.screen.route
-                            NavigationRailItem(
-                                icon = {
-                                    Icon(
-                                        if (selected) item.selectedIcon
-                                        else item.unselectedIcon,
-                                        contentDescription = item.label
-                                    )
-                                },
-                                label = { Text(item.label,
-                                              fontSize = 10.sp) },
-                                selected = selected,
-                                onClick = {
-                                    Log.d(TAG_NAV, "Rail navigate -> ${item.screen.route} from=$currentRoute")
-                                    navController.navigateToTab(item.screen.route)
-                                },
-                                colors = NavigationRailItemDefaults
-                                    .colors(
-                                        selectedIconColor = TangerGreen,
-                                        selectedTextColor = TangerGreen,
-                                        indicatorColor = TangerGreenLight
-                                    )
-                            )
+                    TangerBottomNavBar(
+                        navItems = navItems,
+                        currentRoute = currentRoute,
+                        onNavClick = { screen ->
+                            navController.navigateToTab(screen.route)
                         }
-                        Spacer(Modifier.weight(1f))
-                    }
+                    )
                 }
-                AppNavGraph(
-                    navController = navController,
-                    windowSizeClass = windowSizeClass,
-                    modifier = Modifier.weight(1f)
-                )
             }
-        }
-
-        // COMPACT → BottomNavBar (comportement actuel)
-        else -> {
-            Scaffold(
-                bottomBar = {
-                    if (showNav) {
-                        TangerBottomNavBar(
-                            navItems = navItems,
-                            currentRoute = currentRoute,
-                            onNavClick = { screen ->
-                                Log.d(TAG_NAV, "BottomNav navigate -> ${screen.route} from=$currentRoute")
-                                navController.navigateToTab(screen.route)
-                            }
-                        )
-                    }
-                }
-            ) { paddingValues ->
-                AppNavGraph(
-                    navController = navController,
-                    windowSizeClass = windowSizeClass,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+        ) { paddingValues ->
+            AppNavGraph(
+                navController = navController,
+                windowSizeClass = windowSizeClass,
+                // We pass paddingValues but let screens handle their own TopBars
+                modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
+            )
         }
     }
 }

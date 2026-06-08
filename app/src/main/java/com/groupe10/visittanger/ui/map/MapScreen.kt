@@ -88,7 +88,6 @@ fun MapScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.8f))
                 .padding(bottom = 8.dp)
         ) {
             TangerTopBar(title = stringResource(R.string.map_title))

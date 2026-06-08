@@ -1,166 +1,258 @@
 package com.groupe10.visittanger.ui.itinerary
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Route
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
-import com.groupe10.visittanger.domain.model.ItineraryType
 import com.groupe10.visittanger.ui.components.TangerTopBar
-import com.groupe10.visittanger.ui.itinerary.detail.ItineraryDetailScreen
-import com.groupe10.visittanger.ui.theme.TangerGreenLight
+import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun ItineraryScreen(
     onItineraryClick: (String) -> Unit,
-    windowSizeClass: WindowSizeClass,
     viewModel: ItineraryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val isExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
-
-    var selectedItineraryId by remember { mutableStateOf<String?>(null) }
-
-    if (isExpanded) {
-        Row(Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier.weight(0.4f).fillMaxHeight(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                item {
-                    Text(
-                        text = stringResource(R.string.itinerary_title),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
+    
+    Scaffold(
+        topBar = { TangerTopBar(title = "My Journeys") },
+        containerColor = StitchBackground,
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                top = paddingValues.calculateTopPadding() + 16.dp,
+                bottom = paddingValues.calculateBottomPadding() + 100.dp
+            )
+        ) {
+            // Hero Trip Header
+            item {
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                        .height(260.dp)
+                        .clip(RoundedCornerShape(32.dp))
+                ) {
+                    AsyncImage(
+                        model = R.drawable.img_itinerary_header,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
+                    Box(modifier = Modifier.fillMaxSize().background(
+                        Brush.verticalGradient(
+                            listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.9f)),
+                            startY = 400f
+                        )
+                    ))
+                    Column(modifier = Modifier.align(Alignment.BottomStart).padding(24.dp)) {
+                        Surface(color = StitchSecondary, shape = CircleShape) {
+                            Text(
+                                "ACTIVE TRIP", 
+                                color = Color.White, 
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "The Pearl of the Strait", 
+                            style = MaterialTheme.typography.headlineLarge, 
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.CalendarMonth, null, tint = Color.White.copy(alpha = 0.8f), modifier = Modifier.size(14.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text("Oct 12 — Oct 15", style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.8f))
+                        }
+                    }
                 }
-                items(uiState.itineraries, key = { it.id }) { itin ->
-                    val isSelected = selectedItineraryId == itin.id
-                    ItineraryCard(
-                        itinerary = itin,
-                        onClick = { selectedItineraryId = itin.id },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
+            }
+
+            // Timeline Section Header
+            item {
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
+                    Text(
+                        "Plan for Today", 
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), 
+                        color = StitchPrimary
+                    )
+                    Text(
+                        "Monday, October 12 • Arrival & Old City", 
+                        style = MaterialTheme.typography.bodyMedium, 
+                        color = StitchOnSurfaceVariant
                     )
                 }
             }
 
-            VerticalDivider(modifier = Modifier.fillMaxHeight().width(1.dp))
+            // Timeline Items
+            itemsIndexed(uiState.itineraries) { index, itinerary ->
+                // Map local images based on index for variety
+                val placeholderImg = when(index % 4) {
+                    0 -> R.drawable.img_home_hero_kasbah
+                    1 -> R.drawable.img_place_medina
+                    2 -> R.drawable.img_place_grand_socco
+                    else -> R.drawable.img_place_cafe_hafa
+                }
+                
+                TimelineItem(
+                    title = itinerary.title, 
+                    time = "09:30 AM", 
+                    image = placeholderImg,
+                    isLast = index == uiState.itineraries.size - 1,
+                    onItineraryClick = { onItineraryClick(itinerary.id) }
+                )
+            }
 
-            Box(modifier = Modifier.weight(0.6f).fillMaxHeight()) {
-                if (selectedItineraryId != null) {
-                    ItineraryDetailScreen(
-                        itineraryId = selectedItineraryId!!,
-                        onBackClick = { selectedItineraryId = null },
-                        onPlaceClick = onItineraryClick
-                    )
-                } else {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.Route, null, Modifier.size(64.dp), TangerGreenLight)
-                            Spacer(Modifier.height(16.dp))
-                            Text("Sélectionnez un itinéraire", color = Color.Gray)
+            // Add Event Placeholder
+            item {
+                Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().height(80.dp),
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(20.dp),
+                        border = BorderStroke(1.dp, StitchOutlineVariant.copy(alpha = 0.5f))
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.clickable { /* Add activity */ }
+                        ) {
+                            Icon(Icons.Default.AddCircleOutline, null, tint = StitchPrimary, modifier = Modifier.size(24.dp))
+                            Spacer(Modifier.width(12.dp))
+                            Text("Add Activity", style = MaterialTheme.typography.labelLarge, color = StitchPrimary)
                         }
                     }
                 }
             }
         }
-    } else {
-        ItineraryPhoneLayout(
-            uiState = uiState,
-            onItineraryClick = onItineraryClick,
-            onTypeSelected = viewModel::onTypeSelected
-        )
     }
 }
 
 @Composable
-fun ItineraryPhoneLayout(
-    uiState: ItineraryUiState,
-    onItineraryClick: (String) -> Unit,
-    onTypeSelected: (ItineraryType?) -> Unit
+fun TimelineItem(
+    title: String, 
+    time: String, 
+    image: Int,
+    isLast: Boolean,
+    onItineraryClick: () -> Unit
 ) {
-    Scaffold(
-        topBar = { TangerTopBar(title = stringResource(R.string.itinerary_title)) }
-    ) { paddingValues ->
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            item {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(stringResource(R.string.itinerary_explore), fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                    Text(stringResource(R.string.itinerary_subtitle), color = Color.Gray, fontSize = 14.sp)
-                }
-            }
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .height(IntrinsicSize.Min)
+    ) {
+        // Vertical Line and Time Info
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, 
+            modifier = Modifier.width(64.dp)
+        ) {
+            // Adjusted spacer to be higher (20dp instead of 36dp)
+            Spacer(Modifier.height(20.dp))
 
-            item {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    item {
-                        FilterChip(
-                            selected = uiState.selectedType == null,
-                            onClick = { onTypeSelected(null) },
-                            label = { Text(stringResource(R.string.itinerary_all)) }
-                        )
-                    }
-                    items(ItineraryType.values()) { type ->
-                        FilterChip(
-                            selected = uiState.selectedType == type,
-                            onClick = { onTypeSelected(type) },
-                            label = { Text("${type.emoji} ${type.labelFr}") },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = Color(type.color),
-                                selectedLabelColor = Color.White
-                            )
-                        )
-                    }
-                }
+            Text(
+                time.split(" ")[0], 
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold), 
+                color = StitchPrimary
+            )
+            Text(
+                time.split(" ")[1], 
+                style = MaterialTheme.typography.labelSmall, 
+                color = StitchOutline
+            )
+            
+            Spacer(Modifier.height(8.dp))
+            
+            Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(StitchPrimary))
+            
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .width(2.dp)
+                        .background(StitchOutlineVariant.copy(alpha = 0.3f))
+                )
+            } else {
+                Spacer(Modifier.height(24.dp))
             }
-
-            if (uiState.itineraries.isNotEmpty() && uiState.selectedType == null) {
-                item {
-                    FeaturedItineraryCard(
-                        itinerary = uiState.itineraries.first(),
-                        onClick = { onItineraryClick(uiState.itineraries.first().id) }
+        }
+        
+        Spacer(Modifier.width(16.dp))
+        
+        // Content Card
+        Surface(
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .fillMaxWidth()
+                .clickable { onItineraryClick() },
+            color = StitchSurfaceContainerLow,
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(1.dp, StitchSurfaceVariant)
+        ) {
+            Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+                
+                Spacer(Modifier.width(16.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        title, 
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), 
+                        color = StitchPrimary,
+                        maxLines = 1
                     )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "Visit this iconic landmark...", 
+                        style = MaterialTheme.typography.bodyMedium, 
+                        color = StitchOnSurfaceVariant,
+                        maxLines = 1
+                    )
+                    
+                    Spacer(Modifier.height(8.dp))
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Directions, null, tint = StitchSecondary, modifier = Modifier.size(14.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            "Get Directions", 
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), 
+                            color = StitchSecondary
+                        )
+                    }
                 }
             }
-
-            item {
-                Text(
-                    text = stringResource(R.string.itinerary_all_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
-                )
-            }
-
-            items(items = uiState.itineraries, key = { it.id }) { itinerary ->
-                ItineraryCard(
-                    itinerary = itinerary,
-                    onClick = { onItineraryClick(itinerary.id) },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                )
-            }
-            item { Spacer(Modifier.height(80.dp)) }
         }
     }
 }
