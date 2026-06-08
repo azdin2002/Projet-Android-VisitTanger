@@ -125,9 +125,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onLanguageSelected(lang: String) {
+    fun onLanguageSelected(lang: String, onSaved: () -> Unit = {}) {
         viewModelScope.launch {
             userPreferencesDataStore.setLanguage(lang)
+            onSaved()
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,6 +21,7 @@ import com.groupe10.visittanger.ui.itinerary.ItineraryScreen
 import com.groupe10.visittanger.ui.itinerary.detail.ItineraryDetailScreen
 import com.groupe10.visittanger.ui.map.MapScreen
 import com.groupe10.visittanger.ui.profile.ProfileScreen
+import com.groupe10.visittanger.ui.welcome.WelcomeScreen
 
 private const val TAG_LOGOUT = "VisitTanger.Logout"
 
@@ -33,7 +35,7 @@ fun AppNavGraph(
     val startDestination = if (authViewModel.isUserLoggedIn()) {
         Screen.Home.route
     } else {
-        Screen.Login.route
+        Screen.Welcome.route
     }
 
     NavHost(
@@ -41,6 +43,13 @@ fun AppNavGraph(
         startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(
+                onGetStartedClick = {
+                    navController.navigate(Screen.Login.route)
+                }
+            )
+        }
         composable(Screen.Home.route) { 
             HomeScreen(
                 windowSizeClass = windowSizeClass,
@@ -56,7 +65,6 @@ fun AppNavGraph(
         }
         composable(Screen.Itinerary.route) {
             ItineraryScreen(
-                windowSizeClass = windowSizeClass,
                 onItineraryClick = { id ->
                     navController.navigate(Screen.ItineraryDetail.createRoute(id))
                 }
@@ -82,7 +90,11 @@ fun AppNavGraph(
                 },
                 onExploreClick = {
                     navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 }
             ) 
@@ -102,7 +114,7 @@ fun AppNavGraph(
             LoginScreen(navController = navController, viewModel = authViewModel) 
         }
         composable(Screen.Register.route) { 
-            RegisterScreen(navController = navController, viewModel = authViewModel) 
+            RegisterSection(navController = navController, viewModel = authViewModel) 
         }
         composable(
             route = Screen.Details.route,
@@ -115,10 +127,19 @@ fun AppNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onMapClick = { lat, lng ->
                     navController.navigate(Screen.Map.route) {
-                        popUpTo(Screen.Map.route) { inclusive = true }
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 }
             )
         }
     }
+}
+
+@Composable
+fun RegisterSection(navController: NavHostController, viewModel: AuthViewModel) {
+    RegisterScreen(navController = navController, viewModel = viewModel)
 }

@@ -2,6 +2,7 @@ package com.groupe10.visittanger.ui.language
 
 import android.content.Context
 import android.content.res.Configuration
+import android.os.LocaleList
 import androidx.compose.ui.unit.LayoutDirection
 import java.util.Locale
 
@@ -19,7 +20,8 @@ object LanguageManager {
         }
         Locale.setDefault(locale)
         val config = Configuration(context.resources.configuration)
-        config.setLocale(locale)
+        config.setLocales(LocaleList(locale))
+        config.setLayoutDirection(locale)
         return context.createConfigurationContext(config)
     }
 

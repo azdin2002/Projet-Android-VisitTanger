@@ -1,166 +1,115 @@
-# 🕌 Visit Tanger
+# Visit Tanger
 
-> Application mobile touristique Android dédiée à la découverte de Tanger — destinations, attractions, activités locales, cartes interactives et itinéraires optimisés.
+Visit Tanger is an Android app built to help tourists and locals explore the city of Tangier. You can browse places of interest, see them on a map, save favorites, follow suggested itineraries, and switch between French, English, and Arabic. The project was developed as part of our Master's program in DevOps and Cloud Computing at Université Abdelmalek Essaâdi, Faculté Polydisciplinaire de Larache (2025/2026), under the supervision of Pr. KOUISSI Mohamed.
 
----
+## About the project
 
-## 👥 Membres de l'équipe
+Tangier has a lot to offer — historic sites like the Kasbah and the Medina, natural spots such as Cap Spartel and the Hercules Caves, beaches, local food, markets, and cultural events. Visit Tanger brings these together in one place so you can discover the city at your own pace, whether you are planning a day trip or a longer stay.
 
-| Nom | Rôle |
-|-----|------|
-| **Wail CHAIRI MAHJOR** | UI / Jetpack Compose / Écrans |
-| **Azzeddine SALMOUN** | Data / API / ViewModel / Room |
+The app covers the main things you would expect from a city guide: account creation and login, a home screen with search and category filters, an interactive map, detailed place pages, curated itineraries, offline favorites, a user profile, and live weather for Tangier.
 
-**Groupe 10** — Master DevOps et Cloud Computing  
-Université Abdelmalek Essaâdi — Faculté Polydisciplinaire de Larache  
-Année Universitaire : 2025/2026  
-Encadrant : **Pr. KOUISSI Mohamed**
+## Team
 
----
+This is **Groupe 10**. Wail CHAIRI MAHJOR worked on the UI layer — Jetpack Compose screens, navigation, and the design system. Azzeddine SALMOUN handled the data side — repositories, ViewModels, Room, Firebase, and API integration.
 
-## 📱 Description du projet
+## What the app does
 
-**Visit Tanger** est une application Android native permettant aux touristes et habitants de découvrir la ville de Tanger sous toutes ses facettes :
+**Authentication** — Users can register and log in with email and password. Google and Facebook sign-in are also supported through Firebase Authentication.
 
-- 🕌 Sites historiques (Kasbah, Médina, Dar el Makhzen...)
-- 🌊 Nature et paysages (Cap Spartel, Grottes d'Hercule, plages...)
-- 🍽️ Gastronomie locale (restaurants, cafés, spécialités)
-- 🛍️ Shopping (souks, boutiques, artisanat)
-- 🗓️ Événements culturels et locaux
-- 🗺️ Itinéraires optimisés (1 jour, week-end, thématiques)
+**Home** — The main screen highlights popular places, lets you filter by category (History, Nature, Food, Shopping, Events, Beach), search by name, and shows the current weather in Tangier via the OpenWeather API.
 
----
+**Map** — Places appear on a Google Map with markers colored by category. You can tap a marker to open a quick preview, then go to the full detail page or get directions.
 
-## ✨ Fonctionnalités principales
+**Place details** — Each place has photos, a description (available in multiple languages), opening hours, pricing when relevant, ratings, and the option to add it to favorites or open navigation in Google Maps.
 
-### 🔐 Authentification
-- Inscription / Connexion classique (email + mot de passe)
-- Single Sign-On (SSO) via **Google** et **Facebook**
-- Gestion du profil utilisateur
+**Itineraries** — Pre-built routes are available (one day in Tangier, weekend, historical tour, nature escape, and more). You can browse the list of stops for each itinerary and jump to any place from there.
 
-### 🏠 Accueil
-- Bannière de bienvenue avec mise en avant des incontournables
-- Filtres par catégorie (Histoire, Nature, Food, Shopping, Événements)
-- Barre de recherche intelligente
-- Météo locale en temps réel
+**Favorites** — Saved places are stored locally with Room, so they remain available even without a network connection.
 
-### 🗺️ Carte interactive
-- Carte Google Maps avec pins colorés par catégorie
-- Recherche de lieux directement sur la carte
-- Fiche rapide d'un lieu en bottom sheet
-- Calcul d'itinéraire vers un lieu
+**Profile and settings** — Manage your account, change the app language (French, English, or Arabic with RTL support), and log out.
 
-### 📍 Détail d'un lieu
-- Galerie photos
-- Description multilingue (FR / EN / AR)
-- Horaires d'ouverture, tarifs, coordonnées
-- Avis et notes des utilisateurs
-- Ajout aux favoris
-- Bouton "Itinéraire" (intégration Maps)
+**Adaptive layout** — The interface adjusts for phones and tablets, in both portrait and landscape.
 
-### 🗓️ Itinéraires
-- Templates prédéfinis : "1 jour à Tanger", "Week-end complet", "Tanger historique", "Nature et évasion"
-- Création d'un itinéraire personnalisé
-- Export et partage d'un itinéraire
+## Tech stack
 
-### ❤️ Favoris
-- Sauvegarde locale des lieux favoris (Room — mode hors ligne)
-- Tri et filtres des favoris
+The app is written entirely in **Kotlin**. The UI uses **Jetpack Compose** with **Material 3**. We follow **MVVM** architecture with a clean separation between UI, domain, and data layers. **Hilt** handles dependency injection. Local data goes through **Room** and **DataStore**. Remote data comes from **Firebase Firestore** (places and itineraries) and **Retrofit** (weather). Images are loaded with **Coil**. Maps use the **Google Maps Compose** library. Authentication runs on **Firebase Auth**, with Google Sign-In and the Facebook SDK for social login.
 
-### 🌍 Internationalisation
-- Français 🇫🇷
-- Anglais 🇬🇧
-- Arabe 🇲🇦 (support RTL natif)
+| Requirement | Version |
+|-------------|---------|
+| Min SDK | 26 |
+| Target SDK | 36 |
+| Compile SDK | 36 |
+| Kotlin | 2.2.10 |
+| AGP | 9.2.1 |
 
-### 📐 Interface adaptative
-- Support Smartphone et Tablette
-- Modes Portrait et Paysage
-- Design System unifié (couleurs, typographie, composants)
+## Architecture
 
----
-
-## 🏗️ Architecture du projet
-
-L'application suit l'architecture **MVVM (Model-View-ViewModel)** recommandée par Google pour Android.
+The codebase is organized in three layers. The **UI layer** contains Compose screens and ViewModels that expose state through `StateFlow`. The **domain layer** holds business models, repository interfaces, and use cases — each use case does one thing. The **data layer** implements those repositories, combining Firestore, Retrofit, Room, and DataStore. Hilt wires everything together.
 
 ```
-app/
-├── data/
-│   ├── remote/
-│   │   ├── api/           ← Retrofit services (PlaceApiService, AuthApiService)
-│   │   └── dto/           ← Data Transfer Objects
-│   ├── local/
-│   │   ├── dao/           ← Room DAOs (PlaceDao, FavoriteDao)
-│   │   ├── entity/        ← Room Entities
-│   │   └── AppDatabase.kt
-│   ├── repository/        ← Implémentations des repositories
-│   └── datastore/         ← DataStore (langue, préférences)
-│
-├── domain/
-│   ├── model/             ← Modèles métier (Place, Itinerary, User, Review)
-│   ├── repository/        ← Interfaces des repositories
-│   └── usecase/           ← Use Cases (GetPlacesUseCase, SaveFavoriteUseCase...)
-│
-├── ui/
-│   ├── auth/              ← LoginScreen, RegisterScreen
-│   ├── home/              ← HomeScreen, HomeViewModel
-│   ├── map/               ← MapScreen, MapViewModel
-│   ├── detail/            ← DetailScreen, PlaceViewModel
-│   ├── itinerary/         ← ItineraryScreen, ItineraryViewModel
-│   ├── favorites/         ← FavoritesScreen, FavoritesViewModel
-│   ├── profile/           ← ProfileScreen, ProfileViewModel
-│   └── theme/             ← Design System (Color, Typography, Theme)
-│
-└── di/                    ← Hilt Modules (NetworkModule, DatabaseModule...)
+app/src/main/java/com/groupe10/visittanger/
+├── data/          remote APIs, Firestore, Room, DataStore, repository implementations
+├── domain/        models, repository interfaces, use cases
+├── ui/            screens, ViewModels, navigation, theme
+└── di/            Hilt modules
 ```
 
-### Schéma d'architecture
+Data for places follows an offline-first approach: Room caches what Firestore provides, so the app can still show content when the network is slow or unavailable.
 
-```
-┌─────────────────────────────────────┐
-│           UI Layer (Compose)         │
-│  Screens ←→ ViewModels (StateFlow)  │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│         Domain Layer                 │
-│     Use Cases + Models               │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│          Data Layer                  │
-│  Remote (Retrofit) | Local (Room)    │
-│  DataStore | SharedPreferences       │
-└─────────────────────────────────────┘
-         ↑ Injection via Hilt (DI)
+## Getting started
+
+### Prerequisites
+
+You need **Android Studio** (recent version, Ladybug or newer recommended) with the Android SDK installed. The project targets API 36 and requires a device or emulator running at least API 26. A JDK 11+ is used for compilation.
+
+### Clone and open
+
+```bash
+git clone https://github.com/azdin2002/Projet-Android-VisitTanger.git
+cd Projet-Android-VisitTanger
 ```
 
----
+Open the project folder in Android Studio and let Gradle sync finish.
 
-## 🛠️ Technologies utilisées
+### Configuration
 
-| Couche | Technologie |
-|--------|------------|
-| Langage | Kotlin |
-| UI | Jetpack Compose + Material 3 |
-| Navigation | Navigation Compose |
-| ViewModel | ViewModel + StateFlow + Coroutines |
-| DI | Hilt |
-| Base de données locale | Room |
-| Préférences | DataStore + SharedPreferences |
-| Réseau | Retrofit + OkHttp + Gson |
-| Images | Coil |
-| Carte | Google Maps SDK for Android |
-| Auth | Firebase Authentication |
-| SSO | Google Sign-In + Facebook SDK |
-| Tests | JUnit + Mockk |
-| Versioning | Git + GitHub |
+Before the app can build, you need a `local.properties` file at the project root (this file is gitignored and must be created locally). At minimum, add your Android SDK path and a Google Maps API key:
 
+```properties
+sdk.dir=C\:\\Users\\YourName\\AppData\\Local\\Android\\Sdk
+MAPS_API_KEY=your_google_maps_api_key
+```
 
+Optional keys — the app will still compile without them, but some features will be limited:
 
----
+```properties
+OPENWEATHER_API_KEY=your_openweather_api_key
+FACEBOOK_APP_ID=your_facebook_app_id
+FACEBOOK_CLIENT_TOKEN=your_facebook_client_token
+```
 
+**Google Maps** — Create a key in the [Google Cloud Console](https://console.cloud.google.com/), enable the Maps SDK for Android, and restrict it to your app's package name (`com.groupe10.visittanger`).
 
-## 📄 Licence
+**Firebase** — The project uses Firebase Authentication and Firestore. Place your `google-services.json` file in the `app/` directory. You can generate it from the [Firebase Console](https://console.firebase.google.com/) after creating an Android app with the same package name. Enable Email/Password, Google, and Facebook sign-in methods as needed.
 
-Projet académique — Université Abdelmalek Essaâdi 2025/2026
+**OpenWeather** — Sign up at [openweathermap.org](https://openweathermap.org/api) for a free API key if you want the weather widget on the home screen.
+
+**Facebook Login** — If you plan to use Facebook SSO, create an app on [developers.facebook.com](https://developers.facebook.com/) and add the App ID and Client Token to `local.properties`.
+
+### Run
+
+Connect a device or start an emulator, then click **Run** in Android Studio or use:
+
+```bash
+./gradlew installDebug
+```
+
+On first launch, the app seeds Firestore with sample place data if the collection is empty. Make sure your Firebase project has Firestore enabled and the appropriate security rules for development.
+
+## Screenshots
+
+_Screenshots can be added here once the app is finalized._
+
+## License
+
+This is an academic project developed for Université Abdelmalek Essaâdi, Faculté Polydisciplinaire de Larache, academic year 2025/2026. It is not licensed for commercial use.

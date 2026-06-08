@@ -17,24 +17,24 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = TangerGreen,
-    secondary = TangerAmber,
-    tertiary = TangerCoral,
+    primary = StitchPrimary,
+    secondary = StitchSecondary,
+    tertiary = StitchTertiary,
     background = Color(0xFF1C1B1F),
     surface = Color(0xFF1C1B1F),
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = TangerGreen,
-    secondary = TangerAmber,
-    tertiary = TangerCoral,
-    background = SurfaceLight,
-    surface = SurfaceLight,
-    onPrimary = Color.White,
+    primary = StitchPrimary,
+    secondary = StitchSecondary,
+    tertiary = StitchTertiary,
+    background = StitchBackground,
+    surface = StitchBackground,
+    onPrimary = StitchOnPrimary,
     onSecondary = Color.White,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
+    onBackground = StitchOnSurface,
+    onSurface = StitchOnSurface,
 )
 
 @Composable

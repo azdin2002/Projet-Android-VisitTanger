@@ -17,33 +17,30 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.LoadingIndicator
 import com.groupe10.visittanger.ui.components.TangerTopBar
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 
 @Composable
 fun FavoritesScreen(
     onPlaceClick: (String) -> Unit,
     onExploreClick: () -> Unit,
-    viewModel: FavoritesViewModel = hiltViewModel()
+    viewModel: FavoritesViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(id = R.string.favorites_title),
-                actions = {
-                    if (uiState.favoritesCount > 0) {
-                        Text(
-                            text = "${uiState.favoritesCount} ${stringResource(id = R.string.favorites_remove).lowercase()}",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                    }
-                }
+                title = stringResource(id = R.string.favorites_title)
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = paddingValues.calculateBottomPadding())
+        ) {
             when {
                 uiState.isLoading -> LoadingIndicator()
                 
@@ -52,7 +49,12 @@ fun FavoritesScreen(
                 )
 
                 else -> LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -65,7 +67,8 @@ fun FavoritesScreen(
                             onPlaceClick = { onPlaceClick(place.id) },
                             onDeleteSwipe = {
                                 viewModel.onFavoriteToggled(place)
-                            }
+                            },
+                            lang = currentLang,
                         )
                     }
                 }

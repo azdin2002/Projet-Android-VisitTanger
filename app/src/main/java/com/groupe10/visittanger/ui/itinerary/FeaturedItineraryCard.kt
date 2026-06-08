@@ -16,15 +16,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.groupe10.visittanger.R
+import com.groupe10.visittanger.ui.theme.toLocalizedLabel
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.domain.model.Itinerary
+import com.groupe10.visittanger.domain.model.*
 
 @Composable
 fun FeaturedItineraryCard(
     itinerary: Itinerary,
+    currentLang: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,7 +73,7 @@ fun FeaturedItineraryCard(
                     .align(Alignment.TopStart)
             ) {
                 Text(
-                    text = "${itinerary.type.emoji} ${itinerary.type.labelFr}",
+                    text = "${itinerary.type.emoji} ${itinerary.type.toLocalizedLabel()}",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelSmall
                 )
@@ -81,7 +86,7 @@ fun FeaturedItineraryCard(
             ) {
                 // Titre blanc bold 20sp
                 Text(
-                    text = itinerary.title,
+                    text = itinerary.localizedTitle(currentLang),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -94,9 +99,9 @@ fun FeaturedItineraryCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    InfoItem(icon = Icons.Default.AccessTime, text = itinerary.duration)
+                    InfoItem(icon = Icons.Default.AccessTime, text = itinerary.localizedDuration(currentLang))
                     InfoItem(icon = Icons.Default.Route, text = "${itinerary.totalDistanceKm} km")
-                    InfoItem(icon = Icons.Default.DirectionsRun, text = itinerary.difficulty)
+                    InfoItem(icon = Icons.Default.DirectionsRun, text = itinerary.localizedDifficulty(currentLang))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

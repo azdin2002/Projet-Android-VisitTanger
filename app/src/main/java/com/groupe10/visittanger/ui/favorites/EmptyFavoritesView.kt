@@ -63,7 +63,7 @@ fun EmptyFavoritesView(
                     containerColor = TangerGreen
                 )
             ) {
-                Text(stringResource(R.string.home_see_all)) // Approximation for "Explorer"
+                Text(stringResource(R.string.favorites_explore_cta))
             }
         }
     }

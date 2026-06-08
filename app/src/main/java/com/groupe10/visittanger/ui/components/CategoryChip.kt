@@ -1,13 +1,20 @@
 package com.groupe10.visittanger.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.groupe10.visittanger.domain.model.Category
+import com.groupe10.visittanger.ui.theme.StitchPrimary
+import com.groupe10.visittanger.ui.theme.StitchSecondary
+import com.groupe10.visittanger.ui.theme.StitchTertiary
 import com.groupe10.visittanger.ui.theme.toLocalizedName
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,50 +27,36 @@ fun CategoryChip(
 ) {
     val categoryColors = getCategoryColors(category)
     
-    val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) categoryColors.first else Color.Transparent,
-        label = "backgroundColor"
-    )
-    
-    val textColor by animateColorAsState(
-        targetValue = if (isSelected) categoryColors.second else categoryColors.second.copy(alpha = 0.7f),
-        label = "textColor"
-    )
-
     FilterChip(
         selected = isSelected,
         onClick = onClick,
         label = {
             Text(
-                text = category.toLocalizedName(),
-                color = textColor
+                text = category.toLocalizedName().uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp
+                )
             )
         },
         colors = FilterChipDefaults.filterChipColors(
-            containerColor = Color.Transparent,
-            selectedContainerColor = backgroundColor,
-            labelColor = categoryColors.second,
-            selectedLabelColor = textColor
+            selectedContainerColor = categoryColors.first,
+            selectedLabelColor = Color.White,
+            labelColor = categoryColors.second
         ),
-        border = if (!isSelected) {
-            FilterChipDefaults.filterChipBorder(
-                enabled = true,
-                selected = false,
-                borderColor = categoryColors.second.copy(alpha = 0.3f)
-            )
-        } else null,
+        shape = RoundedCornerShape(8.dp),
         modifier = modifier
     )
 }
 
 fun getCategoryColors(category: Category): Pair<Color, Color> {
     return when (category) {
-        Category.HISTORY -> Color(0xFFE6F1FB) to Color(0xFF185FA5)
-        Category.NATURE -> Color(0xFFEAF3DE) to Color(0xFF3B6D11)
-        Category.FOOD -> Color(0xFFFAEEDA) to Color(0xFF854F0B)
-        Category.BEACH -> Color(0xFFE1F5EE) to Color(0xFF0F6E56)
-        Category.SHOPPING -> Color(0xFFEEEDFE) to Color(0xFF534AB7)
-        Category.EVENTS -> Color(0xFFFAECE7) to Color(0xFF993C1D)
+        Category.HISTORY -> StitchPrimary to StitchPrimary
+        Category.NATURE -> StitchTertiary to StitchTertiary
+        Category.FOOD -> StitchSecondary to StitchSecondary
+        Category.BEACH -> Color(0xFF0F6E56) to Color(0xFF0F6E56)
+        Category.SHOPPING -> Color(0xFF534AB7) to Color(0xFF534AB7)
+        Category.EVENTS -> Color(0xFF993C1D) to Color(0xFF993C1D)
     }
 }
 

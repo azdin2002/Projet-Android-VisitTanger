@@ -13,15 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.groupe10.visittanger.R
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.groupe10.visittanger.domain.model.Itinerary
+import com.groupe10.visittanger.domain.model.*
+import com.groupe10.visittanger.ui.theme.toLocalizedLabel
 
 @Composable
 fun ItineraryCard(
     itinerary: Itinerary,
+    currentLang: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -70,7 +75,7 @@ fun ItineraryCard(
                     Spacer(modifier = Modifier.weight(1f))
                     // Durée
                     Text(
-                        text = itinerary.duration,
+                        text = itinerary.localizedDuration(currentLang),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.Gray
                     )
@@ -80,7 +85,7 @@ fun ItineraryCard(
 
                 // Text title bold 16sp maxLines 1
                 Text(
-                    text = itinerary.title,
+                    text = itinerary.localizedTitle(currentLang),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -89,7 +94,7 @@ fun ItineraryCard(
 
                 // Text description 12sp gris maxLines 2
                 Text(
-                    text = itinerary.description,
+                    text = itinerary.localizedDescription(currentLang),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                     maxLines = 2,
@@ -108,7 +113,7 @@ fun ItineraryCard(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${itinerary.places.size} étapes",
+                        text = stringResource(R.string.itinerary_steps_count, itinerary.places.size),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.Gray
                     )

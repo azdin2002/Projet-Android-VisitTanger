@@ -8,10 +8,20 @@ object PlaceMockData {
         Place(
             id = "1",
             name = "Kasbah de Tanger",
+            names = mapOf(
+                "fr" to "Kasbah de Tanger",
+                "en" to "Tangier Kasbah",
+                "ar" to "قصبة طنجة"
+            ),
             description = mapOf(
                 "fr" to "Ancienne citadelle dominant la baie de Tanger, la Kasbah offre une vue panoramique exceptionnelle et abrite le musée des Arts marocains.",
                 "en" to "Ancient citadel overlooking the bay of Tangier, the Kasbah offers an exceptional panoramic view and houses the Museum of Moroccan Arts.",
                 "ar" to "قصبة قديمة تطل على خليج طنجة، توفر إطلالة بانورامية استثنائية وتضم متحف الفنون المغربية."
+            ),
+            teaser = mapOf(
+                "fr" to "Une forteresse majestueuse du XVe siècle dominant la baie.",
+                "en" to "A majestic 15th-century fortress overlooking the bay.",
+                "ar" to "قلعة مهيبة من القرن الخامس عشر تطل على الخليج."
             ),
             category = Category.HISTORY,
             latitude = 35.7907, longitude = -5.8144,
@@ -22,10 +32,20 @@ object PlaceMockData {
         Place(
             id = "2",
             name = "Cap Spartel",
+            names = mapOf(
+                "fr" to "Cap Spartel",
+                "en" to "Cape Spartel",
+                "ar" to "كاب سبارتيل"
+            ),
             description = mapOf(
                 "fr" to "Le cap où se rencontrent l'Atlantique et la Méditerranée, célèbre pour son phare historique.",
                 "en" to "The cape where the Atlantic and the Mediterranean meet, famous for its historic lighthouse.",
                 "ar" to "الرأس حيث يلتقي المحيط الأطلسي والبحر الأبيض المتوسط، يشتهر بمنارته التاريخية."
+            ),
+            teaser = mapOf(
+                "fr" to "Le point de rencontre mythique de deux mers.",
+                "en" to "The mythical meeting point of two seas.",
+                "ar" to "نقطة الالتقاء الأسطورية لبحرين."
             ),
             category = Category.NATURE,
             latitude = 35.7863, longitude = -5.9248,
@@ -36,10 +56,20 @@ object PlaceMockData {
         Place(
             id = "3",
             name = "Grottes d'Hercule",
+            names = mapOf(
+                "fr" to "Grottes d'Hercule",
+                "en" to "Hercules Caves",
+                "ar" to "مغارات هرقل"
+            ),
             description = mapOf(
                 "fr" to "Grottes mythiques creusées dans la falaise, dont l'ouverture vers la mer évoque la carte de l'Afrique.",
                 "en" to "Mythical caves carved into the cliff, whose opening to the sea resembles the map of Africa.",
                 "ar" to "كهوف أسطورية محفورة في الجرف، فتحتها على البحر تشبه خريطة أفريقيا."
+            ),
+            teaser = mapOf(
+                "fr" to "Des grottes légendaires avec une vue unique sur l'océan.",
+                "en" to "Legendary caves with a unique view of the ocean.",
+                "ar" to "كهوف أسطورية مع إطلالة فريدة على المحيط."
             ),
             category = Category.NATURE,
             latitude = 35.7707, longitude = -5.9215,
@@ -50,10 +80,20 @@ object PlaceMockData {
         Place(
             id = "4",
             name = "Médina de Tanger",
+            names = mapOf(
+                "fr" to "Médina de Tanger",
+                "en" to "Tangier Medina",
+                "ar" to "مدينة طنجة القديمة"
+            ),
             description = mapOf(
                 "fr" to "Le coeur historique de Tanger, un labyrinthe de ruelles colorées et de marchés animés.",
                 "en" to "The historical heart of Tangier, a labyrinth of colorful alleys and lively markets.",
                 "ar" to "القلب التاريخي لطنجة، متاهة من الأزقة الملونة والأسواق النابضة بالحياة."
+            ),
+            teaser = mapOf(
+                "fr" to "Un labyrinthe historique plein de vie et de couleurs.",
+                "en" to "A historical labyrinth full of life and color.",
+                "ar" to "متاهة تاريخية مليئة بالحياة والألوان."
             ),
             category = Category.HISTORY,
             latitude = 35.7896, longitude = -5.8137,
@@ -64,10 +104,20 @@ object PlaceMockData {
         Place(
             id = "5",
             name = "Grand Socco",
+            names = mapOf(
+                "fr" to "Grand Socco",
+                "en" to "Grand Socco",
+                "ar" to "السوق الكبير"
+            ),
             description = mapOf(
                 "fr" to "La grande place animée de Tanger, point de rencontre entre la ville moderne et la médina.",
                 "en" to "The large, bustling square of Tangier, a meeting point between the modern city and the medina.",
                 "ar" to "الساحة الكبيرة والنابضة بالحياة في طنجة، وهي نقطة التقاء بين المدينة الحديثة والمدينة القديمة."
+            ),
+            teaser = mapOf(
+                "fr" to "La place la plus vivante, carrefour des cultures.",
+                "en" to "The most lively square, a crossroads of cultures.",
+                "ar" to "الساحة الأكثر حيوية، ملتقى الثقافات."
             ),
             category = Category.SHOPPING,
             latitude = 35.7878, longitude = -5.8101,
@@ -78,10 +128,20 @@ object PlaceMockData {
         Place(
             id = "6",
             name = "Plage Malabata",
+            names = mapOf(
+                "fr" to "Plage Malabata",
+                "en" to "Malabata Beach",
+                "ar" to "شاطئ مالاباطا"
+            ),
             description = mapOf(
                 "fr" to "Belle plage à l'est de Tanger offrant une vue magnifique sur la baie et la ville.",
                 "en" to "Beautiful beach east of Tangier offering a magnificent view of the bay and the city.",
                 "ar" to "شاطئ جميل شرق طنجة يوفر إطلالة رائعة على الخليج والمدينة."
+            ),
+            teaser = mapOf(
+                "fr" to "Une plage paisible avec vue sur toute la ville.",
+                "en" to "A peaceful beach with a view of the whole city.",
+                "ar" to "شاطئ هادئ مع إطلالة على المدينة بأكملها."
             ),
             category = Category.BEACH,
             latitude = 35.7997, longitude = -5.7891,
@@ -92,10 +152,20 @@ object PlaceMockData {
         Place(
             id = "7",
             name = "Café Hafa",
+            names = mapOf(
+                "fr" to "Café Hafa",
+                "en" to "Café Hafa",
+                "ar" to "مقهى الحافة"
+            ),
             description = mapOf(
                 "fr" to "Café mythique fondé en 1921, situé sur les falaises dominant le détroit de Gibraltar.",
                 "en" to "Mythic café founded in 1921, located on the cliffs overlooking the Strait of Gibraltar.",
                 "ar" to "مقهى أسطوري تأسس عام 1921، يقع على المنحدرات المطلة على مضيق جبل طارق."
+            ),
+            teaser = mapOf(
+                "fr" to "Un thé à la menthe avec vue sur l'Espagne.",
+                "en" to "A mint tea with a view of Spain.",
+                "ar" to "شاي بالنعناع مع إطلالة على إسبانيا."
             ),
             category = Category.FOOD,
             latitude = 35.8012, longitude = -5.8289,
@@ -106,10 +176,20 @@ object PlaceMockData {
         Place(
             id = "8",
             name = "Petit Socco",
+            names = mapOf(
+                "fr" to "Petit Socco",
+                "en" to "Petit Socco",
+                "ar" to "السوق الصغير"
+            ),
             description = mapOf(
                 "fr" to "Place historique au coeur de la médina, autrefois centre de la vie diplomatique de Tanger.",
                 "en" to "Historic square in the heart of the medina, formerly the center of diplomatic life in Tangier.",
                 "ar" to "ساحة تاريخية في قلب المدينة القديمة، كانت سابقاً مركزاً للحياة الدبلوماسية في طنجة."
+            ),
+            teaser = mapOf(
+                "fr" to "Le charme intemporel d'une place historique.",
+                "en" to "The timeless charm of a historic square.",
+                "ar" to "السحر الخالد لساحة تاريخية."
             ),
             category = Category.EVENTS,
             latitude = 35.7889, longitude = -5.8127,

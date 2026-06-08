@@ -23,7 +23,8 @@ import com.groupe10.visittanger.ui.components.PlaceCard
 fun SwipeToDeleteFavoriteCard(
     place: Place,
     onPlaceClick: () -> Unit,
-    onDeleteSwipe: () -> Unit
+    onDeleteSwipe: () -> Unit,
+    lang: String = "fr",
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
@@ -67,7 +68,8 @@ fun SwipeToDeleteFavoriteCard(
         PlaceCard(
             place = place.copy(isFavorite = true),
             onPlaceClick = { onPlaceClick() },
-            onFavoriteClick = { onDeleteSwipe() }
+            onFavoriteClick = { onDeleteSwipe() },
+            lang = lang,
         )
     }
 }

@@ -1,9 +1,11 @@
 package com.groupe10.visittanger.ui.itinerary.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -15,70 +17,95 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.ui.theme.toLocalizedLabel
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Itinerary
+import com.groupe10.visittanger.domain.model.*
 import com.groupe10.visittanger.ui.components.TangerTopBar
+import com.groupe10.visittanger.ui.language.LanguageViewModel
+import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun ItineraryDetailScreen(
     itineraryId: String,
     onBackClick: () -> Unit,
     onPlaceClick: (String) -> Unit,
-    viewModel: ItineraryDetailViewModel = hiltViewModel()
+    viewModel: ItineraryDetailViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val itinerary = uiState.itinerary
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = itinerary?.title ?: "Détails",
+                title = stringResource(R.string.itinerary_detail_title),
                 onBackClick = onBackClick
             )
-        }
+        },
+        containerColor = StitchBackground
     ) { paddingValues ->
         if (itinerary != null) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    bottom = paddingValues.calculateBottomPadding() + 32.dp
+                )
             ) {
-                // 1. COVER IMAGE + INFOS GÉNÉRALES
-                item { ItineraryCoverSection(itinerary) }
+                // 1. COVER IMAGE
+                item { ItineraryCoverSection(itinerary, currentLang) }
 
                 // 2. RÉSUMÉ (durée, distance, difficulté, étapes)
-                item { ItinerarySummarySection(itinerary) }
+                item { ItinerarySummarySection(itinerary, currentLang) }
 
                 // 3. DESCRIPTION
                 item {
-                    Text(
-                        text = itinerary.description,
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Text(
+                            text = stringResource(R.string.itinerary_overview),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = StitchPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = itinerary.localizedDescription(currentLang),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = StitchOnSurfaceVariant,
+                            lineHeight = 24.sp
+                        )
+                    }
                 }
 
                 // 4. TIMELINE DES ÉTAPES
                 item {
                     Text(
-                        text = "Programme",
-                        style = MaterialTheme.typography.titleMedium,
+                        text = stringResource(R.string.itinerary_the_plan),
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, bottom = 12.dp, top = 8.dp)
+                        color = StitchPrimary,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                     )
                 }
 
                 itemsIndexed(itinerary.places) { index, stop ->
                     ItineraryStopItem(
                         stop = stop,
+                        currentLang = currentLang,
                         isLast = index == itinerary.places.lastIndex,
                         isSelected = index == uiState.currentStopIndex,
                         onClick = {
@@ -88,60 +115,62 @@ fun ItineraryDetailScreen(
                     )
                 }
 
-                item { Spacer(Modifier.height(80.dp)) }
+                item { Spacer(Modifier.height(40.dp)) }
             }
         } else if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = StitchPrimary)
             }
         }
     }
 }
 
 @Composable
-fun ItineraryCoverSection(itinerary: Itinerary) {
+fun ItineraryCoverSection(itinerary: Itinerary, currentLang: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(300.dp)
     ) {
         AsyncImage(
-            model = itinerary.coverPhoto,
+            model = R.drawable.img_welcome_bg, // Use the Moroccan door style image
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            placeholder = painterResource(id = R.drawable.img_welcome_bg)
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f))
+                        colors = listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.8f)),
+                        startY = 300f
                     )
                 )
         )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(16.dp)
+                .padding(24.dp)
         ) {
             Surface(
-                color = Color(itinerary.type.color),
-                contentColor = Color.White,
-                shape = RoundedCornerShape(8.dp)
+                color = StitchSecondary,
+                shape = CircleShape
             ) {
                 Text(
-                    text = "${itinerary.type.emoji} ${itinerary.type.labelFr}",
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
+                    text = itinerary.type.toLocalizedLabel().uppercase(),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = itinerary.title,
+                text = itinerary.localizedTitle(currentLang),
                 color = Color.White,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -149,25 +178,30 @@ fun ItineraryCoverSection(itinerary: Itinerary) {
 }
 
 @Composable
-fun ItinerarySummarySection(itinerary: Itinerary) {
-    Row(
+fun ItinerarySummarySection(itinerary: Itinerary, currentLang: String) {
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(20.dp)
+            .fillMaxWidth(),
+        color = StitchSurfaceContainerLow,
+        shape = RoundedCornerShape(24.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, StitchSurfaceVariant)
     ) {
-        SummaryItem(icon = Icons.Default.AccessTime, label = "Durée", value = itinerary.duration)
-        SummaryItem(icon = Icons.Default.Route, label = "Distance", value = "${itinerary.totalDistanceKm} km")
-        SummaryItem(icon = Icons.Default.Place, label = "Étapes", value = "${itinerary.places.size}")
-        SummaryItem(icon = Icons.Default.DirectionsRun, label = "Difficulté", value = itinerary.difficulty)
+        Row(
+            modifier = Modifier.padding(20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            SummaryItem(icon = Icons.Default.AccessTime, label = stringResource(R.string.itinerary_duration), value = itinerary.localizedDuration(currentLang))
+            SummaryItem(icon = Icons.Default.Route, label = stringResource(R.string.itinerary_distance), value = "${itinerary.totalDistanceKm} ${stringResource(R.string.itinerary_km)}")
+            SummaryItem(icon = Icons.Default.Place, label = stringResource(R.string.itinerary_stops), value = "${itinerary.places.size}")
+            SummaryItem(icon = Icons.Default.DirectionsRun, label = stringResource(R.string.itinerary_level), value = itinerary.localizedDifficulty(currentLang))
+        }
     }
 }
 
 @Composable
 private fun SummaryItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     label: String,
     value: String
 ) {
@@ -175,11 +209,20 @@ private fun SummaryItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp)
+            tint = StitchSecondary,
+            modifier = Modifier.size(24.dp)
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-        Text(text = value, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = label, 
+            style = MaterialTheme.typography.labelSmall, 
+            color = StitchOutline
+        )
+        Text(
+            text = value, 
+            style = MaterialTheme.typography.labelLarge, 
+            fontWeight = FontWeight.Bold,
+            color = StitchPrimary
+        )
     }
 }
