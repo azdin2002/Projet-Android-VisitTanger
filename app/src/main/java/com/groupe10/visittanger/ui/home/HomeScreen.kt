@@ -36,6 +36,7 @@ import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
 import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
+import com.groupe10.visittanger.ui.theme.toLocalizedName
 
 @Composable
 fun HomeScreen(
@@ -51,7 +52,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = "Tangier"
+                title = stringResource(R.string.home_title)
             )
         },
         containerColor = StitchBackground,
@@ -68,7 +69,7 @@ fun HomeScreen(
                 TangerSearchBar(
                     query = uiState.searchQuery,
                     onQueryChange = viewModel::onSearchQueryChanged,
-                    placeholder = "Search the white city...",
+                    placeholder = stringResource(R.string.home_search_hint),
                     modifier = Modifier.padding(20.dp)
                 )
             }
@@ -77,7 +78,7 @@ fun HomeScreen(
             item {
                 Column(modifier = Modifier.padding(bottom = 24.dp)) {
                     Text(
-                        text = "Explore by Category",
+                        text = stringResource(R.string.home_categories),
                         style = MaterialTheme.typography.headlineSmall,
                         color = StitchOnSurface,
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
@@ -104,12 +105,12 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Trending Spots",
+                        text = stringResource(R.string.home_popular),
                         style = MaterialTheme.typography.headlineSmall,
                         color = StitchOnSurface
                     )
                     Text(
-                        text = "View All",
+                        text = stringResource(R.string.home_see_all),
                         style = MaterialTheme.typography.labelLarge,
                         color = StitchPrimary,
                         modifier = Modifier.clickable { /* See All */ }
@@ -141,11 +142,11 @@ fun HomeCategoriesRow(
     onCategorySelected: (Category?) -> Unit
 ) {
     val categories = listOf(
-        Triple(Category.BEACH, "Beaches", Icons.Default.BeachAccess),
-        Triple(Category.SHOPPING, "Markets", Icons.Default.Storefront),
-        Triple(Category.HISTORY, "History", Icons.Default.Castle),
-        Triple(Category.FOOD, "Food", Icons.Default.Restaurant),
-        Triple(Category.EVENTS, "Art", Icons.Default.ArtTrack)
+        Triple(Category.BEACH, Category.BEACH.toLocalizedName(), Icons.Default.BeachAccess),
+        Triple(Category.SHOPPING, Category.SHOPPING.toLocalizedName(), Icons.Default.Storefront),
+        Triple(Category.HISTORY, Category.HISTORY.toLocalizedName(), Icons.Default.Castle),
+        Triple(Category.FOOD, Category.FOOD.toLocalizedName(), Icons.Default.Restaurant),
+        Triple(Category.EVENTS, Category.EVENTS.toLocalizedName(), Icons.Default.ArtTrack),
     )
 
     LazyRow(
@@ -220,7 +221,7 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
                 shape = CircleShape
             ) {
                 Text(
-                    text = "FEATURED TODAY",
+                    text = stringResource(R.string.home_featured_badge),
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
@@ -228,7 +229,7 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
             }
             Spacer(Modifier.height(16.dp))
             Text(
-                text = "Golden Hour at the Gateway to Africa",
+                text = stringResource(R.string.home_featured_title),
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
                     lineHeight = 42.sp
@@ -237,7 +238,7 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
             )
             Spacer(Modifier.height(12.dp))
             Text(
-                text = "Experience the legendary sunset where the Atlantic meets the Mediterranean, a sight that has inspired artists for centuries.",
+                text = stringResource(R.string.home_featured_body),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.9f)
             )
@@ -249,7 +250,7 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
                 modifier = Modifier.height(56.dp),
                 contentPadding = PaddingValues(horizontal = 32.dp)
             ) {
-                Text("Explore Now", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.home_explore_now), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.width(8.dp))
                 Icon(Icons.Default.ArrowForward, null, modifier = Modifier.size(20.dp))
             }
@@ -283,13 +284,13 @@ fun DidYouKnowSection() {
             }
             Column {
                 Text(
-                    text = "Did You Know?",
+                    text = stringResource(R.string.home_did_you_know_title),
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                     color = StitchPrimary
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = "Tangier was once an \"International Zone,\" governed by several countries simultaneously from 1923 to 1956, giving it a unique multicultural DNA you can still feel today.",
+                    text = stringResource(R.string.home_did_you_know_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = StitchOnSurfaceVariant
                 )

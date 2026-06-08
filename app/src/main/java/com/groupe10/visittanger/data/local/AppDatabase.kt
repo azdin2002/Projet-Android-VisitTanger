@@ -15,7 +15,7 @@ import com.groupe10.visittanger.data.local.entity.VisitedPlaceEntity
 
 @Database(
     entities = [FavoriteEntity::class, VisitedPlaceEntity::class, PlaceEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = false,
 )
 @TypeConverters(MapConverter::class)

@@ -9,6 +9,7 @@ import com.groupe10.visittanger.domain.model.Place
 data class PlaceEntity(
     @PrimaryKey val id: String,
     val name: String,
+    val names: Map<String, String> = emptyMap(),
     val description: Map<String, String>,
     val teaser: Map<String, String>,
     val localTips: Map<String, String>,
@@ -28,6 +29,7 @@ fun PlaceEntity.toDomainModel(): Place {
     return Place(
         id = id,
         name = name,
+        names = names,
         description = description,
         teaser = teaser,
         localTips = localTips,
@@ -48,6 +50,7 @@ fun Place.toPlaceEntity(): PlaceEntity {
     return PlaceEntity(
         id = id,
         name = name,
+        names = names,
         description = description,
         teaser = teaser,
         localTips = localTips,

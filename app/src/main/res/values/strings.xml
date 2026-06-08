@@ -18,7 +18,9 @@
     <string name="auth_login_with_google">Continuer avec Google</string>
     <string name="auth_login_with_facebook">Continuer avec Facebook</string>
     <string name="auth_no_account">Pas encore de compte ? S\'inscrire</string>
+    <string name="auth_no_account_prompt">Pas encore de compte ? </string>
     <string name="auth_already_account">Déjà un compte ? Se connecter</string>
+    <string name="auth_already_account_prompt">Déjà un compte ? </string>
     <string name="auth_welcome_back">Bon retour !</string>
     <string name="auth_create_account">Créer un compte</string>
     <string name="auth_email_error">Email invalide</string>
@@ -144,4 +146,91 @@
     <string name="weather_retry">Réessayer</string>
     <string name="weather_min">Min</string>
     <string name="weather_max">Max</string>
+
+    <!-- Ville -->
+    <string name="city_tanger">Tanger</string>
+    <string name="brand_tangier">Tanger</string>
+
+    <!-- Welcome -->
+    <string name="welcome_badge">LA FIANCEE DU NORD</string>
+    <string name="welcome_headline">Là où la Méditerranée rencontre l\'Atlantique.</string>
+    <string name="welcome_explore_cta">Explorer Tanger</string>
+    <string name="welcome_plan_cta">Planifier votre visite</string>
+    <string name="welcome_scroll_hint">DECOUVRIR</string>
+
+    <!-- Home (sections) -->
+    <string name="home_featured_badge">A LA UNE</string>
+    <string name="home_featured_title">L\'heure dorée à la porte de l\'Afrique</string>
+    <string name="home_featured_body">Vivez le coucher de soleil legendaire où l\'Atlantique rencontre la Mediterranee.</string>
+    <string name="home_explore_now">Explorer</string>
+    <string name="home_did_you_know_title">Le saviez-vous ?</string>
+    <string name="home_did_you_know_body">Tanger fut une zone internationale gouvernee par plusieurs pays de 1923 a 1956, lui donnant une identite multiculturelle unique.</string>
+
+    <!-- Auth -->
+    <string name="auth_tagline">Decouvrez la fiancee du Nord</string>
+    <string name="auth_join_community">Rejoignez la communaute</string>
+    <string name="auth_or_continue_with">Ou continuer avec</string>
+    <string name="auth_email_placeholder">votre@email.com</string>
+    <string name="auth_name_placeholder">Votre nom</string>
+    <string name="auth_full_name">Nom complet</string>
+    <string name="auth_sign_in_button">SE CONNECTER</string>
+    <string name="auth_sign_up_button">S\'INSCRIRE</string>
+
+    <!-- Profil -->
+    <string name="profile_explorer_default">Explorateur</string>
+    <string name="profile_explorer_status">Statut Explorateur</string>
+    <string name="profile_tagline">Explorez avec ame - Tanger 2026</string>
+
+    <!-- Detail -->
+    <string name="detail_local_tip">CONSEIL LOCAL</string>
+    <string name="detail_map">CARTE</string>
+    <string name="detail_go">Y ALLER</string>
+    <string name="detail_gallery_title">Galerie visuelle</string>
+    <string name="detail_gallery_subtitle">Un apercu de l\'ame de ce lieu</string>
+    <string name="detail_plan_visit_title">Planifiez votre visite</string>
+    <string name="detail_plan_visit_body">Pret a explorer ? Ajoutez ce lieu a votre itineraire.</string>
+    <string name="detail_add_to_itinerary">AJOUTER A L\'ITINERAIRE</string>
+    <string name="detail_location">Localisation</string>
+    <string name="detail_practical_info">Informations pratiques</string>
+    <string name="detail_reviews_count">%1$d avis</string>
+    <string name="detail_see_all_reviews">Voir tous les avis</string>
+    <string name="detail_fact_sunset">Coucher de soleil</string>
+    <string name="detail_fact_best_time">Meilleur moment</string>
+    <string name="detail_fact_free">Gratuit</string>
+    <string name="detail_fact_entry_fee">Tarif</string>
+    <string name="detail_fact_duration">Duree</string>
+
+    <!-- Carte -->
+    <string name="map_view_details">Voir les details</string>
+    <string name="ok">OK</string>
+
+    <!-- Itineraires -->
+    <string name="itinerary_my_journeys">Mes parcours</string>
+    <string name="itinerary_detail_title">Details de l\'itineraire</string>
+    <string name="itinerary_overview">Apercu</string>
+    <string name="itinerary_the_plan">Le programme</string>
+    <string name="itinerary_level">Niveau</string>
+    <string name="itinerary_active_trip">VOYAGE EN COURS</string>
+    <string name="itinerary_hero_title">La perle du Detroit</string>
+    <string name="itinerary_plan_today">Programme du jour</string>
+    <string name="itinerary_plan_subtitle">Lundi 12 octobre - Arrivee et vieille ville</string>
+    <string name="itinerary_add_activity">Ajouter une activite</string>
+    <string name="itinerary_visit_placeholder">Visitez ce lieu emblematique...</string>
+    <string name="itinerary_get_directions">Obtenir l\'itineraire</string>
+    <string name="itinerary_not_found">Itineraire introuvable</string>
+    <string name="itinerary_steps_count">%1$d etapes</string>
+    <string name="itinerary_type_one_day">1 jour</string>
+    <string name="itinerary_type_weekend">Week-end</string>
+    <string name="itinerary_type_historical">Historique</string>
+    <string name="itinerary_type_nature">Nature</string>
+    <string name="itinerary_type_gastronomy">Gastronomie</string>
+    <string name="itinerary_type_custom">Personnalise</string>
+    <string name="favorites_explore_cta">Explorer</string>
+
+    <!-- Accessibilite -->
+    <string name="cd_menu">Menu</string>
+    <string name="cd_profile">Profil</string>
+    <string name="cd_avatar">Avatar</string>
+    <string name="cd_clear">Effacer</string>
+    <string name="cd_close">Fermer</string>
 </resources>

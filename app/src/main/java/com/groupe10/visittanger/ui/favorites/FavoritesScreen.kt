@@ -17,14 +17,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.LoadingIndicator
 import com.groupe10.visittanger.ui.components.TangerTopBar
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 
 @Composable
 fun FavoritesScreen(
     onPlaceClick: (String) -> Unit,
     onExploreClick: () -> Unit,
-    viewModel: FavoritesViewModel = hiltViewModel()
+    viewModel: FavoritesViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -64,7 +67,8 @@ fun FavoritesScreen(
                             onPlaceClick = { onPlaceClick(place.id) },
                             onDeleteSwipe = {
                                 viewModel.onFavoriteToggled(place)
-                            }
+                            },
+                            lang = currentLang,
                         )
                     }
                 }

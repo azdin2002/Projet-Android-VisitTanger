@@ -20,7 +20,7 @@ class LanguageViewModel @Inject constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = "en"
+                initialValue = "fr"
             )
 
     fun setLanguage(langCode: String) {

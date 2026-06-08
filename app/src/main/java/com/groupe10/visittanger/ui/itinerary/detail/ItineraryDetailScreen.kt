@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.ui.theme.toLocalizedLabel
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,7 +33,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Itinerary
+import com.groupe10.visittanger.domain.model.*
 import com.groupe10.visittanger.ui.components.TangerTopBar
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
 
 @Composable
@@ -39,15 +43,17 @@ fun ItineraryDetailScreen(
     itineraryId: String,
     onBackClick: () -> Unit,
     onPlaceClick: (String) -> Unit,
-    viewModel: ItineraryDetailViewModel = hiltViewModel()
+    viewModel: ItineraryDetailViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val itinerary = uiState.itinerary
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = "Itinerary Details",
+                title = stringResource(R.string.itinerary_detail_title),
                 onBackClick = onBackClick
             )
         },
@@ -61,23 +67,23 @@ fun ItineraryDetailScreen(
                 )
             ) {
                 // 1. COVER IMAGE
-                item { ItineraryCoverSection(itinerary) }
+                item { ItineraryCoverSection(itinerary, currentLang) }
 
                 // 2. RÉSUMÉ (durée, distance, difficulté, étapes)
-                item { ItinerarySummarySection(itinerary) }
+                item { ItinerarySummarySection(itinerary, currentLang) }
 
                 // 3. DESCRIPTION
                 item {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Text(
-                            text = "Overview",
+                            text = stringResource(R.string.itinerary_overview),
                             style = MaterialTheme.typography.titleLarge,
                             color = StitchPrimary,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            text = itinerary.description,
+                            text = itinerary.localizedDescription(currentLang),
                             style = MaterialTheme.typography.bodyLarge,
                             color = StitchOnSurfaceVariant,
                             lineHeight = 24.sp
@@ -88,7 +94,7 @@ fun ItineraryDetailScreen(
                 // 4. TIMELINE DES ÉTAPES
                 item {
                     Text(
-                        text = "The Plan",
+                        text = stringResource(R.string.itinerary_the_plan),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = StitchPrimary,
@@ -99,6 +105,7 @@ fun ItineraryDetailScreen(
                 itemsIndexed(itinerary.places) { index, stop ->
                     ItineraryStopItem(
                         stop = stop,
+                        currentLang = currentLang,
                         isLast = index == itinerary.places.lastIndex,
                         isSelected = index == uiState.currentStopIndex,
                         onClick = {
@@ -119,7 +126,7 @@ fun ItineraryDetailScreen(
 }
 
 @Composable
-fun ItineraryCoverSection(itinerary: Itinerary) {
+fun ItineraryCoverSection(itinerary: Itinerary, currentLang: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,7 +159,7 @@ fun ItineraryCoverSection(itinerary: Itinerary) {
                 shape = CircleShape
             ) {
                 Text(
-                    text = itinerary.type.labelFr.uppercase(),
+                    text = itinerary.type.toLocalizedLabel().uppercase(),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
@@ -161,7 +168,7 @@ fun ItineraryCoverSection(itinerary: Itinerary) {
             }
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = itinerary.title,
+                text = itinerary.localizedTitle(currentLang),
                 color = Color.White,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
@@ -171,7 +178,7 @@ fun ItineraryCoverSection(itinerary: Itinerary) {
 }
 
 @Composable
-fun ItinerarySummarySection(itinerary: Itinerary) {
+fun ItinerarySummarySection(itinerary: Itinerary, currentLang: String) {
     Surface(
         modifier = Modifier
             .padding(20.dp)
@@ -184,10 +191,10 @@ fun ItinerarySummarySection(itinerary: Itinerary) {
             modifier = Modifier.padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            SummaryItem(icon = Icons.Default.AccessTime, label = "Duration", value = itinerary.duration)
-            SummaryItem(icon = Icons.Default.Route, label = "Distance", value = "${itinerary.totalDistanceKm} km")
-            SummaryItem(icon = Icons.Default.Place, label = "Stops", value = "${itinerary.places.size}")
-            SummaryItem(icon = Icons.Default.DirectionsRun, label = "Level", value = itinerary.difficulty)
+            SummaryItem(icon = Icons.Default.AccessTime, label = stringResource(R.string.itinerary_duration), value = itinerary.localizedDuration(currentLang))
+            SummaryItem(icon = Icons.Default.Route, label = stringResource(R.string.itinerary_distance), value = "${itinerary.totalDistanceKm} ${stringResource(R.string.itinerary_km)}")
+            SummaryItem(icon = Icons.Default.Place, label = stringResource(R.string.itinerary_stops), value = "${itinerary.places.size}")
+            SummaryItem(icon = Icons.Default.DirectionsRun, label = stringResource(R.string.itinerary_level), value = itinerary.localizedDifficulty(currentLang))
         }
     }
 }

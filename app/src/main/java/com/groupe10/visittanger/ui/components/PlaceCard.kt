@@ -2,7 +2,6 @@ package com.groupe10.visittanger.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -10,27 +9,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.domain.model.Place
+import com.groupe10.visittanger.domain.model.localizedName
+import com.groupe10.visittanger.domain.model.localizedTeaser
 import com.groupe10.visittanger.ui.theme.*
-import com.groupe10.visittanger.R
+import com.groupe10.visittanger.ui.theme.toLocalizedName
 
 @Composable
 fun PlaceCard(
@@ -38,32 +38,35 @@ fun PlaceCard(
     onPlaceClick: (String) -> Unit,
     onFavoriteClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    lang: String = "en"
+    lang: String = "fr",
 ) {
     val favoriteColor by animateColorAsState(
         targetValue = if (place.isFavorite) Color.Red else StitchOutline,
         label = "favoriteColor"
     )
 
-    val teaserText = if (place.teaser[lang].isNullOrBlank()) {
-        place.teaser["en"] ?: ""
-    } else {
-        place.teaser[lang]!!
+    val displayName = place.localizedName(lang)
+    val teaserText = place.localizedTeaser(lang)
+    val categoryLabel = place.category.toLocalizedName()
+    val cityLabel = stringResource(R.string.city_tanger)
+    val textDirection = when (lang) {
+        "ar" -> TextDirection.Rtl
+        else -> TextDirection.Ltr
     }
 
     val localImageRes = when {
-        place.name.contains("Kasbah de Tanger", ignoreCase = true) -> R.drawable.img_home_hero_kasbah
+        place.name.contains("Kasbah", ignoreCase = true) -> R.drawable.img_home_hero_kasbah
         place.name.contains("Cap Spartel", ignoreCase = true) -> R.drawable.img_place_cap_spartel
-        place.name.contains("Grottes d Hercule", ignoreCase = true) -> R.drawable.img_place_hercules_caves
-        place.name.contains("Medina de Tanger", ignoreCase = true) -> R.drawable.img_place_medina
-        place.name.contains("Grand Socco", ignoreCase = true) -> R.drawable.img_place_grand_socco
-        place.name.contains("Plage Malabata", ignoreCase = true) -> R.drawable.img_place_malabata
-        place.name.contains("Stade Ibn Battouta", ignoreCase = true) -> R.drawable.img_place_stadium
+        place.name.contains("Hercule", ignoreCase = true) -> R.drawable.img_place_hercules_caves
+        place.name.contains("Medina", ignoreCase = true) || place.name.contains("Médina", ignoreCase = true) -> R.drawable.img_place_medina
+        place.name.contains("Socco", ignoreCase = true) -> R.drawable.img_place_grand_socco
+        place.name.contains("Malabata", ignoreCase = true) -> R.drawable.img_place_malabata
+        place.name.contains("Battouta", ignoreCase = true) || place.name.contains("Stade", ignoreCase = true) -> R.drawable.img_place_stadium
         place.name.contains("Plage de Tanger", ignoreCase = true) -> R.drawable.img_place_beach_city
-        place.name.contains("Souk de Tanger", ignoreCase = true) -> R.drawable.img_place_souk
-        place.name.contains("Restaurant El Korsan", ignoreCase = true) -> R.drawable.img_place_restaurant
-        place.name.contains("Parc Perdicaris", ignoreCase = true) -> R.drawable.img_place_perdicaris
-        place.name.contains("Musée de la Kasbah", ignoreCase = true) -> R.drawable.img_place_kasbah_museum
+        place.name.contains("Souk", ignoreCase = true) -> R.drawable.img_place_souk
+        place.name.contains("Korsan", ignoreCase = true) -> R.drawable.img_place_restaurant
+        place.name.contains("Perdicaris", ignoreCase = true) -> R.drawable.img_place_perdicaris
+        place.name.contains("Musée", ignoreCase = true) -> R.drawable.img_place_kasbah_museum
         place.name.contains("Hafa", ignoreCase = true) -> R.drawable.img_place_cafe_hafa
         else -> null
     }
@@ -91,11 +94,11 @@ fun PlaceCard(
 
                 AsyncImage(
                     model = imageModel,
-                    contentDescription = place.name,
+                    contentDescription = displayName,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )
-                
+
                 Surface(
                     color = StitchSurface.copy(alpha = 0.9f),
                     shape = CircleShape,
@@ -120,16 +123,20 @@ fun PlaceCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "${place.category.name.uppercase()} • TANGER",
-                            style = MaterialTheme.typography.labelSmall,
+                            text = "$categoryLabel • $cityLabel",
+                            style = MaterialTheme.typography.labelSmall.copy(textDirection = textDirection),
                             color = StitchSecondary,
                             letterSpacing = 1.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = place.name,
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold, color = StitchPrimary),
+                            text = displayName,
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = StitchPrimary,
+                                textDirection = textDirection,
+                            ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -148,7 +155,7 @@ fun PlaceCard(
 
                 Text(
                     text = teaserText,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(textDirection = textDirection),
                     color = StitchOnSurfaceVariant,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -165,8 +172,9 @@ fun PlaceCardPreview() {
         place = Place(
             id = "1",
             name = "Kasbah de Tanger",
-            description = mapOf("en" to "Description"),
-            teaser = mapOf("en" to "A majestic 15th-century fortress..."),
+            names = mapOf("fr" to "Kasbah de Tanger", "en" to "Tangier Kasbah", "ar" to "قصبة طنجة"),
+            description = mapOf("fr" to "Description"),
+            teaser = mapOf("fr" to "Une forteresse majestueuse du XVe siècle..."),
             category = Category.HISTORY,
             latitude = 0.0,
             longitude = 0.0,

@@ -35,9 +35,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
+import com.groupe10.visittanger.domain.model.localizedDescription
+import com.groupe10.visittanger.domain.model.localizedLocalTip
+import com.groupe10.visittanger.domain.model.localizedName
+import com.groupe10.visittanger.domain.model.localizedTeaser
 import com.groupe10.visittanger.ui.components.*
 import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
+import com.groupe10.visittanger.ui.theme.toLocalizedName
+import androidx.compose.ui.text.style.TextDirection
 
 @Composable
 fun DetailScreen(
@@ -83,7 +89,15 @@ fun DetailPhoneLayout(
     val scrollState = rememberLazyListState()
     val context = LocalContext.current
     val place = uiState.place!!
-    
+    val displayName = place.localizedName(lang)
+    val textDirection = when (lang) {
+        "ar" -> TextDirection.Rtl
+        else -> TextDirection.Ltr
+    }
+    val teaser = place.localizedTeaser(lang)
+    val description = place.localizedDescription(lang)
+    val localTip = place.localizedLocalTip(lang)
+
     val isScrolled by remember {
         derivedStateOf {
             scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > 400
@@ -134,7 +148,7 @@ fun DetailPhoneLayout(
 
                     AsyncImage(
                         model = if (place.photos.isNotEmpty()) place.photos[uiState.selectedPhotoIndex] else localImageRes,
-                        contentDescription = place.name,
+                        contentDescription = displayName,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -155,13 +169,8 @@ fun DetailPhoneLayout(
                             .padding(24.dp)
                     ) {
                         Surface(color = StitchSecondary, shape = CircleShape) {
-                            val categoryLabel = when (lang) {
-                                "fr" -> place.category.labelFr
-                                "ar" -> place.category.labelAr
-                                else -> place.category.name
-                            }
                             Text(
-                                text = categoryLabel.uppercase(),
+                                text = place.category.toLocalizedName().uppercase(),
                                 color = Color.White,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
@@ -169,28 +178,36 @@ fun DetailPhoneLayout(
                         }
                         Spacer(Modifier.height(12.dp))
                         Text(
-                            text = place.name,
-                            style = MaterialTheme.typography.displayMedium.copy(color = StitchPrimary, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                            text = displayName,
+                            style = MaterialTheme.typography.displayMedium.copy(
+                                color = StitchPrimary,
+                                fontSize = 32.sp,
+                                fontWeight = FontWeight.Bold,
+                                textDirection = textDirection,
+                            )
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.Star, null, tint = Color(0xFFFFD700), modifier = Modifier.size(18.dp))
                             Text(" ${place.rating}", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = StitchOnSurface)
-                            Text(" (${place.reviewCount} reviews)", style = MaterialTheme.typography.bodySmall, color = StitchOnSurfaceVariant)
+                            Text(
+                                " (${stringResource(R.string.detail_reviews_count, place.reviewCount)})",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = StitchOnSurfaceVariant,
+                            )
                         }
                     }
                 }
             }
             
-            val teaser = if (place.teaser[lang].isNullOrBlank()) place.teaser["en"] ?: "" else place.teaser[lang]!!
-            val description = if (place.description[lang].isNullOrBlank()) place.description["en"] ?: "" else place.description[lang]!!
-            val localTip = if (place.localTips[lang].isNullOrBlank()) place.localTips["en"] ?: "" else place.localTips[lang]!!
-
             item { 
                 Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp)) {
                     if (teaser.isNotBlank()) {
                         Text(
                             text = teaser,
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                textDirection = textDirection,
+                            ),
                             color = StitchPrimary,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
@@ -198,7 +215,7 @@ fun DetailPhoneLayout(
                     
                     Text(
                         text = description,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(textDirection = textDirection),
                         color = StitchOnSurfaceVariant,
                         lineHeight = 28.sp
                     )
@@ -218,14 +235,17 @@ fun DetailPhoneLayout(
                                 Spacer(Modifier.width(12.dp))
                                 Column {
                                     Text(
-                                        text = "LOCAL TIP",
+                                        text = stringResource(R.string.detail_local_tip),
                                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
                                         color = StitchTertiary
                                     )
                                     Spacer(Modifier.height(4.dp))
                                     Text(
                                         text = localTip,
-                                        style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontStyle = FontStyle.Italic,
+                                            textDirection = textDirection,
+                                        ),
                                         color = StitchOnSurfaceVariant
                                     )
                                 }
@@ -266,7 +286,7 @@ fun DetailPhoneLayout(
         }
 
         TangerTopBar(
-            title = if (isScrolled) place.name else "",
+            title = if (isScrolled) displayName else "",
             onBackClick = onBackClick,
             showProfile = true,
             containerColor = topBarAlpha,
@@ -301,7 +321,7 @@ fun DetailPhoneLayout(
                 ) {
                     Icon(Icons.Default.Map, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("MAP", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
+                    Text(stringResource(R.string.detail_map), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
                 }
                 Button(
                     onClick = openNavigation,
@@ -312,7 +332,7 @@ fun DetailPhoneLayout(
                 ) {
                     Icon(Icons.Default.Navigation, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("GO", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
+                    Text(stringResource(R.string.detail_go), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
                 }
             }
         }
@@ -325,9 +345,24 @@ fun QuickFactsSection() {
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp).fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        FactCard("Sunset", "Best time", Icons.Default.WbTwilight, Modifier.weight(1f))
-        FactCard("Free", "Entry Fee", Icons.Default.Payments, Modifier.weight(1f))
-        FactCard("2-3h", "Duration", Icons.Default.Schedule, Modifier.weight(1f))
+        FactCard(
+            stringResource(R.string.detail_fact_sunset),
+            stringResource(R.string.detail_fact_best_time),
+            Icons.Default.WbTwilight,
+            Modifier.weight(1f),
+        )
+        FactCard(
+            stringResource(R.string.detail_fact_free),
+            stringResource(R.string.detail_fact_entry_fee),
+            Icons.Default.Payments,
+            Modifier.weight(1f),
+        )
+        FactCard(
+            "2-3h",
+            stringResource(R.string.detail_fact_duration),
+            Icons.Default.Schedule,
+            Modifier.weight(1f),
+        )
     }
 }
 
@@ -352,14 +387,14 @@ fun FactCard(value: String, label: String, icon: ImageVector, modifier: Modifier
 fun WhatToSeeSection(photos: List<String>, onPhotoSelected: (Int) -> Unit) {
     Column(modifier = Modifier.padding(vertical = 32.dp)) {
         Text(
-            "Visual Gallery",
+            stringResource(R.string.detail_gallery_title),
             style = MaterialTheme.typography.headlineSmall,
             color = StitchPrimary,
             modifier = Modifier.padding(horizontal = 24.dp),
             fontWeight = FontWeight.Bold
         )
         Text(
-            "A glimpse into the soul of this historic landmark.",
+            stringResource(R.string.detail_gallery_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = StitchOnSurfaceVariant,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
@@ -404,14 +439,14 @@ fun PlanYourVisitSection(onItineraryAdd: () -> Unit, onDirections: () -> Unit) {
             Box(modifier = Modifier.matchParentSize().background(Brush.radialGradient(listOf(Color.White.copy(alpha = 0.1f), Color.Transparent))))
             Column(modifier = Modifier.padding(32.dp)) {
                 Text(
-                    "Plan Your Visit",
+                    stringResource(R.string.detail_plan_visit_title),
                     style = MaterialTheme.typography.headlineLarge,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    "Ready to explore? Save this destination to your itinerary and start your journey through the Bride of the North.",
+                    stringResource(R.string.detail_plan_visit_body),
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White.copy(alpha = 0.8f),
                     lineHeight = 26.sp
@@ -425,7 +460,7 @@ fun PlanYourVisitSection(onItineraryAdd: () -> Unit, onDirections: () -> Unit) {
                 ) {
                     Icon(Icons.Default.AddCircle, null, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(12.dp))
-                    Text("ADD TO ITINERARY", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.detail_add_to_itinerary), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                 }
             }
         }

@@ -25,15 +25,18 @@ import com.google.maps.android.compose.*
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.TangerGreen
 import kotlinx.coroutines.launch
 
 @Composable
 fun MapScreen(
     onPlaceClick: (String) -> Unit,
-    viewModel: MapViewModel = hiltViewModel()
+    viewModel: MapViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var hasLocationPermission by remember { mutableStateOf(false) }
 
@@ -136,7 +139,8 @@ fun MapScreen(
                     place = place,
                     onClose = { viewModel.onPlaceSelected(null) },
                     onDetailClick = { onPlaceClick(place.id) },
-                    onFavoriteClick = { viewModel.onFavoriteToggled(it) }
+                    onFavoriteClick = { viewModel.onFavoriteToggled(it) },
+                    lang = currentLang,
                 )
             }
         }
@@ -184,7 +188,7 @@ fun MapScreen(
                     .padding(16.dp),
                 action = {
                     TextButton(onClick = { viewModel.clearError() }) {
-                        Text("OK", color = Color.White)
+                        Text(stringResource(R.string.ok), color = Color.White)
                     }
                 }
             ) {

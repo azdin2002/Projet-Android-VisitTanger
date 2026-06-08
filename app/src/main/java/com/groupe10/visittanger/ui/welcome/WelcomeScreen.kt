@@ -22,13 +22,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.*
 
 @Composable
@@ -87,13 +88,13 @@ fun WelcomeScreen(
                 IconButton(onClick = { /* Menu Action */ }) {
                     Icon(
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Menu",
+                        contentDescription = stringResource(R.string.cd_menu),
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
                     )
                 }
                 Text(
-                    text = "Tangier",
+                    text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold,
@@ -111,7 +112,7 @@ fun WelcomeScreen(
             ) {
                 AsyncImage(
                     model = R.drawable.img_user_placeholder,
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(R.string.cd_profile),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -135,7 +136,7 @@ fun WelcomeScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             ) {
                 Text(
-                    text = "THE BRIDE OF THE NORTH",
+                    text = stringResource(R.string.welcome_badge),
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelMedium.copy(
@@ -149,7 +150,7 @@ fun WelcomeScreen(
             // Headline with adaptive sizing
             var fontSize by remember { mutableStateOf(44.sp) }
             Text(
-                text = "Where the Mediterranean meets the Atlantic.",
+                text = stringResource(R.string.welcome_headline),
                 style = MaterialTheme.typography.displayLarge.copy(
                     color = Color.White,
                     lineHeight = fontSize * 1.1f,
@@ -187,7 +188,7 @@ fun WelcomeScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Explore Tangier",
+                            text = stringResource(R.string.welcome_explore_cta),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
@@ -212,7 +213,7 @@ fun WelcomeScreen(
                     shape = CircleShape
                 ) {
                     Text(
-                        text = "Plan Your Visit",
+                        text = stringResource(R.string.welcome_plan_cta),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
@@ -243,7 +244,7 @@ fun WelcomeScreen(
             )
 
             Text(
-                text = "DISCOVER",
+                text = stringResource(R.string.welcome_scroll_hint),
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = Color.White,
                     letterSpacing = 2.sp

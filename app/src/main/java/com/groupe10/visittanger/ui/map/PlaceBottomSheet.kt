@@ -14,7 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.groupe10.visittanger.R
+import com.groupe10.visittanger.domain.model.localizedName
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -28,7 +31,8 @@ fun PlaceBottomSheet(
     place: Place,
     onClose: () -> Unit,
     onDetailClick: () -> Unit,
-    onFavoriteClick: (String) -> Unit
+    onFavoriteClick: (String) -> Unit,
+    lang: String = "fr",
 ) {
     Card(
         modifier = Modifier
@@ -72,7 +76,7 @@ fun PlaceBottomSheet(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = place.name,
+                        text = place.localizedName(lang),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1
@@ -123,7 +127,7 @@ fun PlaceBottomSheet(
                     colors = ButtonDefaults.buttonColors(containerColor = TangerGreen),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Voir détails", color = Color.White)
+                    Text(stringResource(R.string.map_view_details), color = Color.White)
                 }
             }
         }

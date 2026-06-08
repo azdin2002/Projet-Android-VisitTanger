@@ -10,6 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +43,7 @@ fun WeatherWidgetContent(
             ) {
                 Icon(
                     Icons.Default.Close,
-                    contentDescription = "Fermer",
+                    contentDescription = stringResource(R.string.cd_close),
                     tint = Color.White.copy(alpha = 0.8f)
                 )
             }
@@ -116,17 +118,17 @@ fun WeatherWidgetContent(
                     WeatherDetail(
                         icon  = Icons.Default.WaterDrop,
                         label = "${weather.humidity}%",
-                        sub   = "Humidité"
+                        sub   = stringResource(R.string.weather_humidity)
                     )
                     WeatherDetail(
                         icon  = Icons.Default.Air,
                         label = "${weather.windSpeed} m/s",
-                        sub   = "Vent"
+                        sub   = stringResource(R.string.weather_wind)
                     )
                     WeatherDetail(
                         icon  = Icons.Default.Thermostat,
                         label = "${weather.feelsLike}°C",
-                        sub   = "Ressenti"
+                        sub   = stringResource(R.string.weather_feels_like)
                     )
                 }
             }

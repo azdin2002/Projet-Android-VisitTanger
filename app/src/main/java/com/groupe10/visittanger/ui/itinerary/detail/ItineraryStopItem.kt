@@ -17,11 +17,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.groupe10.visittanger.domain.model.ItineraryStop
+import com.groupe10.visittanger.domain.model.*
 import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun ItineraryStopItem(
     stop: ItineraryStop,
+    currentLang: String,
     isLast: Boolean,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -91,7 +93,7 @@ fun ItineraryStopItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stop.place.name,
+                        text = stop.place.localizedName(currentLang),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = StitchPrimary,
                         modifier = Modifier.weight(1f)
@@ -102,7 +104,7 @@ fun ItineraryStopItem(
                         shape = CircleShape
                     ) {
                         Text(
-                            text = stop.duration,
+                            text = stop.localizedDuration(currentLang),
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall,
                             color = StitchSecondary,
@@ -137,7 +139,7 @@ fun ItineraryStopItem(
                             )
                             Spacer(Modifier.width(8.dp))
                             Text(
-                                text = stop.tips,
+                                text = stop.localizedTips(currentLang),
                                 style = MaterialTheme.typography.bodySmall.copy(
                                     fontStyle = FontStyle.Italic,
                                     lineHeight = 18.sp

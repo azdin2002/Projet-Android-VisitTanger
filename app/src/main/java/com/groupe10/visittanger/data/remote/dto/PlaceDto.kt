@@ -6,6 +6,9 @@ import com.groupe10.visittanger.domain.model.Place
 data class PlaceDto(
     val id: String = "",
     val name: String = "",
+    val nameFr: String = "",
+    val nameEn: String = "",
+    val nameAr: String = "",
     val descriptionFr: String = "",
     val descriptionEn: String = "",
     val descriptionAr: String = "",
@@ -26,9 +29,15 @@ data class PlaceDto(
     val price: String? = null
 ) {
     fun toDomain(): Place {
+        val resolvedNames = mapOf(
+            "fr" to nameFr.ifBlank { name },
+            "en" to nameEn.ifBlank { name },
+            "ar" to nameAr.ifBlank { name },
+        )
         return Place(
             id = id,
-            name = name,
+            name = resolvedNames["fr"]?.ifBlank { name } ?: name,
+            names = resolvedNames,
             description = mapOf("fr" to descriptionFr, "en" to descriptionEn, "ar" to descriptionAr),
             teaser = mapOf("fr" to teaserFr, "en" to teaserEn, "ar" to teaserAr),
             localTips = mapOf("fr" to localTipFr, "en" to localTipEn, "ar" to localTipAr),

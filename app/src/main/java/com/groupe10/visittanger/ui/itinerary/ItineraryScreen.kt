@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,17 +28,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.TangerTopBar
+import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
+import com.groupe10.visittanger.domain.model.*
 
 @Composable
 fun ItineraryScreen(
     onItineraryClick: (String) -> Unit,
-    viewModel: ItineraryViewModel = hiltViewModel()
+    viewModel: ItineraryViewModel = hiltViewModel(),
+    languageViewModel: LanguageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
     
     Scaffold(
-        topBar = { TangerTopBar(title = "My Journeys") },
+        topBar = { TangerTopBar(title = stringResource(R.string.itinerary_my_journeys)) },
         containerColor = StitchBackground,
     ) { paddingValues ->
         LazyColumn(
@@ -71,7 +76,7 @@ fun ItineraryScreen(
                     Column(modifier = Modifier.align(Alignment.BottomStart).padding(24.dp)) {
                         Surface(color = StitchSecondary, shape = CircleShape) {
                             Text(
-                                "ACTIVE TRIP", 
+                                stringResource(R.string.itinerary_active_trip), 
                                 color = Color.White, 
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
@@ -79,7 +84,7 @@ fun ItineraryScreen(
                         }
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "The Pearl of the Strait", 
+                            stringResource(R.string.itinerary_hero_title), 
                             style = MaterialTheme.typography.headlineLarge, 
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -97,12 +102,12 @@ fun ItineraryScreen(
             item {
                 Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
                     Text(
-                        "Plan for Today", 
+                        stringResource(R.string.itinerary_plan_today), 
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), 
                         color = StitchPrimary
                     )
                     Text(
-                        "Monday, October 12 • Arrival & Old City", 
+                        stringResource(R.string.itinerary_plan_subtitle), 
                         style = MaterialTheme.typography.bodyMedium, 
                         color = StitchOnSurfaceVariant
                     )
@@ -120,7 +125,7 @@ fun ItineraryScreen(
                 }
                 
                 TimelineItem(
-                    title = itinerary.title, 
+                    title = itinerary.localizedTitle(currentLang),
                     time = "09:30 AM", 
                     image = placeholderImg,
                     isLast = index == uiState.itineraries.size - 1,
@@ -144,7 +149,7 @@ fun ItineraryScreen(
                         ) {
                             Icon(Icons.Default.AddCircleOutline, null, tint = StitchPrimary, modifier = Modifier.size(24.dp))
                             Spacer(Modifier.width(12.dp))
-                            Text("Add Activity", style = MaterialTheme.typography.labelLarge, color = StitchPrimary)
+                            Text(stringResource(R.string.itinerary_add_activity), style = MaterialTheme.typography.labelLarge, color = StitchPrimary)
                         }
                     }
                 }
@@ -234,7 +239,7 @@ fun TimelineItem(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "Visit this iconic landmark...", 
+                        stringResource(R.string.itinerary_visit_placeholder), 
                         style = MaterialTheme.typography.bodyMedium, 
                         color = StitchOnSurfaceVariant,
                         maxLines = 1
@@ -246,7 +251,7 @@ fun TimelineItem(
                         Icon(Icons.Default.Directions, null, tint = StitchSecondary, modifier = Modifier.size(14.dp))
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            "Get Directions", 
+                            stringResource(R.string.itinerary_get_directions), 
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), 
                             color = StitchSecondary
                         )

@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.groupe10.visittanger.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -150,7 +152,7 @@ fun LoginScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back),
                             tint = StitchPrimary
                         )
                     }
@@ -166,7 +168,7 @@ fun LoginScreen(
             ) {
                 // Header (Reduced bottom padding)
                 Text(
-                    text = "Tangier",
+                    text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.displayLarge.copy(
                         color = StitchPrimary,
                         fontSize = 44.sp,
@@ -174,7 +176,7 @@ fun LoginScreen(
                     )
                 )
                 Text(
-                    text = "Welcome Back",
+                    text = stringResource(R.string.auth_welcome_back),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = StitchOnSurface,
                         fontWeight = FontWeight.Bold,
@@ -183,7 +185,7 @@ fun LoginScreen(
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
-                    text = "Experience the Bride of the North",
+                    text = stringResource(R.string.auth_tagline),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = StitchOnSurface.copy(alpha = 0.6f)
                     ),
@@ -211,7 +213,7 @@ fun LoginScreen(
                         // Email
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = "Email Address",
+                                text = stringResource(R.string.auth_email),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = StitchOnSurface.copy(alpha = 0.7f),
                                     fontWeight = FontWeight.SemiBold
@@ -243,14 +245,14 @@ fun LoginScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Password",
+                                    text = stringResource(R.string.auth_password),
                                     style = MaterialTheme.typography.labelMedium.copy(
                                         color = StitchOnSurface.copy(alpha = 0.7f),
                                         fontWeight = FontWeight.SemiBold
                                     )
                                 )
                                 Text(
-                                    text = "Forgot Password?",
+                                    text = stringResource(R.string.auth_forgot_password),
                                     style = MaterialTheme.typography.labelSmall.copy(
                                         color = StitchSecondary,
                                         fontWeight = FontWeight.SemiBold
@@ -296,7 +298,7 @@ fun LoginScreen(
                                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                             } else {
                                 Text(
-                                    "SIGN IN",
+                                    stringResource(R.string.auth_sign_in_button),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.Bold,
                                         letterSpacing = 1.sp
@@ -312,7 +314,7 @@ fun LoginScreen(
                         ) {
                             HorizontalDivider(modifier = Modifier.weight(1f), color = Color.Gray.copy(alpha = 0.15f))
                             Text(
-                                "Or continue with",
+                                stringResource(R.string.auth_or_continue_with),
                                 style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray),
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             )
@@ -367,11 +369,11 @@ fun LoginScreen(
                 // Footer (Closer to card)
                 Row(modifier = Modifier.padding(top = 24.dp)) {
                     Text(
-                        "Don't have an account? ",
+                        stringResource(R.string.auth_no_account_prompt),
                         style = MaterialTheme.typography.bodyMedium.copy(color = StitchOnSurface.copy(alpha = 0.6f))
                     )
                     Text(
-                        "Sign Up",
+                        stringResource(R.string.auth_register),
                         color = StitchSecondary,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold,

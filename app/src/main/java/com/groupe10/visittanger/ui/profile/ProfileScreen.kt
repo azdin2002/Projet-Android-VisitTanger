@@ -1,6 +1,6 @@
 package com.groupe10.visittanger.ui.profile
 
-import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,7 +54,7 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        topBar = { TangerTopBar(title = "Tangier", showProfile = false) },
+        topBar = { TangerTopBar(title = stringResource(R.string.app_name), showProfile = false) },
         containerColor = StitchBackground,
     ) { padding ->
         LazyColumn(
@@ -92,7 +92,7 @@ fun ProfileScreen(
                             ) {
                                 AsyncImage(
                                     model = uiState.user?.photoUrl ?: R.drawable.img_user_placeholder,
-                                    contentDescription = "Avatar",
+                                    contentDescription = stringResource(R.string.cd_avatar),
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Crop
                                 )
@@ -114,7 +114,7 @@ fun ProfileScreen(
                     }
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        text = uiState.user?.displayName ?: "Explorer",
+                        text = uiState.user?.displayName ?: stringResource(R.string.profile_explorer_default),
                         style = MaterialTheme.typography.headlineLarge,
                         color = StitchOnSurface
                     )
@@ -130,7 +130,7 @@ fun ProfileScreen(
                         ) {
                             Icon(Icons.Default.Explore, null, tint = StitchSecondary, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Explorer Status", style = MaterialTheme.typography.labelMedium, color = StitchOnSecondaryContainer)
+                            Text(stringResource(R.string.profile_explorer_status), style = MaterialTheme.typography.labelMedium, color = StitchOnSecondaryContainer)
                         }
                     }
                 }
@@ -142,9 +142,27 @@ fun ProfileScreen(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    StatBox("24", "Places", Icons.Default.LocationOn, StitchPrimary, Modifier.weight(1f))
-                    StatBox("112", "Reviews", Icons.Default.RateReview, StitchSecondary, Modifier.weight(1f))
-                    StatBox("348", "Photos", Icons.Default.PhotoLibrary, StitchTertiary, Modifier.weight(1f))
+                    StatBox(
+                        "${uiState.favoritesCount}",
+                        stringResource(R.string.profile_favorites_count),
+                        Icons.Default.LocationOn,
+                        StitchPrimary,
+                        Modifier.weight(1f),
+                    )
+                    StatBox(
+                        "${uiState.visitedCount}",
+                        stringResource(R.string.profile_visited),
+                        Icons.Default.RateReview,
+                        StitchSecondary,
+                        Modifier.weight(1f),
+                    )
+                    StatBox(
+                        "${uiState.itinerariesCount}",
+                        stringResource(R.string.profile_itineraries_done),
+                        Icons.Default.PhotoLibrary,
+                        StitchTertiary,
+                        Modifier.weight(1f),
+                    )
                 }
             }
 
@@ -158,15 +176,15 @@ fun ProfileScreen(
                     Column {
                         ProfileActionItem(
                             icon = Icons.Default.Bookmark,
-                            title = "My Saved Spots",
-                            subtitle = "12 destinations stored",
+                            title = stringResource(R.string.profile_saved_places),
+                            subtitle = stringResource(R.string.profile_favorites_count) + ": ${uiState.favoritesCount}",
                             iconBg = StitchPrimary.copy(alpha = 0.1f),
                             iconTint = StitchPrimary
                         )
                         HorizontalDivider(color = StitchOutlineVariant.copy(alpha = 0.2f), modifier = Modifier.padding(horizontal = 24.dp))
                         ProfileActionItem(
                             icon = Icons.Default.Translate,
-                            title = "Language",
+                            title = stringResource(R.string.profile_language),
                             subtitle = LanguageManager.getLanguageNativeName(uiState.currentLanguage),
                             iconBg = StitchSecondary.copy(alpha = 0.1f),
                             iconTint = StitchSecondary,
@@ -175,15 +193,15 @@ fun ProfileScreen(
                         HorizontalDivider(color = StitchOutlineVariant.copy(alpha = 0.2f), modifier = Modifier.padding(horizontal = 24.dp))
                         ProfileActionItem(
                             icon = Icons.Default.HelpCenter,
-                            title = "Help & Support",
-                            subtitle = "FAQs and 24/7 assistance",
+                            title = stringResource(R.string.profile_about),
+                            subtitle = stringResource(R.string.profile_preferences),
                             iconBg = StitchTertiary.copy(alpha = 0.1f),
                             iconTint = StitchTertiary
                         )
                         HorizontalDivider(color = StitchOutlineVariant.copy(alpha = 0.2f), modifier = Modifier.padding(horizontal = 24.dp))
                         ProfileActionItem(
                             icon = Icons.Default.Logout,
-                            title = "Logout",
+                            title = stringResource(R.string.profile_logout),
                             subtitle = null,
                             iconBg = Color.Red.copy(alpha = 0.1f),
                             iconTint = Color.Red,
@@ -206,7 +224,7 @@ fun ProfileScreen(
                         .border(1.dp, StitchOutlineVariant.copy(alpha = 0.2f), RoundedCornerShape(24.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                   Text("Explore with Soul • Tangier 2026", style = MaterialTheme.typography.labelSmall, color = StitchOnSurfaceVariant.copy(alpha = 0.6f))
+                   Text(stringResource(R.string.profile_tagline), style = MaterialTheme.typography.labelSmall, color = StitchOnSurfaceVariant.copy(alpha = 0.6f))
                 }
             }
             
@@ -219,8 +237,10 @@ fun ProfileScreen(
         LanguageSelectorDialog(
             currentLang = uiState.currentLanguage,
             onLanguageSelected = { lang ->
-                viewModel.onLanguageSelected(lang)
-                viewModel.onDismissLanguageDialog()
+                viewModel.onLanguageSelected(lang) {
+                    viewModel.onDismissLanguageDialog()
+                    (context as? ComponentActivity)?.recreate()
+                }
             },
             onDismiss = { viewModel.onDismissLanguageDialog() }
         )

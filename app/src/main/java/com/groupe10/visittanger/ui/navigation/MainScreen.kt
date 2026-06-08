@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.groupe10.visittanger.R
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.groupe10.visittanger.ui.adaptive.AdaptiveLayoutConfig
@@ -51,18 +53,17 @@ fun MainScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Destinations bottom nav
     val navItems = listOf(
         NavItem(Screen.Home, Icons.Default.Explore,
-                Icons.Outlined.Explore, "Discover"),
+                Icons.Outlined.Explore, stringResource(R.string.nav_home)),
         NavItem(Screen.Map, Icons.Default.Map,
-                Icons.Outlined.Map, "Map"),
+                Icons.Outlined.Map, stringResource(R.string.nav_map)),
         NavItem(Screen.Itinerary, Icons.Default.Route,
-                Icons.Outlined.Route, "Trips"),
+                Icons.Outlined.Route, stringResource(R.string.nav_itineraries)),
         NavItem(Screen.Favorites, Icons.Default.Bookmark,
-                Icons.Outlined.BookmarkBorder, "Saved"),
+                Icons.Outlined.BookmarkBorder, stringResource(R.string.nav_favorites)),
         NavItem(Screen.Profile, Icons.Default.Person,
-                Icons.Outlined.Person, "Profile")
+                Icons.Outlined.Person, stringResource(R.string.nav_profile)),
     )
 
     // Écrans qui cachent la nav

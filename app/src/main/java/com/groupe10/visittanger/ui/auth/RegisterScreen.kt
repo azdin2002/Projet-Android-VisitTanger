@@ -21,7 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.groupe10.visittanger.R
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -140,7 +142,7 @@ fun RegisterScreen(
             ) {
                 // Header (Condensed)
                 Text(
-                    text = "Tangier",
+                    text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.displayLarge.copy(
                         color = StitchPrimary,
                         fontSize = 44.sp,
@@ -148,7 +150,7 @@ fun RegisterScreen(
                     )
                 )
                 Text(
-                    text = "Create Account",
+                    text = stringResource(R.string.auth_create_account),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = StitchOnSurface,
                         fontWeight = FontWeight.Bold,
@@ -157,7 +159,7 @@ fun RegisterScreen(
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
-                    text = "Join the community",
+                    text = stringResource(R.string.auth_join_community),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = StitchOnSurface.copy(alpha = 0.6f)
                     ),
@@ -185,7 +187,7 @@ fun RegisterScreen(
                         // Full Name
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = "Full Name",
+                                text = stringResource(R.string.auth_full_name),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = StitchOnSurface.copy(alpha = 0.7f),
                                     fontWeight = FontWeight.SemiBold
@@ -194,7 +196,7 @@ fun RegisterScreen(
                             OutlinedTextField(
                                 value = name,
                                 onValueChange = { name = it },
-                                placeholder = { Text("Your Name", color = Color.Gray.copy(alpha = 0.4f)) },
+                                placeholder = { Text(stringResource(R.string.auth_name_placeholder), color = Color.Gray.copy(alpha = 0.4f)) },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -210,7 +212,7 @@ fun RegisterScreen(
                         // Email
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = "Email Address",
+                                text = stringResource(R.string.auth_email),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = StitchOnSurface.copy(alpha = 0.7f),
                                     fontWeight = FontWeight.SemiBold
@@ -236,7 +238,7 @@ fun RegisterScreen(
                         // Password
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = "Password",
+                                text = stringResource(R.string.auth_password),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = StitchOnSurface.copy(alpha = 0.7f),
                                     fontWeight = FontWeight.SemiBold
@@ -269,7 +271,7 @@ fun RegisterScreen(
                         // Confirm Password
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = "Confirm Password",
+                                text = stringResource(R.string.auth_confirm_password),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = StitchOnSurface.copy(alpha = 0.7f),
                                     fontWeight = FontWeight.SemiBold
@@ -312,7 +314,7 @@ fun RegisterScreen(
                                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                             } else {
                                 Text(
-                                    "SIGN UP",
+                                    stringResource(R.string.auth_sign_up_button),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.Bold,
                                         letterSpacing = 1.sp
@@ -326,11 +328,11 @@ fun RegisterScreen(
                 // Footer
                 Row(modifier = Modifier.padding(top = 24.dp)) {
                     Text(
-                        "Already have an account? ",
+                        stringResource(R.string.auth_already_account_prompt),
                         style = MaterialTheme.typography.bodyMedium.copy(color = StitchOnSurface.copy(alpha = 0.6f))
                     )
                     Text(
-                        "Sign In",
+                        stringResource(R.string.auth_login),
                         color = StitchSecondary,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Bold,
