@@ -10,5 +10,6 @@ data class HomeUiState(
     val error: String? = null,
     val selectedCategory: Category? = null,
     val searchQuery: String = "",
-    val featuredPlaces: List<Place> = emptyList()
+    val featuredPlaces: List<Place> = emptyList(),
+    val recommendedPlaces: List<Place> = emptyList()
 )

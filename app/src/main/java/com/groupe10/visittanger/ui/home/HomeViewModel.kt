@@ -1,5 +1,6 @@
 package com.groupe10.visittanger.ui.home
 
+import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupe10.visittanger.domain.model.Category
@@ -8,6 +9,7 @@ import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
 import com.groupe10.visittanger.domain.usecase.GetPlaceByIdUseCase
 import com.groupe10.visittanger.domain.usecase.GetPlacesByCategoryUseCase
 import com.groupe10.visittanger.domain.usecase.GetPlacesUseCase
+import com.groupe10.visittanger.domain.usecase.GetRecommendedPlacesUseCase
 import com.groupe10.visittanger.domain.usecase.GetWeatherUseCase
 import com.groupe10.visittanger.domain.usecase.SearchPlacesUseCase
 import com.groupe10.visittanger.domain.usecase.ToggleFavoriteWithRepoUseCase
@@ -25,8 +27,10 @@ class HomeViewModel @Inject constructor(
     private val searchPlacesUseCase: SearchPlacesUseCase,
     private val toggleFavoriteWithRepoUseCase: ToggleFavoriteWithRepoUseCase,
     private val getPlaceByIdUseCase: GetPlaceByIdUseCase,
+    private val getRecommendedPlacesUseCase: GetRecommendedPlacesUseCase,
     private val getWeatherUseCase: GetWeatherUseCase,
-    private val userPreferencesDataStore: UserPreferencesDataStore
+    private val userPreferencesDataStore: UserPreferencesDataStore,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -39,6 +43,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadPlaces()
+        loadRecommendedPlaces()
         loadWeather()
     }
 
@@ -78,6 +83,19 @@ class HomeViewModel @Inject constructor(
                             featuredPlaces = places.take(3)
                         )
                     }
+                }
+        }
+    }
+
+    private fun loadRecommendedPlaces() {
+        viewModelScope.launch {
+            val userId = firebaseAuth.currentUser?.uid.orEmpty()
+            getRecommendedPlacesUseCase(userId)
+                .catch { e ->
+                    _uiState.update { it.copy(error = e.message) }
+                }
+                .collect { recommendedPlaces ->
+                    _uiState.update { it.copy(recommendedPlaces = recommendedPlaces) }
                 }
         }
     }

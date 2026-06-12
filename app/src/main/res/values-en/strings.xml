@@ -28,6 +28,7 @@
     <string name="home_categories">Categories</string>
     <string name="home_nearby">Nearby</string>
     <string name="home_popular">Popular</string>
+    <string name="recommended_for_you">Recommended for you</string>
     <string name="home_see_all">See all</string>
     <string name="home_no_results">No results found</string>
     <string name="category_all">All</string>

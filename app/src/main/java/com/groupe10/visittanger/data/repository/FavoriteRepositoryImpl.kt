@@ -40,6 +40,11 @@ class FavoriteRepositoryImpl @Inject constructor(
             else favoriteDao.getFavoritesByUser(uid).map { entities -> entities.map { it.toDomainModel() } }
         }
 
+    override fun getFavoritesByUser(userId: String): Flow<List<Place>> =
+        favoriteDao.getFavoritesByUser(userId).map { entities -> 
+            entities.map { it.toDomainModel() }
+        }
+
     override suspend fun addFavorite(place: Place) {
         val uid = currentUserId()
         if (uid.isBlank()) return
