@@ -29,18 +29,25 @@ fun TangerTopBar(
     title: String,
     onBackClick: (() -> Unit)? = null,
     showProfile: Boolean = true,
-    containerColor: Color = StitchSurface.copy(alpha = 0.8f),
+    isTransparent: Boolean = false,
+    containerColor: Color = if (isTransparent) StitchSurface.copy(alpha = 0.8f) else StitchSurface,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    Box {
-        // Blur background layer - only blurs what's underneath
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .blur(20.dp)
-        )
-        
-        TopAppBar(
+    Surface(
+        tonalElevation = if (isTransparent) 0.dp else 4.dp,
+        shadowElevation = if (isTransparent) 0.dp else 4.dp
+    ) {
+        Box {
+            if (isTransparent) {
+                // Blur background layer - only blurs what's underneath
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .blur(20.dp)
+                )
+            }
+            
+            TopAppBar(
             title = {
                 Text(
                     text = title,
@@ -96,6 +103,7 @@ fun TangerTopBar(
             windowInsets = TopAppBarDefaults.windowInsets
         )
     }
+}
 }
 
 @Preview

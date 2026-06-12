@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
+import com.groupe10.visittanger.domain.model.Place
 import com.groupe10.visittanger.ui.components.*
 import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
@@ -52,7 +53,8 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(R.string.home_title)
+                title = stringResource(R.string.home_title),
+                isTransparent = false
             )
         },
         containerColor = StitchBackground,
@@ -86,6 +88,17 @@ fun HomeScreen(
                     HomeCategoriesRow(
                         selectedCategory = uiState.selectedCategory,
                         onCategorySelected = viewModel::onCategorySelected
+                    )
+                }
+            }
+
+            if (uiState.recommendedPlaces.isNotEmpty()) {
+                item {
+                    RecommendedPlacesSection(
+                        places = uiState.recommendedPlaces,
+                        onPlaceClick = onPlaceClick,
+                        onFavoriteClick = viewModel::onFavoriteToggled,
+                        lang = currentLang
                     )
                 }
             }
@@ -137,14 +150,47 @@ fun HomeScreen(
 }
 
 @Composable
+fun RecommendedPlacesSection(
+    places: List<Place>,
+    onPlaceClick: (String) -> Unit,
+    onFavoriteClick: (String) -> Unit,
+    lang: String,
+) {
+    Column(modifier = Modifier.padding(bottom = 24.dp)) {
+        Text(
+            text = stringResource(R.string.recommended_for_you),
+            style = MaterialTheme.typography.headlineSmall,
+            color = StitchOnSurface,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+        )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(places) { place ->
+                PlaceCard(
+                    place = place,
+                    onPlaceClick = onPlaceClick,
+                    onFavoriteClick = onFavoriteClick,
+                    modifier = Modifier.width(280.dp),
+                    lang = lang
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun HomeCategoriesRow(
     selectedCategory: Category?,
     onCategorySelected: (Category?) -> Unit
 ) {
     val categories = listOf(
+        Triple(null, stringResource(R.string.category_all), Icons.Default.GridView),
+        Triple(Category.HISTORY, Category.HISTORY.toLocalizedName(), Icons.Default.Castle),
+        Triple(Category.NATURE, Category.NATURE.toLocalizedName(), Icons.Default.Park),
         Triple(Category.BEACH, Category.BEACH.toLocalizedName(), Icons.Default.BeachAccess),
         Triple(Category.SHOPPING, Category.SHOPPING.toLocalizedName(), Icons.Default.Storefront),
-        Triple(Category.HISTORY, Category.HISTORY.toLocalizedName(), Icons.Default.Castle),
         Triple(Category.FOOD, Category.FOOD.toLocalizedName(), Icons.Default.Restaurant),
         Triple(Category.EVENTS, Category.EVENTS.toLocalizedName(), Icons.Default.ArtTrack),
     )
@@ -153,13 +199,14 @@ fun HomeCategoriesRow(
         contentPadding = PaddingValues(horizontal = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(categories) { (category, label, icon) ->
-            val isSelected = selectedCategory == category
+        items(categories) { item ->
+            val (category, label, icon) = item
+            val isSelected = (category == null && selectedCategory == null) || (category != null && selectedCategory == category)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .width(72.dp)
-                    .clickable { onCategorySelected(if (isSelected) null else category) }
+                    .clickable { onCategorySelected(category) }
             ) {
                 Box(
                     modifier = Modifier
