@@ -28,6 +28,7 @@
     <string name="home_categories">الفئات</string>
     <string name="home_nearby">بالقرب منك</string>
     <string name="home_popular">الأكثر شهرة</string>
+    <string name="recommended_for_you">موصى به لك</string>
     <string name="home_see_all">عرض الكل</string>
     <string name="home_no_results">لا توجد نتائج</string>
     <string name="category_all">الكل</string>
