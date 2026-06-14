@@ -218,6 +218,7 @@
     <string name="itinerary_add_activity">Ajouter une activite</string>
     <string name="itinerary_visit_placeholder">Visitez ce lieu emblematique...</string>
     <string name="itinerary_get_directions">Obtenir l\'itineraire</string>
+    <string name="itinerary_next_stop">Étape suivante</string>
     <string name="itinerary_not_found">Itineraire introuvable</string>
     <string name="itinerary_steps_count">%1$d etapes</string>
     <string name="itinerary_type_one_day">1 jour</string>

@@ -181,6 +181,7 @@
     <string name="itinerary_add_activity">أضف نشاطاً</string>
     <string name="itinerary_visit_placeholder">زر هذا المعلم الأيقوني...</string>
     <string name="itinerary_get_directions">احصل على الاتجاهات</string>
+    <string name="itinerary_next_stop">المحطة التالية</string>
     <string name="itinerary_not_found">المسار غير موجود</string>
     <string name="itinerary_steps_count">%1$d محطات</string>
     <string name="itinerary_type_one_day">يوم واحد</string>

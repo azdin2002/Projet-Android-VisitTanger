@@ -181,6 +181,7 @@
     <string name="itinerary_add_activity">Add Activity</string>
     <string name="itinerary_visit_placeholder">Visit this iconic landmark...</string>
     <string name="itinerary_get_directions">Get Directions</string>
+    <string name="itinerary_next_stop">Next stop</string>
     <string name="itinerary_not_found">Itinerary not found</string>
     <string name="itinerary_steps_count">%1$d stops</string>
     <string name="itinerary_type_one_day">1 day</string>
