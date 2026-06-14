@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -52,66 +51,68 @@ fun TangerTopBar(
             }
             
             TopAppBar(
-            title = {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = StitchPrimary
-                )
-            },
-            navigationIcon = {
-                if (onBackClick != null) {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = StitchPrimary
-                        )
+                title = {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = StitchPrimary
+                    )
+                },
+                navigationIcon = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (onBackClick != null) {
+                            IconButton(onClick = onBackClick) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = StitchPrimary
+                                )
+                            }
+                        }
+                        
+                        if (onToggleDarkMode != null) {
+                            IconButton(onClick = onToggleDarkMode) {
+                                Icon(
+                                    imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
+                                    contentDescription = "Toggle Dark Mode",
+                                    tint = StitchPrimary
+                                )
+                            }
+                        }
                     }
-                }
-            },
-            actions = {
-                actions()
-                
-                if (onToggleDarkMode != null) {
-                    IconButton(onClick = onToggleDarkMode) {
-                        Icon(
-                            imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
-                            contentDescription = "Toggle Dark Mode",
-                            tint = StitchPrimary
-                        )
+                },
+                actions = {
+                    actions()
+                    
+                    if (showProfile) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, StitchPrimary.copy(alpha = 0.1f), CircleShape)
+                                .clickable(enabled = onProfileClick != null) { onProfileClick?.invoke() }
+                        ) {
+                            AsyncImage(
+                                model = R.drawable.img_user_placeholder,
+                                contentDescription = "Profile",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
                     }
-                }
-
-                if (showProfile) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, StitchPrimary.copy(alpha = 0.1f), CircleShape)
-                            .clickable(enabled = onProfileClick != null) { onProfileClick?.invoke() }
-                    ) {
-                        AsyncImage(
-                            model = R.drawable.img_user_placeholder,
-                            contentDescription = "Profile",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = containerColor,
-                scrolledContainerColor = containerColor,
-                titleContentColor = StitchPrimary,
-                navigationIconContentColor = StitchPrimary,
-                actionIconContentColor = StitchPrimary
-            ),
-            windowInsets = TopAppBarDefaults.windowInsets
-        )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = containerColor,
+                    scrolledContainerColor = containerColor,
+                    titleContentColor = StitchPrimary,
+                    navigationIconContentColor = StitchPrimary,
+                    actionIconContentColor = StitchPrimary
+                ),
+                windowInsets = TopAppBarDefaults.windowInsets
+            )
+        }
     }
-}
 }
 
 @Preview
