@@ -39,9 +39,11 @@ import com.groupe10.visittanger.ui.theme.*
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     var name by remember { mutableStateOf("") }
@@ -119,7 +121,8 @@ fun RegisterScreen(
                         .fillMaxWidth()
                         .statusBarsPadding()
                         .padding(horizontal = 4.dp, vertical = 0.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(
                         onClick = { navController.popBackStack() }
@@ -127,6 +130,14 @@ fun RegisterScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
+                            tint = StitchPrimary
+                        )
+                    }
+
+                    IconButton(onClick = themeViewModel::toggleDarkMode) {
+                        Icon(
+                            imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            contentDescription = "Toggle Dark Mode",
                             tint = StitchPrimary
                         )
                     }
@@ -145,23 +156,26 @@ fun RegisterScreen(
                     text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.displayLarge.copy(
                         color = StitchPrimary,
-                        fontSize = 44.sp,
-                        letterSpacing = (-1).sp
+                        fontSize = 48.sp,
+                        fontFamily = TangerDisplayFont,
+                        fontWeight = FontWeight.Bold
                     )
                 )
                 Text(
                     text = stringResource(R.string.auth_create_account),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = StitchOnSurface,
+                        fontFamily = TangerSerifFont,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
+                        fontSize = 20.sp
                     ),
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
                     text = stringResource(R.string.auth_join_community),
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = StitchOnSurface.copy(alpha = 0.6f)
+                        color = StitchOnSurface.copy(alpha = 0.6f),
+                        fontFamily = TangerSerifFont
                     ),
                     modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
                 )
