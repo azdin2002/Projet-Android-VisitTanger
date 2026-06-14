@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -30,6 +32,8 @@ fun TangerTopBar(
     onBackClick: (() -> Unit)? = null,
     showProfile: Boolean = true,
     isTransparent: Boolean = false,
+    isDarkMode: Boolean = false,
+    onToggleDarkMode: () -> Unit = {},
     containerColor: Color = if (isTransparent) StitchSurface.copy(alpha = 0.8f) else StitchSurface,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
@@ -65,10 +69,10 @@ fun TangerTopBar(
                         )
                     }
                 } else {
-                    IconButton(onClick = { /* Open Drawer or Menu */ }) {
+                    IconButton(onClick = onToggleDarkMode) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
+                            imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            contentDescription = "Toggle Dark Mode",
                             tint = StitchPrimary
                         )
                     }

@@ -44,17 +44,21 @@ fun HomeScreen(
     windowSizeClass: WindowSizeClass,
     onPlaceClick: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    languageViewModel: LanguageViewModel = hiltViewModel()
+    languageViewModel: LanguageViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TangerTopBar(
                 title = stringResource(R.string.home_title),
-                isTransparent = false
+                isTransparent = false,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = themeViewModel::toggleDarkMode
             )
         },
         containerColor = StitchBackground,
@@ -74,6 +78,11 @@ fun HomeScreen(
                     placeholder = stringResource(R.string.home_search_hint),
                     modifier = Modifier.padding(20.dp)
                 )
+            }
+
+            // Weather Hero Section
+            item {
+                WeatherHeroSection(weatherState = weatherState)
             }
 
             // Explore by Category
@@ -101,11 +110,6 @@ fun HomeScreen(
                         lang = currentLang
                     )
                 }
-            }
-
-            // Featured Today
-            item {
-                FeaturedHeroSection(onExploreClick = { /* Navigate to featured */ })
             }
 
             // Trending Spots
@@ -234,12 +238,12 @@ fun HomeCategoriesRow(
 }
 
 @Composable
-fun FeaturedHeroSection(onExploreClick: () -> Unit) {
+fun WeatherHeroSection(weatherState: WeatherUiState) {
     Box(
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .height(550.dp)
+            .height(350.dp)
             .clip(RoundedCornerShape(32.dp))
     ) {
         AsyncImage(
@@ -253,54 +257,107 @@ fun FeaturedHeroSection(onExploreClick: () -> Unit) {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.9f)),
-                        startY = 600f
+                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)),
+                        startY = 300f
                     )
                 )
         )
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(32.dp)
+                .padding(24.dp)
         ) {
-            Surface(
-                color = StitchSecondary,
-                shape = CircleShape
-            ) {
-                Text(
-                    text = stringResource(R.string.home_featured_badge),
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-                )
+            when (weatherState) {
+                is WeatherUiState.Success -> {
+                    val weather = weatherState.weather
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.LocationOn,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = "Tanger-Medina",
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "${weather.temperature}°C",
+                            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+                            color = Color.White
+                        )
+                        Spacer(Modifier.width(16.dp))
+                        Column {
+                            Text(
+                                text = weather.description.replaceFirstChar { it.uppercase() },
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "H: ${weather.tempMax}° L: ${weather.tempMin}°",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        WeatherHeroDetail(
+                            icon = Icons.Default.WaterDrop,
+                            label = "${weather.humidity}%",
+                            sub = stringResource(R.string.weather_humidity)
+                        )
+                        WeatherHeroDetail(
+                            icon = Icons.Default.Air,
+                            label = "${weather.windSpeed} m/s",
+                            sub = stringResource(R.string.weather_wind)
+                        )
+                        WeatherHeroDetail(
+                            icon = Icons.Default.Thermostat,
+                            label = "${weather.feelsLike}°C",
+                            sub = stringResource(R.string.weather_feels_like)
+                        )
+                    }
+                }
+                is WeatherUiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+                is WeatherUiState.Error -> {
+                    Text(
+                        text = stringResource(R.string.home_no_results), // Re-using a generic error string
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                else -> {}
             }
-            Spacer(Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.home_featured_title),
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 42.sp
-                ),
-                color = Color.White
-            )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.home_featured_body),
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White.copy(alpha = 0.9f)
-            )
-            Spacer(Modifier.height(32.dp))
-            Button(
-                onClick = onExploreClick,
-                colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary),
-                shape = CircleShape,
-                modifier = Modifier.height(56.dp),
-                contentPadding = PaddingValues(horizontal = 32.dp)
-            ) {
-                Text(stringResource(R.string.home_explore_now), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-                Spacer(Modifier.width(8.dp))
-                Icon(Icons.Default.ArrowForward, null, modifier = Modifier.size(20.dp))
-            }
+        }
+    }
+}
+
+@Composable
+private fun WeatherHeroDetail(
+    icon: ImageVector,
+    label: String,
+    sub: String
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null, tint = Color.White, modifier = Modifier.size(20.dp))
+        Spacer(Modifier.width(8.dp))
+        Column {
+            Text(label, color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+            Text(sub, color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
         }
     }
 }

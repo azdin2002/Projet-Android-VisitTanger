@@ -18,6 +18,7 @@ import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.LoadingIndicator
 import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.language.LanguageViewModel
+import com.groupe10.visittanger.ui.theme.ThemeViewModel
 
 @Composable
 fun FavoritesScreen(
@@ -25,14 +26,18 @@ fun FavoritesScreen(
     onExploreClick: () -> Unit,
     viewModel: FavoritesViewModel = hiltViewModel(),
     languageViewModel: LanguageViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(id = R.string.favorites_title)
+                title = stringResource(id = R.string.favorites_title),
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = themeViewModel::toggleDarkMode
             )
         }
     ) { paddingValues ->

@@ -33,15 +33,17 @@ import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.language.LanguageManager
 import com.groupe10.visittanger.ui.language.LanguageSelectorDialog
-import com.groupe10.visittanger.ui.profile.EditNameDialog
+import com.groupe10.visittanger.ui.theme.ThemeViewModel
 import com.groupe10.visittanger.ui.theme.*
 
 @Composable
 fun ProfileScreen(
     onLogoutSuccess: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     // Redirection après logout
@@ -54,7 +56,14 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        topBar = { TangerTopBar(title = stringResource(R.string.app_name), showProfile = false) },
+        topBar = { 
+            TangerTopBar(
+                title = stringResource(R.string.app_name), 
+                showProfile = false,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = themeViewModel::toggleDarkMode
+            ) 
+        },
         containerColor = StitchBackground,
     ) { padding ->
         LazyColumn(

@@ -26,6 +26,7 @@ import com.groupe10.visittanger.R
 import com.groupe10.visittanger.domain.model.Category
 import com.groupe10.visittanger.ui.components.*
 import com.groupe10.visittanger.ui.language.LanguageViewModel
+import com.groupe10.visittanger.ui.theme.ThemeViewModel
 import com.groupe10.visittanger.ui.theme.TangerGreen
 import kotlinx.coroutines.launch
 
@@ -34,9 +35,11 @@ fun MapScreen(
     onPlaceClick: (String) -> Unit,
     viewModel: MapViewModel = hiltViewModel(),
     languageViewModel: LanguageViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var hasLocationPermission by remember { mutableStateOf(false) }
 
@@ -93,7 +96,11 @@ fun MapScreen(
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         ) {
-            TangerTopBar(title = stringResource(R.string.map_title))
+            TangerTopBar(
+                title = stringResource(R.string.map_title),
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = themeViewModel::toggleDarkMode
+            )
             
             TangerSearchBar(
                 query = uiState.searchQuery,

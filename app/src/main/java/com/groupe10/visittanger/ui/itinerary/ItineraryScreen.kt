@@ -36,13 +36,21 @@ import com.groupe10.visittanger.domain.model.*
 fun ItineraryScreen(
     onItineraryClick: (String) -> Unit,
     viewModel: ItineraryViewModel = hiltViewModel(),
-    languageViewModel: LanguageViewModel = hiltViewModel()
+    languageViewModel: LanguageViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     
     Scaffold(
-        topBar = { TangerTopBar(title = stringResource(R.string.itinerary_my_journeys)) },
+        topBar = { 
+            TangerTopBar(
+                title = stringResource(R.string.itinerary_my_journeys),
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = themeViewModel::toggleDarkMode
+            ) 
+        },
         containerColor = StitchBackground,
     ) { paddingValues ->
         LazyColumn(
