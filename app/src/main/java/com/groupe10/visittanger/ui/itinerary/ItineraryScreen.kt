@@ -35,6 +35,7 @@ import com.groupe10.visittanger.domain.model.*
 @Composable
 fun ItineraryScreen(
     onItineraryClick: (String) -> Unit,
+    onProfileClick: () -> Unit,
     viewModel: ItineraryViewModel = hiltViewModel(),
     languageViewModel: LanguageViewModel = hiltViewModel(),
     themeViewModel: ThemeViewModel = hiltViewModel()
@@ -42,14 +43,15 @@ fun ItineraryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
     val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
-    
+
     Scaffold(
-        topBar = { 
+        topBar = {
             TangerTopBar(
                 title = stringResource(R.string.itinerary_my_journeys),
                 isDarkMode = isDarkMode,
-                onToggleDarkMode = themeViewModel::toggleDarkMode
-            ) 
+                onToggleDarkMode = themeViewModel::toggleDarkMode,
+                onProfileClick = onProfileClick
+            )
         },
         containerColor = StitchBackground,
     ) { paddingValues ->

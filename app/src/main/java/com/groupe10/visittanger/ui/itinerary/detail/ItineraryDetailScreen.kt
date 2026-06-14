@@ -1,30 +1,26 @@
 package com.groupe10.visittanger.ui.itinerary.detail
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Route
+import androidx.compose.material.icons.automirrored.filled.DirectionsRun
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.groupe10.visittanger.ui.theme.toLocalizedLabel
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,8 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
-import com.groupe10.visittanger.domain.model.Itinerary
-import com.groupe10.visittanger.domain.model.*
+import com.groupe10.visittanger.domain.model.Place
+import com.groupe10.visittanger.domain.model.localizedName
+import com.groupe10.visittanger.domain.model.localizedTitle
 import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.*
@@ -44,185 +41,176 @@ fun ItineraryDetailScreen(
     onBackClick: () -> Unit,
     onPlaceClick: (String) -> Unit,
     viewModel: ItineraryDetailViewModel = hiltViewModel(),
-    languageViewModel: LanguageViewModel = hiltViewModel()
+    languageViewModel: LanguageViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val itinerary = uiState.itinerary
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
+
+    val itinerary = uiState.itinerary
+    val title = itinerary?.localizedTitle(currentLang) ?: ""
 
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(R.string.itinerary_detail_title),
-                onBackClick = onBackClick
+                title = title,
+                onBackClick = onBackClick,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = themeViewModel::toggleDarkMode,
+                showProfile = false
             )
         },
-        containerColor = StitchBackground
-    ) { paddingValues ->
-        if (itinerary != null) {
+        containerColor = StitchBackground,
+    ) { padding ->
+        if (uiState.isLoading) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = StitchPrimary)
+            }
+        } else if (itinerary != null) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    bottom = paddingValues.calculateBottomPadding() + 32.dp
+                    top = padding.calculateTopPadding(),
+                    bottom = padding.calculateBottomPadding() + 32.dp
                 )
             ) {
-                // 1. COVER IMAGE
-                item { ItineraryCoverSection(itinerary, currentLang) }
-
-                // 2. RÉSUMÉ (durée, distance, difficulté, étapes)
-                item { ItinerarySummarySection(itinerary, currentLang) }
-
-                // 3. DESCRIPTION
+                // Header Image
                 item {
-                    Column(modifier = Modifier.padding(20.dp)) {
+                    Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
+                        AsyncImage(
+                            model = R.drawable.img_itinerary_header,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        Box(modifier = Modifier.fillMaxSize().background(
+                            Brush.verticalGradient(
+                                listOf(Color.Transparent, StitchBackground.copy(alpha = 0.9f)),
+                                startY = 400f
+                            )
+                        ))
+                    }
+                }
+
+                // Info Section
+                item {
+                    Column(modifier = Modifier.padding(24.dp)) {
                         Text(
-                            text = stringResource(R.string.itinerary_overview),
-                            style = MaterialTheme.typography.titleLarge,
+                            title,
+                            style = MaterialTheme.typography.displaySmall,
                             color = StitchPrimary,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = itinerary.localizedDescription(currentLang),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = StitchOnSurfaceVariant,
-                            lineHeight = 24.sp
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Schedule, null, tint = StitchSecondary, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("4 hours • 3.2 km", style = MaterialTheme.typography.bodyMedium, color = StitchOnSurfaceVariant)
+                        }
                     }
                 }
 
-                // 4. TIMELINE DES ÉTAPES
-                item {
-                    Text(
-                        text = stringResource(R.string.itinerary_the_plan),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = StitchPrimary,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-                    )
-                }
-
+                // Stops
                 itemsIndexed(itinerary.places) { index, stop ->
-                    ItineraryStopItem(
-                        stop = stop,
-                        currentLang = currentLang,
-                        isLast = index == itinerary.places.lastIndex,
-                        isSelected = index == uiState.currentStopIndex,
-                        onClick = {
-                            viewModel.onStopSelected(index)
-                            onPlaceClick(stop.place.id)
-                        }
+                    StopItem(
+                        index = index + 1,
+                        place = stop.place,
+                        lang = currentLang,
+                        isLast = index == itinerary.places.size - 1,
+                        onPlaceClick = { onPlaceClick(stop.place.id) }
                     )
                 }
-
-                item { Spacer(Modifier.height(40.dp)) }
-            }
-        } else if (uiState.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = StitchPrimary)
             }
         }
     }
 }
 
 @Composable
-fun ItineraryCoverSection(itinerary: Itinerary, currentLang: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-    ) {
-        AsyncImage(
-            model = R.drawable.img_welcome_bg, // Use the Moroccan door style image
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-            placeholder = painterResource(id = R.drawable.img_welcome_bg)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, StitchPrimary.copy(alpha = 0.8f)),
-                        startY = 300f
-                    )
-                )
-        )
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(24.dp)
-        ) {
-            Surface(
-                color = StitchSecondary,
-                shape = CircleShape
-            ) {
-                Text(
-                    text = itinerary.type.toLocalizedLabel().uppercase(),
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = itinerary.localizedTitle(currentLang),
-                color = Color.White,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun ItinerarySummarySection(itinerary: Itinerary, currentLang: String) {
-    Surface(
-        modifier = Modifier
-            .padding(20.dp)
-            .fillMaxWidth(),
-        color = StitchSurfaceContainerLow,
-        shape = RoundedCornerShape(24.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, StitchSurfaceVariant)
-    ) {
-        Row(
-            modifier = Modifier.padding(20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            SummaryItem(icon = Icons.Default.AccessTime, label = stringResource(R.string.itinerary_duration), value = itinerary.localizedDuration(currentLang))
-            SummaryItem(icon = Icons.Default.Route, label = stringResource(R.string.itinerary_distance), value = "${itinerary.totalDistanceKm} ${stringResource(R.string.itinerary_km)}")
-            SummaryItem(icon = Icons.Default.Place, label = stringResource(R.string.itinerary_stops), value = "${itinerary.places.size}")
-            SummaryItem(icon = Icons.Default.DirectionsRun, label = stringResource(R.string.itinerary_level), value = itinerary.localizedDifficulty(currentLang))
-        }
-    }
-}
-
-@Composable
-private fun SummaryItem(
-    icon: ImageVector,
-    label: String,
-    value: String
+fun StopItem(
+    index: Int,
+    place: Place,
+    lang: String,
+    isLast: Boolean,
+    onPlaceClick: () -> Unit
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = StitchSecondary,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = label, 
-            style = MaterialTheme.typography.labelSmall, 
-            color = StitchOutline
-        )
-        Text(
-            text = value, 
-            style = MaterialTheme.typography.labelLarge, 
-            fontWeight = FontWeight.Bold,
-            color = StitchPrimary
-        )
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 24.dp)
+            .height(IntrinsicSize.Min)
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(32.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(StitchPrimary),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("$index", color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            }
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .width(2.dp)
+                        .background(StitchOutlineVariant.copy(alpha = 0.3f))
+                )
+            }
+        }
+
+        Spacer(Modifier.width(20.dp))
+
+        Column(modifier = Modifier.padding(bottom = 32.dp).clickable { onPlaceClick() }) {
+            Surface(
+                color = StitchSurfaceContainerLow,
+                shape = RoundedCornerShape(24.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, StitchSurfaceVariant)
+            ) {
+                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    val localImageRes = when {
+                        place.name.contains("Kasbah", ignoreCase = true) -> R.drawable.img_home_hero_kasbah
+                        place.name.contains("Medina", ignoreCase = true) -> R.drawable.img_place_medina
+                        place.name.contains("Socco", ignoreCase = true) -> R.drawable.img_place_grand_socco
+                        else -> R.drawable.img_place_restaurant
+                    }
+
+                    AsyncImage(
+                        model = if (place.photos.isNotEmpty()) place.photos.first() else localImageRes,
+                        contentDescription = null,
+                        modifier = Modifier.size(80.dp).clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            place.localizedName(lang),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = StitchPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Star, null, tint = Color(0xFFFFD700), modifier = Modifier.size(14.dp))
+                            Text(" ${place.rating}", style = MaterialTheme.typography.labelSmall, color = StitchOnSurface)
+                        }
+                    }
+                }
+            }
+            
+            if (!isLast) {
+                Spacer(Modifier.height(16.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.AutoMirrored.Filled.DirectionsRun, null, tint = StitchSecondary, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        stringResource(R.string.itinerary_next_stop),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = StitchSecondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
     }
 }

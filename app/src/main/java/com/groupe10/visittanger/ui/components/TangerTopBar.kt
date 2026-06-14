@@ -1,6 +1,7 @@
 package com.groupe10.visittanger.ui.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -16,10 +17,8 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.StitchPrimary
@@ -33,7 +32,8 @@ fun TangerTopBar(
     showProfile: Boolean = true,
     isTransparent: Boolean = false,
     isDarkMode: Boolean = false,
-    onToggleDarkMode: () -> Unit = {},
+    onToggleDarkMode: (() -> Unit)? = null,
+    onProfileClick: (() -> Unit)? = null,
     containerColor: Color = if (isTransparent) StitchSurface.copy(alpha = 0.8f) else StitchSurface,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
@@ -69,6 +69,19 @@ fun TangerTopBar(
                         )
                     }
                 } else {
+                    IconButton(onClick = { /* Open Drawer or Menu */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu",
+                            tint = StitchPrimary
+                        )
+                    }
+                }
+            },
+            actions = {
+                actions()
+                
+                if (onToggleDarkMode != null) {
                     IconButton(onClick = onToggleDarkMode) {
                         Icon(
                             imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
@@ -77,15 +90,14 @@ fun TangerTopBar(
                         )
                     }
                 }
-            },
-            actions = {
-                actions()
+
                 if (showProfile) {
                     Box(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
                             .border(2.dp, StitchPrimary.copy(alpha = 0.1f), CircleShape)
+                            .clickable(enabled = onProfileClick != null) { onProfileClick?.invoke() }
                     ) {
                         AsyncImage(
                             model = R.drawable.img_user_placeholder,

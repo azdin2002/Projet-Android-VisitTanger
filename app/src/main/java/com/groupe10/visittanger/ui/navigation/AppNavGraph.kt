@@ -55,18 +55,29 @@ fun AppNavGraph(
                 windowSizeClass = windowSizeClass,
                 onPlaceClick = { placeId ->
                     navController.navigate(Screen.Details.createRoute(placeId))
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.Profile.route)
                 }
             ) 
         }
         composable(Screen.Map.route) { 
-            MapScreen(onPlaceClick = { placeId ->
-                navController.navigate(Screen.Details.createRoute(placeId))
-            }) 
+            MapScreen(
+                onPlaceClick = { placeId ->
+                    navController.navigate(Screen.Details.createRoute(placeId))
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.Profile.route)
+                }
+            )
         }
         composable(Screen.Itinerary.route) {
             ItineraryScreen(
                 onItineraryClick = { id ->
                     navController.navigate(Screen.ItineraryDetail.createRoute(id))
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.Profile.route)
                 }
             )
         }
@@ -96,6 +107,9 @@ fun AppNavGraph(
                         launchSingleTop = true
                         restoreState = true
                     }
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.Profile.route)
                 }
             ) 
         }
@@ -133,6 +147,9 @@ fun AppNavGraph(
                         launchSingleTop = true
                         restoreState = true
                     }
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.Profile.route)
                 }
             )
         }

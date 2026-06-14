@@ -50,12 +50,15 @@ fun DetailScreen(
     placeId: String,
     onBackClick: () -> Unit,
     onMapClick: (Double, Double) -> Unit,
+    onProfileClick: () -> Unit,
     windowSizeClass: WindowSizeClass,
     viewModel: DetailViewModel = hiltViewModel(),
-    languageViewModel: LanguageViewModel = hiltViewModel()
+    languageViewModel: LanguageViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
 
     if (uiState.isLoading) {
         LoadingIndicator()
@@ -68,6 +71,9 @@ fun DetailScreen(
             uiState = uiState,
             onBackClick = onBackClick,
             onMapClick = onMapClick,
+            onProfileClick = onProfileClick,
+            isDarkMode = isDarkMode,
+            onToggleDarkMode = themeViewModel::toggleDarkMode,
             onFavoriteToggled = viewModel::onFavoriteToggled,
             onPhotoSelected = viewModel::onPhotoSelected,
             onToggleReviews = viewModel::toggleShowAllReviews,
@@ -81,6 +87,9 @@ fun DetailPhoneLayout(
     uiState: DetailUiState,
     onBackClick: () -> Unit,
     onMapClick: (Double, Double) -> Unit,
+    onProfileClick: () -> Unit,
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit,
     onFavoriteToggled: () -> Unit,
     onPhotoSelected: (Int) -> Unit,
     onToggleReviews: () -> Unit,
@@ -289,6 +298,9 @@ fun DetailPhoneLayout(
             title = if (isScrolled) displayName else "",
             onBackClick = onBackClick,
             showProfile = true,
+            isDarkMode = isDarkMode,
+            onToggleDarkMode = onToggleDarkMode,
+            onProfileClick = onProfileClick,
             containerColor = topBarAlpha,
             actions = {
                 IconButton(onClick = onFavoriteToggled) {

@@ -1,6 +1,5 @@
 package com.groupe10.visittanger.ui.home
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,16 +49,13 @@ class HomeViewModel @Inject constructor(
 
     fun loadWeather() {
         viewModelScope.launch {
-            Log.d("Weather", "loadWeather() called")
             _weatherState.value = WeatherUiState.Loading
             val lang = userPreferencesDataStore.language.first()
             getWeatherUseCase(lang = lang)
                 .onSuccess { weather ->
-                    Log.d("Weather", "Success: ${weather.temperature}°C, ${weather.description}")
                     _weatherState.value = WeatherUiState.Success(weather)
                 }
                 .onFailure { e ->
-                    Log.e("Weather", "Error loading weather", e)
                     _weatherState.value = WeatherUiState.Error(
                         e.message ?: "Erreur météo"
                     )

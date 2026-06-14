@@ -43,6 +43,7 @@ import com.groupe10.visittanger.ui.theme.toLocalizedName
 fun HomeScreen(
     windowSizeClass: WindowSizeClass,
     onPlaceClick: (String) -> Unit,
+    onProfileClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
     languageViewModel: LanguageViewModel = hiltViewModel(),
     themeViewModel: ThemeViewModel = hiltViewModel()
@@ -58,7 +59,8 @@ fun HomeScreen(
                 title = stringResource(R.string.home_title),
                 isTransparent = false,
                 isDarkMode = isDarkMode,
-                onToggleDarkMode = themeViewModel::toggleDarkMode
+                onToggleDarkMode = themeViewModel::toggleDarkMode,
+                onProfileClick = onProfileClick
             )
         },
         containerColor = StitchBackground,

@@ -6,6 +6,7 @@ import com.groupe10.visittanger.data.datastore.UserPreferencesDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +25,8 @@ class ThemeViewModel @Inject constructor(
 
     fun toggleDarkMode() {
         viewModelScope.launch {
-            userPreferencesDataStore.setDarkMode(!isDarkMode.value)
+            val current = userPreferencesDataStore.isDarkMode.first()
+            userPreferencesDataStore.setDarkMode(!current)
         }
     }
 }

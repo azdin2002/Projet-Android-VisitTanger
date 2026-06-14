@@ -19,11 +19,13 @@ import com.groupe10.visittanger.ui.components.LoadingIndicator
 import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.language.LanguageViewModel
 import com.groupe10.visittanger.ui.theme.ThemeViewModel
+import com.groupe10.visittanger.ui.theme.StitchBackground
 
 @Composable
 fun FavoritesScreen(
     onPlaceClick: (String) -> Unit,
     onExploreClick: () -> Unit,
+    onProfileClick: () -> Unit,
     viewModel: FavoritesViewModel = hiltViewModel(),
     languageViewModel: LanguageViewModel = hiltViewModel(),
     themeViewModel: ThemeViewModel = hiltViewModel()
@@ -37,9 +39,11 @@ fun FavoritesScreen(
             TangerTopBar(
                 title = stringResource(id = R.string.favorites_title),
                 isDarkMode = isDarkMode,
-                onToggleDarkMode = themeViewModel::toggleDarkMode
+                onToggleDarkMode = themeViewModel::toggleDarkMode,
+                onProfileClick = onProfileClick
             )
-        }
+        },
+        containerColor = StitchBackground
     ) { paddingValues ->
         Box(
             modifier = Modifier

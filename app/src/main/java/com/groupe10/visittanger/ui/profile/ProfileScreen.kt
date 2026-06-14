@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpCenter
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +34,6 @@ import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.components.TangerTopBar
 import com.groupe10.visittanger.ui.language.LanguageManager
 import com.groupe10.visittanger.ui.language.LanguageSelectorDialog
-import com.groupe10.visittanger.ui.theme.ThemeViewModel
 import com.groupe10.visittanger.ui.theme.*
 
 @Composable
@@ -56,13 +56,13 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        topBar = { 
+        topBar = {
             TangerTopBar(
-                title = stringResource(R.string.app_name), 
+                title = stringResource(R.string.app_name),
                 showProfile = false,
                 isDarkMode = isDarkMode,
                 onToggleDarkMode = themeViewModel::toggleDarkMode
-            ) 
+            )
         },
         containerColor = StitchBackground,
     ) { padding ->
@@ -201,7 +201,7 @@ fun ProfileScreen(
                         )
                         HorizontalDivider(color = StitchOutlineVariant.copy(alpha = 0.2f), modifier = Modifier.padding(horizontal = 24.dp))
                         ProfileActionItem(
-                            icon = Icons.Default.HelpCenter,
+                            icon = Icons.AutoMirrored.Filled.HelpCenter,
                             title = stringResource(R.string.profile_about),
                             subtitle = stringResource(R.string.profile_preferences),
                             iconBg = StitchTertiary.copy(alpha = 0.1f),
@@ -209,7 +209,7 @@ fun ProfileScreen(
                         )
                         HorizontalDivider(color = StitchOutlineVariant.copy(alpha = 0.2f), modifier = Modifier.padding(horizontal = 24.dp))
                         ProfileActionItem(
-                            icon = Icons.Default.Logout,
+                            icon = Icons.AutoMirrored.Filled.Logout,
                             title = stringResource(R.string.profile_logout),
                             subtitle = null,
                             iconBg = Color.Red.copy(alpha = 0.1f),
