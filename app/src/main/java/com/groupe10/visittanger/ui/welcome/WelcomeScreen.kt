@@ -98,8 +98,7 @@ fun WelcomeScreen(
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontFamily = TangerDisplayFont,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = (-0.5).sp
+                        fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(start = 8.dp)
                 )

@@ -15,13 +15,17 @@ val provider = GoogleFont.Provider(
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
+// Main brand font (High contrast serif)
 val TangerDisplayFont = FontFamily(
-    Font(googleFont = GoogleFont("Playfair Display"), fontProvider = provider, weight = FontWeight.Bold)
+    Font(googleFont = GoogleFont("Playfair Display"), fontProvider = provider, weight = FontWeight.Bold),
+    Font(googleFont = GoogleFont("Playfair Display"), fontProvider = provider, weight = FontWeight.Black)
 )
 
+// Secondary serif font
 val TangerSerifFont = FontFamily(
     Font(googleFont = GoogleFont("Lora"), fontProvider = provider, weight = FontWeight.Normal),
-    Font(googleFont = GoogleFont("Lora"), fontProvider = provider, weight = FontWeight.Medium)
+    Font(googleFont = GoogleFont("Lora"), fontProvider = provider, weight = FontWeight.Medium),
+    Font(googleFont = GoogleFont("Lora"), fontProvider = provider, weight = FontWeight.Bold)
 )
 
 val Typography = Typography(

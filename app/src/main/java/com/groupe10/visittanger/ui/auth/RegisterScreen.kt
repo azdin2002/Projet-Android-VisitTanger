@@ -158,8 +158,7 @@ fun RegisterScreen(
                         color = StitchPrimary,
                         fontSize = 48.sp,
                         fontFamily = TangerDisplayFont,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = (-1).sp
+                        fontWeight = FontWeight.Bold
                     )
                 )
                 Text(
