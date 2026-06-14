@@ -68,14 +68,6 @@ fun TangerTopBar(
                             tint = StitchPrimary
                         )
                     }
-                } else {
-                    IconButton(onClick = { /* Open Drawer or Menu */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = StitchPrimary
-                        )
-                    }
                 }
             },
             actions = {

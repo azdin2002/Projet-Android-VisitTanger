@@ -4,10 +4,25 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
+import com.groupe10.visittanger.R
 
-// Note: In a real project, we would import Playfair Display and Montserrat fonts.
-// For now, we'll use Serif for Playfair and SansSerif for Montserrat.
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val TangerDisplayFont = FontFamily(
+    Font(googleFont = GoogleFont("Playfair Display"), fontProvider = provider, weight = FontWeight.Bold)
+)
+
+val TangerSerifFont = FontFamily(
+    Font(googleFont = GoogleFont("Lora"), fontProvider = provider, weight = FontWeight.Normal),
+    Font(googleFont = GoogleFont("Lora"), fontProvider = provider, weight = FontWeight.Medium)
+)
 
 val Typography = Typography(
     headlineLarge = TextStyle(

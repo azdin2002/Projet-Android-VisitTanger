@@ -57,7 +57,13 @@ fun AppNavGraph(
                     navController.navigate(Screen.Details.createRoute(placeId))
                 },
                 onProfileClick = {
-                    navController.navigate(Screen.Profile.route)
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             ) 
         }
@@ -67,7 +73,13 @@ fun AppNavGraph(
                     navController.navigate(Screen.Details.createRoute(placeId))
                 },
                 onProfileClick = {
-                    navController.navigate(Screen.Profile.route)
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }
@@ -77,7 +89,13 @@ fun AppNavGraph(
                     navController.navigate(Screen.ItineraryDetail.createRoute(id))
                 },
                 onProfileClick = {
-                    navController.navigate(Screen.Profile.route)
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }
@@ -91,6 +109,15 @@ fun AppNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onPlaceClick = { placeId ->
                     navController.navigate(Screen.Details.createRoute(placeId))
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }
@@ -109,7 +136,13 @@ fun AppNavGraph(
                     }
                 },
                 onProfileClick = {
-                    navController.navigate(Screen.Profile.route)
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             ) 
         }
@@ -149,7 +182,13 @@ fun AppNavGraph(
                     }
                 },
                 onProfileClick = {
-                    navController.navigate(Screen.Profile.route)
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }

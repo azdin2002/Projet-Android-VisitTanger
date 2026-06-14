@@ -171,7 +171,9 @@ fun LoginScreen(
                     text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.displayLarge.copy(
                         color = StitchPrimary,
-                        fontSize = 44.sp,
+                        fontSize = 48.sp,
+                        fontFamily = TangerDisplayFont,
+                        fontWeight = FontWeight.Bold,
                         letterSpacing = (-1).sp
                     )
                 )
@@ -179,8 +181,9 @@ fun LoginScreen(
                     text = stringResource(R.string.auth_welcome_back),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = StitchOnSurface,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
+                        fontFamily = TangerSerifFont,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 20.sp
                     ),
                     modifier = Modifier.padding(top = 4.dp)
                 )

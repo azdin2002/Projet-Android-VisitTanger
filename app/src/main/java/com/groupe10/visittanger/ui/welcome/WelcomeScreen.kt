@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -97,7 +97,8 @@ fun WelcomeScreen(
                     text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = TangerDisplayFont,
+                        fontWeight = FontWeight.Bold,
                         letterSpacing = (-0.5).sp
                     ),
                     modifier = Modifier.padding(start = 8.dp)
@@ -195,7 +196,7 @@ fun WelcomeScreen(
                             )
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Icon(Icons.Default.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp))
                     }
                 }
 
