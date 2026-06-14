@@ -108,7 +108,13 @@ On first launch, the app seeds Firestore with sample place data if the collectio
 
 ## Screenshots
 
-_Screenshots can be added here once the app is finalized._
+<img width="216" height="465" alt="image" src="https://github.com/user-attachments/assets/5e8e4d52-3569-48d5-956c-1a08894ff4d9" />
+<img width="220" height="473" alt="image" src="https://github.com/user-attachments/assets/acc30f66-dc40-40d9-8340-45cc2196bd48" />
+<img width="209" height="454" alt="image" src="https://github.com/user-attachments/assets/147cbe8e-92c0-4925-b33d-663bf6ef4465" />
+<img width="222" height="462" alt="image" src="https://github.com/user-attachments/assets/5d55afa7-ba30-4f3e-b115-405a1fe44bf4" />
+<img width="212" height="455" alt="image" src="https://github.com/user-attachments/assets/fc422c0e-b0da-4537-832b-8cd1ddebf243" />
+<img width="209" height="447" alt="image" src="https://github.com/user-attachments/assets/596ce71c-f9c1-41b0-b477-dd89a0c1819f" />
+
 
 ## License
 
