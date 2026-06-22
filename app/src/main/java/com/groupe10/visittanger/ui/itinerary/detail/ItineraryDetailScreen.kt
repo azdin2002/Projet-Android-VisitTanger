@@ -1,11 +1,13 @@
 package com.groupe10.visittanger.ui.itinerary.detail
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,20 +61,38 @@ fun ItineraryDetailScreen(
     val currentLang by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
     val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
 
+    val scrollState = rememberLazyListState()
+    val isScrolled by remember {
+        derivedStateOf {
+            scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > 400
+        }
+    }
+
+    val topBarAlpha by animateColorAsState(
+        targetValue = if (isScrolled) StitchSurface.copy(alpha = 0.9f) else Color.Transparent,
+        label = "topBarColor"
+    )
+
+    val topContentColor by animateColorAsState(
+        targetValue = if (isScrolled) MaterialTheme.colorScheme.primary else Color.White,
+        label = "topContentColor"
+    )
+
     val itinerary = uiState.itinerary
     val title = itinerary?.localizedTitle(currentLang) ?: ""
 
     Scaffold(
         topBar = {
             TangerTopBar(
-                title = stringResource(R.string.itinerary_detail_title),
+                title = if (isScrolled) title else "",
                 onBackClick = onBackClick,
                 isDarkMode = isDarkMode,
                 onToggleDarkMode = themeViewModel::toggleDarkMode,
                 showProfile = true,
                 onProfileClick = onProfileClick,
-                containerColor = Color.Transparent,
-                isTransparent = true
+                containerColor = topBarAlpha,
+                contentColor = topContentColor,
+                isTransparent = !isScrolled
             )
         },
         containerColor = StitchBackground,
@@ -83,6 +103,7 @@ fun ItineraryDetailScreen(
             }
         } else if (itinerary != null) {
             LazyColumn(
+                state = scrollState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 32.dp)
             ) {
@@ -157,7 +178,7 @@ fun ItineraryDetailScreen(
                         Text(
                             text = stringResource(R.string.itinerary_overview),
                             style = MaterialTheme.typography.titleLarge.copy(
-                                color = StitchPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -176,7 +197,7 @@ fun ItineraryDetailScreen(
                     Text(
                         text = stringResource(R.string.itinerary_the_plan),
                         style = MaterialTheme.typography.titleLarge.copy(
-                            color = StitchPrimary,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
                         ),
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
@@ -229,7 +250,7 @@ fun StatItem(icon: ImageVector, label: String, value: String) {
         Icon(icon, null, tint = StitchSecondary, modifier = Modifier.size(24.dp))
         Spacer(Modifier.height(8.dp))
         Text(label, style = MaterialTheme.typography.labelSmall, color = StitchOnSurfaceVariant)
-        Text(value, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = StitchPrimary)
+        Text(value, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -249,14 +270,15 @@ fun TimelineStopItem(
     ) {
         // Left: Arrival Time
         Column(
-            modifier = Modifier.width(56.dp).padding(top = 16.dp),
+            modifier = Modifier.width(60.dp).padding(top = 16.dp),
             horizontalAlignment = Alignment.End
         ) {
             Text(
                 text = stop.arrivalTime,
                 style = MaterialTheme.typography.labelLarge.copy(
-                    color = StitchPrimary,
-                    fontWeight = FontWeight.Bold
+                    color = StitchSecondary,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 15.sp
                 )
             )
         }
@@ -271,7 +293,7 @@ fun TimelineStopItem(
             if (!isFirst) {
                 Box(
                     modifier = Modifier
-                        .width(2.dp)
+                        .width(2.5.dp)
                         .height(16.dp)
                         .background(StitchOutlineVariant.copy(alpha = 0.3f))
                 )
@@ -281,18 +303,22 @@ fun TimelineStopItem(
             
             Box(
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(14.dp)
+                    .border(3.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape)
+                    .padding(3.dp)
                     .clip(CircleShape)
-                    .background(StitchPrimary)
+                    .background(MaterialTheme.colorScheme.primary)
             )
             
             if (!isLast) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(2.dp)
+                        .width(2.5.dp)
                         .background(StitchOutlineVariant.copy(alpha = 0.3f))
                 )
+            } else {
+                Spacer(Modifier.height(24.dp))
             }
         }
 
@@ -305,37 +331,44 @@ fun TimelineStopItem(
                     .fillMaxWidth()
                     .clickable { onPlaceClick() },
                 color = StitchSurfaceContainerLow,
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(24.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, StitchSurfaceVariant)
             ) {
                 Box(modifier = Modifier.padding(16.dp)) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(end = 48.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(end = 64.dp)) {
                         Text(
                             text = stop.place.localizedName(lang),
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = StitchPrimary
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = androidx.compose.ui.text.font.FontFamily.Serif
+                            ),
+                            color = MaterialTheme.colorScheme.primary
                         )
                         Spacer(Modifier.height(4.dp))
-                        Text(
-                            text = stop.place.address,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = StitchOnSurfaceVariant,
-                            maxLines = 1
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.LocationOn, null, tint = StitchOutline, modifier = Modifier.size(12.dp))
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = stop.place.address,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = StitchOnSurfaceVariant,
+                                maxLines = 1
+                            )
+                        }
                     }
 
                     // Duration Badge (Top Right)
                     Surface(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd),
-                        color = if (isDarkMode) Color(0xFF422222) else Color(0xFFFFEBEE),
-                        shape = RoundedCornerShape(6.dp)
+                        modifier = Modifier.align(Alignment.TopEnd),
+                        color = StitchSecondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(8.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, StitchSecondary.copy(alpha = 0.2f))
                     ) {
                         Text(
                             text = stop.localizedDuration(lang),
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             style = MaterialTheme.typography.labelSmall.copy(
-                                color = if (isDarkMode) Color(0xFFFF8A80) else Color(0xFFC62828),
+                                color = StitchSecondary,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -349,9 +382,9 @@ fun TimelineStopItem(
                 Spacer(Modifier.height(12.dp))
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    color = if (isDarkMode) Color(0xFF1B2E1D) else Color(0xFFE8F5E9),
-                    shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isDarkMode) Color(0xFF2E7D32).copy(alpha = 0.5f) else Color(0xFFC8E6C9))
+                    color = StitchTertiaryContainer.copy(alpha = 0.05f),
+                    shape = RoundedCornerShape(16.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, StitchTertiary.copy(alpha = 0.15f))
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
@@ -360,16 +393,28 @@ fun TimelineStopItem(
                         Icon(
                             imageVector = Icons.Outlined.Lightbulb,
                             contentDescription = null,
-                            tint = if (isDarkMode) Color(0xFF81C784) else Color(0xFF2E7D32),
+                            tint = StitchTertiary,
                             modifier = Modifier.size(18.dp)
                         )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            text = tips,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = if (isDarkMode) Color(0xFFC8E6C9) else Color(0xFF2E7D32)
+                        Spacer(Modifier.width(10.dp))
+                        Column {
+                            Text(
+                                text = stringResource(R.string.detail_local_tip).uppercase(),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 1.sp
+                                ),
+                                color = StitchTertiary
                             )
-                        )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = tips,
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = StitchOnSurfaceVariant,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                        }
                     }
                 }
             }

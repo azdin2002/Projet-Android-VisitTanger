@@ -108,7 +108,7 @@ fun PlaceCard(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.Star, null, tint = StitchSecondary, modifier = Modifier.size(14.dp))
+                        Icon(Icons.Default.Star, null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(14.dp))
                         Spacer(Modifier.width(4.dp))
                         Text(text = "${place.rating}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     }
@@ -125,7 +125,7 @@ fun PlaceCard(
                         Text(
                             text = "$categoryLabel • $cityLabel",
                             style = MaterialTheme.typography.labelSmall.copy(textDirection = textDirection),
-                            color = StitchSecondary,
+                            color = MaterialTheme.colorScheme.secondary,
                             letterSpacing = 1.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -134,7 +134,7 @@ fun PlaceCard(
                             text = displayName,
                             style = MaterialTheme.typography.headlineSmall.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = StitchPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 textDirection = textDirection,
                             ),
                             maxLines = 1,

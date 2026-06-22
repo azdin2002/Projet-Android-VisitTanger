@@ -16,6 +16,12 @@ import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.TangerGreen
 import com.groupe10.visittanger.ui.theme.TangerGreenLight
 
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import com.groupe10.visittanger.ui.theme.StitchPrimary
+import com.groupe10.visittanger.ui.theme.StitchOnSurfaceVariant
+import com.groupe10.visittanger.ui.theme.StitchOutlineVariant
+
 @Composable
 fun EmptyFavoritesView(
     onExploreClick: () -> Unit
@@ -28,42 +34,58 @@ fun EmptyFavoritesView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(32.dp)
         ) {
-            Icon(
-                imageVector = Icons.Outlined.FavoriteBorder,
-                contentDescription = null,
-                modifier = Modifier.size(80.dp),
-                tint = TangerGreenLight
-            )
+            Surface(
+                modifier = Modifier.size(120.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                shape = CircleShape
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder,
+                        contentDescription = null,
+                        modifier = Modifier.size(56.dp),
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                    )
+                }
+            }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             
             Text(
                 text = stringResource(R.string.favorites_empty),
                 style = MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = androidx.compose.ui.text.font.FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                    fontSize = 22.sp
+                ),
+                color = MaterialTheme.colorScheme.primary
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             Text(
                 text = stringResource(R.string.favorites_empty_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
-                color = androidx.compose.ui.graphics.Color.Gray,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center
+                color = StitchOnSurfaceVariant,
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 22.sp
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             
             Button(
                 onClick = onExploreClick,
+                modifier = Modifier.height(50.dp).padding(horizontal = 24.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = TangerGreen
-                )
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text(stringResource(R.string.favorites_explore_cta))
+                Text(
+                    text = stringResource(R.string.favorites_explore_cta),
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                )
             }
         }
     }

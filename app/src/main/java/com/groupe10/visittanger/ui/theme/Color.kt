@@ -4,59 +4,70 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-// --- Base Palette Colors ---
-val StitchPrimary = Color(0xFF003E7A)
-val StitchOnPrimary = Color(0xFFFFFFFF)
-val StitchPrimaryContainer = Color(0xFF0055A4)
-val StitchOnPrimaryContainer = Color(0xFFAFCCFF)
-val StitchInversePrimary = Color(0xFFA8C8FF)
+// --- Light Palette Constants ---
+val StitchPrimaryLight = Color(0xFF003E7A)
+val StitchOnPrimaryLight = Color(0xFFFFFFFF)
+val StitchPrimaryContainerLight = Color(0xFF0055A4)
+val StitchOnPrimaryContainerLight = Color(0xFFAFCCFF)
+val StitchInversePrimaryLight = Color(0xFFA8C8FF)
 
-val StitchSecondary = Color(0xFF914C08)
-val StitchOnSecondary = Color(0xFFFFFFFF)
-val StitchSecondaryContainer = Color(0xFFFEA45D)
-val StitchOnSecondaryContainer = Color(0xFF733A00)
+val StitchSecondaryLight = Color(0xFF914C08)
+val StitchOnSecondaryLight = Color(0xFFFFFFFF)
+val StitchSecondaryContainerLight = Color(0xFFFEA45D)
+val StitchOnSecondaryContainerLight = Color(0xFF733A00)
 
-val StitchTertiary = Color(0xFF004912)
-val StitchOnTertiary = Color(0xFFFFFFFF)
-val StitchTertiaryContainer = Color(0xFF00641C)
-val StitchOnTertiaryContainer = Color(0xFF7CE17E)
+val StitchTertiaryLight = Color(0xFF004912)
+val StitchOnTertiaryLight = Color(0xFFFFFFFF)
+val StitchTertiaryContainerLight = Color(0xFF00641C)
+val StitchOnTertiaryContainerLight = Color(0xFF7CE17E)
 
-// Original Backgrounds
+// --- Base Palette Colors (Dark - Designer Implementation) ---
+val StitchPrimaryDark = Color(0xFFFFB781) // Designer Primary (Amber)
+val StitchOnPrimaryDark = Color(0xFF4E2500)
+val StitchPrimaryContainerDark = Color(0xFFE38E49)
+val StitchOnPrimaryContainerDark = Color(0xFF2F1400)
+
+val StitchSecondaryDark = Color(0xFFFFB4A3)
+val StitchOnSecondaryDark = Color(0xFF571E11)
+val StitchSecondaryContainerDark = Color(0xFF763627)
+val StitchOnSecondaryContainerDark = Color(0xFFFFDCC4)
+
+val StitchTertiaryDark = Color(0xFFD8E2FF)
+val StitchOnTertiaryDark = Color(0xFF20304F)
+val StitchTertiaryContainerDark = Color(0xFF92A2C7)
+val StitchOnTertiaryContainerDark = Color(0xFF283857)
+
+// Backgrounds & Surfaces (Light)
 val StitchBackgroundLight = Color(0xFFFEFCCF)
-val StitchBackgroundDark = Color(0xFF121212)
-
 val StitchSurfaceLight = Color(0xFFFEFCCF)
-val StitchSurfaceDark = Color(0xFF1E1E1E)
-
 val StitchOnSurfaceLight = Color(0xFF1D1D03)
-val StitchOnSurfaceDark = Color(0xFFE6E1E5)
-
 val StitchSurfaceVariantLight = Color(0xFFE6E5B9)
-val StitchSurfaceVariantDark = Color(0xFF49454F)
-
 val StitchOnSurfaceVariantLight = Color(0xFF424751)
-val StitchOnSurfaceVariantDark = Color(0xFFCAC4D0)
 
 val StitchSurfaceContainerLowestLight = Color(0xFFFFFFFF)
-val StitchSurfaceContainerLowestDark = Color(0xFF0F0F0F)
-
 val StitchSurfaceContainerLowLight = Color(0xFFF8F6C9)
-val StitchSurfaceContainerLowDark = Color(0xFF1C1B1F)
-
 val StitchSurfaceContainerLight = Color(0xFFF2F0C4)
-val StitchSurfaceContainerDark = Color(0xFF211F26)
-
 val StitchSurfaceContainerHighLight = Color(0xFFECEABE)
-val StitchSurfaceContainerHighDark = Color(0xFF2B2930)
-
 val StitchSurfaceContainerHighestLight = Color(0xFFE6E5B9)
-val StitchSurfaceContainerHighestDark = Color(0xFF333138)
+
+// Backgrounds & Surfaces (Dark - Designer)
+val StitchBackgroundDark = Color(0xFF041329)
+val StitchSurfaceDark = Color(0xFF041329)
+val StitchOnSurfaceDark = Color(0xFFD6E3FF)
+val StitchSurfaceVariantDark = Color(0xFF27354C)
+val StitchOnSurfaceVariantDark = Color(0xFFA18D80)
+
+val StitchSurfaceContainerLowestDark = Color(0xFF0D1C32)
+val StitchSurfaceContainerLowDark = Color(0xFF0D1C32)
+val StitchSurfaceContainerDark = Color(0xFF112036)
+val StitchSurfaceContainerHighDark = Color(0xFF1B2A46)
+val StitchSurfaceContainerHighestDark = Color(0xFF27354C)
 
 val StitchOutlineLight = Color(0xFF727783)
-val StitchOutlineDark = Color(0xFF938F99)
+val StitchOutlineDark = Color(0xFFA18D80)
 
 val StitchOutlineVariantLight = Color(0xFFC2C6D3)
-val StitchOutlineVariantDark = Color(0xFF49454F)
+val StitchOutlineVariantDark = Color(0xFF534439)
 
 val StitchError = Color(0xFFBA1A1A)
 val StitchOnError = Color(0xFFFFFFFF)
@@ -78,6 +89,18 @@ val TangerCoral = Color(0xFFD85A30)
 
 // --- Dynamic Color Provider ---
 data class StitchColors(
+    val primary: Color,
+    val onPrimary: Color,
+    val secondary: Color,
+    val onSecondary: Color,
+    val tertiary: Color,
+    val onTertiary: Color,
+    val primaryContainer: Color,
+    val onPrimaryContainer: Color,
+    val secondaryContainer: Color,
+    val onSecondaryContainer: Color,
+    val tertiaryContainer: Color,
+    val onTertiaryContainer: Color,
     val background: Color,
     val onBackground: Color,
     val surface: Color,
@@ -97,6 +120,18 @@ data class StitchColors(
 
 val LocalStitchColors = staticCompositionLocalOf {
     StitchColors(
+        primary = StitchPrimaryLight,
+        onPrimary = StitchOnPrimaryLight,
+        secondary = StitchSecondaryLight,
+        onSecondary = StitchOnSecondaryLight,
+        tertiary = StitchTertiaryLight,
+        onTertiary = StitchOnTertiaryLight,
+        primaryContainer = StitchPrimaryContainerLight,
+        onPrimaryContainer = StitchOnPrimaryContainerLight,
+        secondaryContainer = StitchSecondaryContainerLight,
+        onSecondaryContainer = StitchOnSecondaryContainerLight,
+        tertiaryContainer = StitchTertiaryContainerLight,
+        onTertiaryContainer = StitchOnTertiaryContainerLight,
         background = StitchBackgroundLight,
         onBackground = StitchOnSurfaceLight,
         surface = StitchSurfaceLight,
@@ -115,7 +150,10 @@ val LocalStitchColors = staticCompositionLocalOf {
     )
 }
 
-// --- Dynamic Accessors to maintain same names ---
+// --- Dynamic Accessors ---
+val StitchPrimary: Color @Composable get() = LocalStitchColors.current.primary
+val StitchSecondary: Color @Composable get() = LocalStitchColors.current.secondary
+val StitchTertiary: Color @Composable get() = LocalStitchColors.current.tertiary
 val StitchBackground: Color @Composable get() = LocalStitchColors.current.background
 val StitchOnBackground: Color @Composable get() = LocalStitchColors.current.onBackground
 val StitchSurface: Color @Composable get() = LocalStitchColors.current.surface
@@ -131,3 +169,10 @@ val StitchOutline: Color @Composable get() = LocalStitchColors.current.outline
 val StitchOutlineVariant: Color @Composable get() = LocalStitchColors.current.outlineVariant
 val StitchSurfaceDim: Color @Composable get() = LocalStitchColors.current.surfaceDim
 val StitchSurfaceBright: Color @Composable get() = LocalStitchColors.current.surfaceBright
+
+val StitchSecondaryContainer: Color @Composable get() = LocalStitchColors.current.secondaryContainer
+val StitchOnSecondaryContainer: Color @Composable get() = LocalStitchColors.current.onSecondaryContainer
+val StitchPrimaryContainer: Color @Composable get() = LocalStitchColors.current.primaryContainer
+val StitchOnPrimaryContainer: Color @Composable get() = LocalStitchColors.current.onPrimaryContainer
+val StitchTertiaryContainer: Color @Composable get() = LocalStitchColors.current.tertiaryContainer
+val StitchOnTertiaryContainer: Color @Composable get() = LocalStitchColors.current.onTertiaryContainer

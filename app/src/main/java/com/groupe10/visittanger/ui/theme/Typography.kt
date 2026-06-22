@@ -29,6 +29,12 @@ val TangerSerifFont = FontFamily(
 )
 
 val Typography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 44.sp,
+        lineHeight = 52.sp
+    ),
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Bold,
@@ -48,7 +54,7 @@ val Typography = Typography(
         lineHeight = 28.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = TangerSerifFont,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
         lineHeight = 24.sp
