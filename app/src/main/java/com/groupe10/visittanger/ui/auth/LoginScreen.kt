@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -183,7 +184,6 @@ fun LoginScreen(
                     style = MaterialTheme.typography.displayLarge.copy(
                         color = StitchPrimary,
                         fontSize = 48.sp,
-                        fontFamily = TangerDisplayFont,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -191,7 +191,6 @@ fun LoginScreen(
                     text = stringResource(R.string.auth_welcome_back),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = StitchOnSurface,
-                        fontFamily = TangerSerifFont,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     ),
@@ -217,8 +216,8 @@ fun LoginScreen(
                             spotColor = StitchSecondary.copy(alpha = 0.25f)
                         ),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White.copy(alpha = 0.92f),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.6f))
+                    color = if (isDarkMode) StitchSurface.copy(alpha = 0.95f) else Color.White.copy(alpha = 0.92f),
+                    border = BorderStroke(1.dp, if (isDarkMode) StitchOutlineVariant.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.6f))
                 ) {
                     Column(
                         modifier = Modifier.padding(24.dp),
@@ -236,15 +235,22 @@ fun LoginScreen(
                             OutlinedTextField(
                                 value = email,
                                 onValueChange = { email = it },
-                                placeholder = { Text("marhaba@tangier.com", color = Color.Gray.copy(alpha = 0.4f)) },
+                                placeholder = { Text("marhaba@tangier.com", color = StitchOnSurfaceVariant.copy(alpha = 0.4f)) },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp),
-                                trailingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color.Gray.copy(alpha = 0.5f)) },
+                                trailingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = StitchOnSurfaceVariant.copy(alpha = 0.5f)) },
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = StitchPrimary,
-                                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.2f),
-                                    unfocusedContainerColor = Color.White.copy(alpha = 0.5f),
-                                    focusedContainerColor = Color.White
+                                    unfocusedBorderColor = StitchOutlineVariant.copy(alpha = 0.5f),
+                                    unfocusedContainerColor = if (isDarkMode) StitchSurfaceContainerLow.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.5f),
+                                    focusedContainerColor = if (isDarkMode) StitchSurfaceContainer.copy(alpha = 0.8f) else Color.White,
+                                    focusedTextColor = StitchOnSurface,
+                                    unfocusedTextColor = StitchOnSurface,
+                                    cursorColor = StitchPrimary,
+                                    selectionColors = TextSelectionColors(
+                                        handleColor = StitchPrimary,
+                                        backgroundColor = StitchPrimary.copy(alpha = 0.3f)
+                                    )
                                 ),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                 singleLine = true
@@ -277,21 +283,28 @@ fun LoginScreen(
                             OutlinedTextField(
                                 value = password,
                                 onValueChange = { password = it },
-                                placeholder = { Text("••••••••", color = Color.Gray.copy(alpha = 0.4f)) },
+                                placeholder = { Text("••••••••", color = StitchOnSurfaceVariant.copy(alpha = 0.4f)) },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp),
                                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                                 trailingIcon = {
                                     val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                        Icon(imageVector = image, contentDescription = null, tint = Color.Gray.copy(alpha = 0.5f))
+                                        Icon(imageVector = image, contentDescription = null, tint = StitchOnSurfaceVariant.copy(alpha = 0.5f))
                                     }
                                 },
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = StitchPrimary,
-                                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.2f),
-                                    unfocusedContainerColor = Color.White.copy(alpha = 0.5f),
-                                    focusedContainerColor = Color.White
+                                    unfocusedBorderColor = StitchOutlineVariant.copy(alpha = 0.5f),
+                                    unfocusedContainerColor = if (isDarkMode) StitchSurfaceContainerLow.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.5f),
+                                    focusedContainerColor = if (isDarkMode) StitchSurfaceContainer.copy(alpha = 0.8f) else Color.White,
+                                    focusedTextColor = StitchOnSurface,
+                                    unfocusedTextColor = StitchOnSurface,
+                                    cursorColor = StitchPrimary,
+                                    selectionColors = TextSelectionColors(
+                                        handleColor = StitchPrimary,
+                                        backgroundColor = StitchPrimary.copy(alpha = 0.3f)
+                                    )
                                 ),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 singleLine = true
@@ -304,7 +317,10 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = StitchPrimary,
+                                contentColor = Color.White
+                            ),
                             shape = RoundedCornerShape(10.dp),
                             enabled = !uiState.isLoading
                         ) {
@@ -313,6 +329,7 @@ fun LoginScreen(
                             } else {
                                 Text(
                                     stringResource(R.string.auth_sign_in_button),
+                                    color = Color.White,
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.Bold,
                                         letterSpacing = 1.sp
@@ -326,13 +343,13 @@ fun LoginScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(vertical = 4.dp)
                         ) {
-                            HorizontalDivider(modifier = Modifier.weight(1f), color = Color.Gray.copy(alpha = 0.15f))
+                            HorizontalDivider(modifier = Modifier.weight(1f), color = StitchOutlineVariant.copy(alpha = 0.3f))
                             Text(
                                 stringResource(R.string.auth_or_continue_with),
-                                style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray),
+                                style = MaterialTheme.typography.labelSmall.copy(color = StitchOnSurfaceVariant),
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             )
-                            HorizontalDivider(modifier = Modifier.weight(1f), color = Color.Gray.copy(alpha = 0.15f))
+                            HorizontalDivider(modifier = Modifier.weight(1f), color = StitchOutlineVariant.copy(alpha = 0.3f))
                         }
 
                         // Social Buttons
@@ -344,8 +361,10 @@ fun LoginScreen(
                                 onClick = { googleSignInLauncher.launch(viewModel.getGoogleSignInIntent()) },
                                 modifier = Modifier.weight(1f).height(48.dp),
                                 shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.15f)),
-                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White)
+                                border = BorderStroke(1.dp, StitchOutlineVariant.copy(alpha = 0.3f)),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (isDarkMode) StitchSurfaceContainerLow.copy(alpha = 0.8f) else Color.White
+                                )
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     AsyncImage(
@@ -362,8 +381,10 @@ fun LoginScreen(
                                 onClick = { viewModel.onFacebookLoginClick(facebookLauncher) },
                                 modifier = Modifier.weight(1f).height(48.dp),
                                 shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.15f)),
-                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White)
+                                border = BorderStroke(1.dp, StitchOutlineVariant.copy(alpha = 0.3f)),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (isDarkMode) StitchSurfaceContainerLow.copy(alpha = 0.8f) else Color.White
+                                )
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(

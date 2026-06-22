@@ -18,32 +18,45 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = StitchPrimary,
-    secondary = StitchSecondary,
-    tertiary = StitchTertiary,
+    primary = StitchPrimaryDark,
+    secondary = StitchSecondaryDark,
+    tertiary = StitchTertiaryDark,
     background = StitchBackgroundDark,
     surface = StitchSurfaceDark,
+    onPrimary = StitchOnPrimaryDark,
+    onSecondary = StitchOnSecondaryDark,
+    onTertiary = StitchOnTertiaryDark,
     onBackground = StitchOnSurfaceDark,
     onSurface = StitchOnSurfaceDark,
     surfaceVariant = StitchSurfaceVariantDark,
     onSurfaceVariant = StitchOnSurfaceVariantDark,
-    outline = StitchOutlineDark
+    outline = StitchOutlineDark,
+    primaryContainer = StitchPrimaryContainerDark,
+    onPrimaryContainer = StitchOnPrimaryContainerDark,
+    secondaryContainer = StitchSecondaryContainerDark,
+    onSecondaryContainer = StitchOnSecondaryContainerDark,
+    tertiaryContainer = StitchTertiaryContainerDark,
+    onTertiaryContainer = StitchOnTertiaryContainerDark,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = StitchPrimary,
-    secondary = StitchSecondary,
-    tertiary = StitchTertiary,
+    primary = StitchPrimaryLight,
+    secondary = StitchSecondaryLight,
+    tertiary = StitchTertiaryLight,
     background = StitchBackgroundLight,
     surface = StitchSurfaceLight,
-    onPrimary = StitchOnPrimary,
+    onPrimary = StitchOnPrimaryLight,
     onSecondary = Color.White,
     onTertiary = Color.White,
     onBackground = StitchOnSurfaceLight,
     onSurface = StitchOnSurfaceLight,
     surfaceVariant = StitchSurfaceVariantLight,
     onSurfaceVariant = StitchOnSurfaceVariantLight,
-    outline = StitchOutlineLight
+    outline = StitchOutlineLight,
+    primaryContainer = StitchPrimaryContainerLight,
+    onPrimaryContainer = StitchOnPrimaryContainerLight,
+    secondaryContainer = StitchSecondaryContainerLight,
+    onSecondaryContainer = StitchOnSecondaryContainerLight,
 )
 
 @Composable
@@ -64,6 +77,18 @@ fun VisitTangerTheme(
 
     val stitchColors = if (darkTheme) {
         StitchColors(
+            primary = StitchPrimaryDark,
+            onPrimary = StitchOnPrimaryDark,
+            secondary = StitchSecondaryDark,
+            onSecondary = StitchOnSecondaryDark,
+            tertiary = StitchTertiaryDark,
+            onTertiary = StitchOnTertiaryDark,
+            primaryContainer = StitchPrimaryContainerDark,
+            onPrimaryContainer = StitchOnPrimaryContainerDark,
+            secondaryContainer = StitchSecondaryContainerDark,
+            onSecondaryContainer = StitchOnSecondaryContainerDark,
+            tertiaryContainer = StitchTertiaryContainerDark,
+            onTertiaryContainer = StitchOnTertiaryContainerDark,
             background = StitchBackgroundDark,
             onBackground = StitchOnSurfaceDark,
             surface = StitchSurfaceDark,
@@ -77,11 +102,23 @@ fun VisitTangerTheme(
             surfaceContainerHighest = StitchSurfaceContainerHighestDark,
             outline = StitchOutlineDark,
             outlineVariant = StitchOutlineVariantDark,
-            surfaceDim = Color(0xFF141218),
-            surfaceBright = Color(0xFF3B383E)
+            surfaceDim = Color(0xFF041329),
+            surfaceBright = Color(0xFF1B2A46)
         )
     } else {
         StitchColors(
+            primary = StitchPrimaryLight,
+            onPrimary = StitchOnPrimaryLight,
+            secondary = StitchSecondaryLight,
+            onSecondary = StitchOnSecondaryLight,
+            tertiary = StitchTertiaryLight,
+            onTertiary = StitchOnTertiaryLight,
+            primaryContainer = StitchPrimaryContainerLight,
+            onPrimaryContainer = StitchOnPrimaryContainerLight,
+            secondaryContainer = StitchSecondaryContainerLight,
+            onSecondaryContainer = StitchOnSecondaryContainerLight,
+            tertiaryContainer = StitchTertiaryContainerLight,
+            onTertiaryContainer = StitchOnTertiaryContainerLight,
             background = StitchBackgroundLight,
             onBackground = StitchOnSurfaceLight,
             surface = StitchSurfaceLight,

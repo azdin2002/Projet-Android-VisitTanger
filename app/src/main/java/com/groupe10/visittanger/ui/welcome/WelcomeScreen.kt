@@ -80,6 +80,7 @@ fun WelcomeScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 8.dp), // Reduced vertical padding
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -97,7 +98,6 @@ fun WelcomeScreen(
                     text = stringResource(R.string.brand_tangier),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
-                        fontFamily = TangerDisplayFont,
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(start = 8.dp)
@@ -151,7 +151,7 @@ fun WelcomeScreen(
             var fontSize by remember { mutableStateOf(44.sp) }
             Text(
                 text = stringResource(R.string.welcome_headline),
-                style = MaterialTheme.typography.displayLarge.copy(
+                style = MaterialTheme.typography.headlineLarge.copy(
                     color = Color.White,
                     lineHeight = fontSize * 1.1f,
                     fontWeight = FontWeight.Bold,
@@ -181,7 +181,7 @@ fun WelcomeScreen(
                         .fillMaxWidth()
                         .height(60.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = StitchPrimary,
+                        containerColor = StitchPrimaryLight, // Always blue, no night mode
                         contentColor = Color.White
                     ),
                     shape = CircleShape

@@ -114,8 +114,13 @@ fun DetailPhoneLayout(
     }
 
     val topBarAlpha by animateColorAsState(
-        targetValue = if (isScrolled) StitchSurface.copy(alpha = 0.8f) else Color.Transparent,
+        targetValue = if (isScrolled) StitchSurface.copy(alpha = 0.9f) else Color.Transparent,
         label = "topBarColor"
+    )
+
+    val topContentColor by animateColorAsState(
+        targetValue = if (isScrolled) MaterialTheme.colorScheme.primary else Color.White,
+        label = "topContentColor"
     )
 
     val openNavigation = {
@@ -189,7 +194,7 @@ fun DetailPhoneLayout(
                         Text(
                             text = displayName,
                             style = MaterialTheme.typography.displayMedium.copy(
-                                color = StitchPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold,
                                 textDirection = textDirection,
@@ -217,7 +222,7 @@ fun DetailPhoneLayout(
                                 fontWeight = FontWeight.Bold,
                                 textDirection = textDirection,
                             ),
-                            color = StitchPrimary,
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
                     }
@@ -302,12 +307,14 @@ fun DetailPhoneLayout(
             onToggleDarkMode = onToggleDarkMode,
             onProfileClick = onProfileClick,
             containerColor = topBarAlpha,
+            contentColor = topContentColor,
+            isTransparent = !isScrolled,
             actions = {
                 IconButton(onClick = onFavoriteToggled) {
                     Icon(
                         imageVector = if (place.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = null,
-                        tint = if (place.isFavorite) Color.Red else if (isScrolled) StitchPrimary else Color.White,
+                        tint = if (place.isFavorite) Color.Red else topContentColor,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -326,8 +333,8 @@ fun DetailPhoneLayout(
                 OutlinedButton(
                     onClick = { onMapClick(place.latitude, place.longitude) },
                     modifier = Modifier.weight(1.1f).height(56.dp),
-                    border = BorderStroke(1.2.dp, StitchPrimary),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = StitchPrimary),
+                    border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.primary),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp),
                     contentPadding = PaddingValues(horizontal = 8.dp)
                 ) {
@@ -338,7 +345,7 @@ fun DetailPhoneLayout(
                 Button(
                     onClick = openNavigation,
                     modifier = Modifier.weight(1f).height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp),
                     contentPadding = PaddingValues(horizontal = 8.dp)
                 ) {
@@ -390,7 +397,7 @@ fun FactCard(value: String, label: String, icon: ImageVector, modifier: Modifier
             Icon(icon, null, tint = StitchSecondary, modifier = Modifier.size(24.dp))
             Spacer(Modifier.height(12.dp))
             Text(label.uppercase(), style = MaterialTheme.typography.labelSmall, color = StitchOnSurfaceVariant, letterSpacing = 0.5.sp)
-            Text(value, style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp), color = StitchPrimary, fontWeight = FontWeight.Bold)
+            Text(value, style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -401,7 +408,7 @@ fun WhatToSeeSection(photos: List<String>, onPhotoSelected: (Int) -> Unit) {
         Text(
             stringResource(R.string.detail_gallery_title),
             style = MaterialTheme.typography.headlineSmall,
-            color = StitchPrimary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(horizontal = 24.dp),
             fontWeight = FontWeight.Bold
         )
@@ -443,7 +450,7 @@ fun WhatToSeeSection(photos: List<String>, onPhotoSelected: (Int) -> Unit) {
 fun PlanYourVisitSection(onItineraryAdd: () -> Unit, onDirections: () -> Unit) {
     Surface(
         modifier = Modifier.padding(24.dp).fillMaxWidth(),
-        color = StitchPrimary,
+        color = MaterialTheme.colorScheme.primary,
         shape = RoundedCornerShape(32.dp),
         shadowElevation = 8.dp
     ) {

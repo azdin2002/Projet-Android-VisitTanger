@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.groupe10.visittanger.R
 import com.groupe10.visittanger.ui.theme.StitchPrimary
-import com.groupe10.visittanger.ui.theme.StitchSurface
+import com.groupe10.visittanger.ui.theme.StitchBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,16 +33,21 @@ fun TangerTopBar(
     isDarkMode: Boolean = false,
     onToggleDarkMode: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
-    containerColor: Color = if (isTransparent) StitchSurface.copy(alpha = 0.8f) else StitchSurface,
+    containerColor: Color? = null,
+    contentColor: Color? = null,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
+    // Par défaut, on utilise StitchBackground pour matcher le fond du Scaffold
+    val finalContainerColor = containerColor ?: if (isTransparent) Color.Transparent else StitchBackground
+    val finalContentColor = contentColor ?: MaterialTheme.colorScheme.primary
+    
     Surface(
-        tonalElevation = if (isTransparent) 0.dp else 4.dp,
-        shadowElevation = if (isTransparent) 0.dp else 4.dp
+        color = finalContainerColor,
+        tonalElevation = 0.dp, // Supprime la teinte automatique M3 qui casse les couleurs
+        shadowElevation = if (isTransparent || finalContainerColor == Color.Transparent) 0.dp else 2.dp
     ) {
         Box {
-            if (isTransparent) {
-                // Blur background layer - only blurs what's underneath
+            if (isTransparent && finalContainerColor != Color.Transparent) {
                 Box(
                     modifier = Modifier
                         .matchParentSize()
@@ -54,8 +59,11 @@ fun TangerTopBar(
                 title = {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = StitchPrimary
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontFamily = androidx.compose.ui.text.font.FontFamily.Serif,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                        ),
+                        color = finalContentColor
                     )
                 },
                 navigationIcon = {
@@ -65,7 +73,7 @@ fun TangerTopBar(
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = "Back",
-                                    tint = StitchPrimary
+                                    tint = finalContentColor
                                 )
                             }
                         }
@@ -75,7 +83,7 @@ fun TangerTopBar(
                                 Icon(
                                     imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
                                     contentDescription = "Toggle Dark Mode",
-                                    tint = StitchPrimary
+                                    tint = finalContentColor
                                 )
                             }
                         }
@@ -89,7 +97,7 @@ fun TangerTopBar(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .border(2.dp, StitchPrimary.copy(alpha = 0.1f), CircleShape)
+                                .border(2.dp, finalContentColor.copy(alpha = 0.1f), CircleShape)
                                 .clickable(enabled = onProfileClick != null) { onProfileClick?.invoke() }
                         ) {
                             AsyncImage(
@@ -103,11 +111,11 @@ fun TangerTopBar(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = containerColor,
-                    scrolledContainerColor = containerColor,
-                    titleContentColor = StitchPrimary,
-                    navigationIconContentColor = StitchPrimary,
-                    actionIconContentColor = StitchPrimary
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    titleContentColor = finalContentColor,
+                    navigationIconContentColor = finalContentColor,
+                    actionIconContentColor = finalContentColor
                 ),
                 windowInsets = TopAppBarDefaults.windowInsets
             )

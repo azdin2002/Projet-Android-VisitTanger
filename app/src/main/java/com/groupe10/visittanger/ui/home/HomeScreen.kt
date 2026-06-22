@@ -1,9 +1,13 @@
 package com.groupe10.visittanger.ui.home
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -14,14 +18,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -72,7 +77,6 @@ fun HomeScreen(
                 bottom = padding.calculateBottomPadding()
             )
         ) {
-            // Search Bar
             item {
                 TangerSearchBar(
                     query = uiState.searchQuery,
@@ -82,14 +86,12 @@ fun HomeScreen(
                 )
             }
 
-            // Weather Hero Section
             item {
                 WeatherHeroSection(weatherState = weatherState)
             }
 
-            // Explore by Category
             item {
-                Column(modifier = Modifier.padding(bottom = 24.dp)) {
+                Column(modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)) {
                     Text(
                         text = stringResource(R.string.home_categories),
                         style = MaterialTheme.typography.headlineSmall,
@@ -114,7 +116,6 @@ fun HomeScreen(
                 }
             }
 
-            // Trending Spots
             item {
                 Row(
                     modifier = Modifier
@@ -147,7 +148,6 @@ fun HomeScreen(
                 )
             }
 
-            // Did You Know?
             item {
                 DidYouKnowSection()
             }
@@ -208,31 +208,56 @@ fun HomeCategoriesRow(
         items(categories) { item ->
             val (category, label, icon) = item
             val isSelected = (category == null && selectedCategory == null) || (category != null && selectedCategory == category)
+            
+            // Interaction source to disable ripple and handle scale
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+            val scale by animateFloatAsState(if (isPressed) 0.94f else 1f, label = "scale")
+            
+            // Animated colors for the selection transition
+            val bgColor by animateColorAsState(
+                targetValue = if (isSelected) StitchSecondaryContainer else StitchSurfaceContainerHighest,
+                label = "bgColor"
+            )
+            val iconColor by animateColorAsState(
+                targetValue = if (isSelected) StitchOnSecondaryContainer else StitchPrimary,
+                label = "iconColor"
+            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .width(72.dp)
-                    .clickable { onCategorySelected(category) }
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    }
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null // REMOVE GRAY RIPPLE
+                    ) { onCategorySelected(category) }
             ) {
                 Box(
                     modifier = Modifier
                         .size(72.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(if (isSelected) StitchSecondaryContainer else StitchSurfaceContainerHighest),
+                        .background(bgColor),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = label,
-                        tint = if (isSelected) StitchOnSecondaryContainer else StitchPrimary,
+                        tint = iconColor,
                         modifier = Modifier.size(28.dp)
                     )
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = StitchOnSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    ),
+                    color = if (isSelected) StitchOnSurface else StitchOnSurfaceVariant
                 )
             }
         }
@@ -274,38 +299,17 @@ fun WeatherHeroSection(weatherState: WeatherUiState) {
                 is WeatherUiState.Success -> {
                     val weather = weatherState.weather
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.LocationOn,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
+                        Icon(Icons.Default.LocationOn, null, tint = Color.White, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = "Tanger-Medina",
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                        Text(text = "Tanger-Medina", color = Color.White, style = MaterialTheme.typography.titleMedium)
                     }
                     Spacer(Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "${weather.temperature}°C",
-                            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White
-                        )
+                        Text(text = "${weather.temperature}°C", style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold), color = Color.White)
                         Spacer(Modifier.width(16.dp))
                         Column {
-                            Text(
-                                text = weather.description.replaceFirstChar { it.uppercase() },
-                                style = MaterialTheme.typography.titleLarge,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "H: ${weather.tempMax}° L: ${weather.tempMin}°",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
+                            Text(text = weather.description.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.titleLarge, color = Color.White)
+                            Text(text = "H: ${weather.tempMax}° L: ${weather.tempMin}°", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
                         }
                     }
                     Spacer(Modifier.height(16.dp))
@@ -313,21 +317,9 @@ fun WeatherHeroSection(weatherState: WeatherUiState) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        WeatherHeroDetail(
-                            icon = Icons.Default.WaterDrop,
-                            label = "${weather.humidity}%",
-                            sub = stringResource(R.string.weather_humidity)
-                        )
-                        WeatherHeroDetail(
-                            icon = Icons.Default.Air,
-                            label = "${weather.windSpeed} m/s",
-                            sub = stringResource(R.string.weather_wind)
-                        )
-                        WeatherHeroDetail(
-                            icon = Icons.Default.Thermostat,
-                            label = "${weather.feelsLike}°C",
-                            sub = stringResource(R.string.weather_feels_like)
-                        )
+                        WeatherHeroDetail(Icons.Default.WaterDrop, "${weather.humidity}%", stringResource(R.string.weather_humidity))
+                        WeatherHeroDetail(Icons.Default.Air, "${weather.windSpeed} m/s", stringResource(R.string.weather_wind))
+                        WeatherHeroDetail(Icons.Default.Thermostat, "${weather.feelsLike}°C", stringResource(R.string.weather_feels_like))
                     }
                 }
                 is WeatherUiState.Loading -> {
@@ -336,11 +328,7 @@ fun WeatherHeroSection(weatherState: WeatherUiState) {
                     }
                 }
                 is WeatherUiState.Error -> {
-                    Text(
-                        text = stringResource(R.string.home_no_results), // Re-using a generic error string
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Text(text = stringResource(R.string.home_no_results), color = Color.White, style = MaterialTheme.typography.bodyLarge)
                 }
                 else -> {}
             }
@@ -349,11 +337,7 @@ fun WeatherHeroSection(weatherState: WeatherUiState) {
 }
 
 @Composable
-private fun WeatherHeroDetail(
-    icon: ImageVector,
-    label: String,
-    sub: String
-) {
+private fun WeatherHeroDetail(icon: ImageVector, label: String, sub: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, tint = Color.White, modifier = Modifier.size(20.dp))
         Spacer(Modifier.width(8.dp))
@@ -367,9 +351,7 @@ private fun WeatherHeroDetail(
 @Composable
 fun DidYouKnowSection() {
     Surface(
-        modifier = Modifier
-            .padding(20.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.padding(20.dp).fillMaxWidth(),
         color = StitchSurfaceContainer.copy(alpha = 0.5f),
         shape = RoundedCornerShape(32.dp),
         border = BorderStroke(1.dp, StitchSurfaceVariant)
@@ -380,26 +362,15 @@ fun DidYouKnowSection() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-                    .background(StitchPrimary),
+                modifier = Modifier.size(64.dp).clip(CircleShape).background(StitchPrimary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(Icons.Default.Lightbulb, null, tint = Color.White, modifier = Modifier.size(32.dp))
             }
             Column {
-                Text(
-                    text = stringResource(R.string.home_did_you_know_title),
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    color = StitchPrimary
-                )
+                Text(text = stringResource(R.string.home_did_you_know_title), style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), color = StitchPrimary)
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(R.string.home_did_you_know_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = StitchOnSurfaceVariant
-                )
+                Text(text = stringResource(R.string.home_did_you_know_body), style = MaterialTheme.typography.bodyMedium, color = StitchOnSurfaceVariant)
             }
         }
     }

@@ -49,6 +49,7 @@ fun CategoryChip(
     )
 }
 
+@Composable
 fun getCategoryColors(category: Category): Pair<Color, Color> {
     return when (category) {
         Category.HISTORY -> StitchPrimary to StitchPrimary

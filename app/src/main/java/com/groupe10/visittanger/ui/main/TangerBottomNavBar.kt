@@ -10,10 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.groupe10.visittanger.ui.navigation.Screen
 import com.groupe10.visittanger.ui.theme.*
 
@@ -26,21 +23,22 @@ fun TangerBottomNavBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
+            .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)),
         color = StitchSurfaceContainerLow.copy(alpha = 0.95f),
-        tonalElevation = 0.dp
+        tonalElevation = 0.dp,
+        shadowElevation = 16.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .padding(horizontal = 4.dp, vertical = 8.dp),
+                .padding(horizontal = 8.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
             navItems.forEach { item ->
                 val isSelected = currentRoute == item.screen.route
-                
+
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
