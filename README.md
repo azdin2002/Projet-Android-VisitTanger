@@ -46,6 +46,8 @@ The app is written entirely in **Kotlin**. The UI uses **Jetpack Compose** with 
 
 The codebase is organized in three layers. The **UI layer** contains Compose screens and ViewModels that expose state through `StateFlow`. The **domain layer** holds business models, repository interfaces, and use cases — each use case does one thing. The **data layer** implements those repositories, combining Firestore, Retrofit, Room, and DataStore. Hilt wires everything together.
 
+## Architecture diagram
+![Clean Architecture — Visit Tanger](<img width="1708" height="962" alt="image" src="https://github.com/user-attachments/assets/898bc9ff-398a-4e7f-a826-9cc37b8212cf" />)
 ```
 app/src/main/java/com/groupe10/visittanger/
 ├── data/          remote APIs, Firestore, Room, DataStore, repository implementations
